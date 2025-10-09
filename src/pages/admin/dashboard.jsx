@@ -1,7 +1,7 @@
-import './App.css'
-import Header from './Header';
-import Footer from './Footer';
-import { usuariosData } from './dataUsuarios';
+import './dashboard.css';
+import Header from '../../Header';
+import Footer from '../../Footer';
+import { usuariosData } from '../../dataUsuarios';
 
 function calcularTotalOrdenes() {
   return usuariosData.reduce((total, usuario) => total + usuario.orden.length, 0);
