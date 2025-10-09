@@ -1,0 +1,11 @@
+.contenedor-cards {
+    display: flex;
+    margin: 20px;
+}
+
+.card {
+    background-color: green;
+    color: white;
+    padding: 20px;
+    
+}
