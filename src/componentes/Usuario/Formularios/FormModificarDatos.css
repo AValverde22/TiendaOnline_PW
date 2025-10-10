@@ -1,0 +1,63 @@
+.ModificarDatosUsuarioParent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin-top: 200px;
+}
+
+.ModificarDatosUsuario {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+
+    width: 600px;
+    height: 325px;
+
+    border-radius: 7.5px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.ModificarDatosUsuario h1 {
+    margin-left: 25px;
+    font-size: 25px;
+}
+
+.grid-container-MDU {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: space-around;
+
+    row-gap: 20px;
+}
+
+.grid-container-MDU input[type="text"]{
+    width: 200px;
+    padding: 10px;
+    margin-top: 5px;
+}
+
+.grid-container-MDU2 {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: space-around;
+
+    margin-top: 50px;
+
+}
+
+.grid-container-MDU2 button {
+    background-color: green;
+    color: white;
+    border-radius: 5px;
+    border: 0px solid;  
+
+    width: 200px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+}

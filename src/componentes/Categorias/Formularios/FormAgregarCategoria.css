@@ -1,0 +1,73 @@
+.AgregarCategoriaParent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin-top: 100px;
+}
+
+.AgregarCategoria {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+
+    width: 600px;
+    height: 450px;
+
+    border-radius: 7.5px;
+    background-color: white;
+}
+
+.AgregarCategoria h1{
+    margin-left: 25px;
+    font-size: 25px;
+}
+
+.AgregarCategoria label {
+    margin-left: 50px;
+}
+
+.AgregarCategoria input[type="text"]{
+    margin-left: 50px;
+    margin-top: 5px;
+    margin-bottom: 25px ;
+
+    width: 475px;
+    padding: 5px;
+}
+
+.AgregarCategoria textarea{
+    margin-left: 50px;
+    margin-top: 5px;
+    margin-bottom: 25px ;
+
+    width: 475px;
+    height: 100px;
+    padding: 5px;
+    resize: none;
+}
+
+.grid-botones-AgregarCategoria {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: space-between;
+
+    padding-left: 25px;
+    padding-right: 25px;
+    margin-top: 10px;
+    
+}
+
+.grid-botones-AgregarCategoria button{
+    background-color: green;
+    color: white;
+    border-radius: 5px;
+    border: 0px solid;  
+
+    width: 150px;
+    padding-top: 7.5px;
+    padding-bottom: 7.5px;
+
+    font-size: 12px;
+    cursor: pointer;
+}

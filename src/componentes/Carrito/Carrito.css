@@ -1,0 +1,44 @@
+.grid-2 { display: grid; grid-template-columns: 1fr 360px; gap: 24px; align-items: start; }
+
+
+/* Items del carrito */
+.item-carrito {
+  display:flex; gap:14px; padding:14px 0; border-bottom:1px solid #f1f3f5; align-items:center;
+}
+.item-carrito .left { display:flex; gap:12px; align-items:center; min-width:220px; }
+.thumb { width:88px; height:88px; border-radius:8px; overflow:hidden; background:#f4f6f8; }
+.thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+
+.middle { flex:1; }
+.titulo { font-weight:700; }
+.meta { color:#6b7280; margin-top:6px; }
+.entrega { color:#13a34a; font-weight:700; margin-top:8px; }
+
+
+/*Se complica esta vaina*/
+
+.right { min-width:200px; text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
+.precio { font-weight:800; }
+.qty { display:inline-flex; gap:8px; align-items:center; }
+.qty button { width:32px; height:32px; border-radius:8px; border:1px solid #e6e9ef; background:white; cursor:pointer; }
+.qty input { width:44px; text-align:center; border-radius:6px; border:1px solid #e6e9ef; padding:6px; }
+
+.acciones { display:flex; gap:8px; }
+.small-btn { padding:6px 10px; border-radius:8px; border:none; background:#2db01a; color:#fff; cursor:pointer; }
+.small-btn.danger { background:#e14b4b; }
+
+.subtotal { font-size:0.9rem; color:#6b7280; }
+
+
+
+
+
+
+.btn-green { background:#2db01a; color:white; border:none; padding:12px; border-radius:8px; font-weight:700; cursor:pointer; }
+.btn-red { background:#e14b4b; color:white; border:none; padding:10px; border-radius:8px; font-weight:700; cursor:pointer; }
+
+/* responsive */
+@media (max-width: 980px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .item-carrito .left { min-width: 140px; }
+}
