@@ -116,6 +116,14 @@ main {
   width: 100%;
 }
 
+.product-img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 4px;
+}
+
 /* ===== NUEVAS SERIES ===== */
 .new-series {
   margin-bottom: 2em;

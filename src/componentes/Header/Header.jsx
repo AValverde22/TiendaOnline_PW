@@ -12,7 +12,7 @@ const Header = () => {
     <header className="header-bar">
       <div className="header-top container">
         <div className="marca">
-          <div className="logo">GamePlay <span className="logo-dot">•</span></div>
+        <img src="/src/imagenes/logo-generico-2.jpg" alt="logo" /><div className="logo">GamePlay</div>
         </div>
 
         <div className="buscador">

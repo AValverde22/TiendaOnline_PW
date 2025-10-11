@@ -2,9 +2,16 @@
 .header-top { display:flex; align-items:center; justify-content:space-between; padding:12px 0; gap:16px; }
 .container { width:92%; max-width:1180px; margin: 0 auto; }
 .marca .logo { font-weight:800; font-size:20px; display:inline-block; }
-.logo-dot { color:#18be3d; margin-left:6px; }
-.tag { color:#6b7280; font-size:0.9rem; margin-top:2px; }
-
+.marca img {
+  width: 50px; 
+  height: auto; 
+  object-fit: contain; 
+  margin-right: 8px; 
+}
+.marca {
+  display: flex;
+  align-items: center; 
+}
 .buscador { display:flex; gap:14px; align-items:center; flex:1; justify-content:center; }
 .buscador input { width:480px; max-width:60%; padding:10px 12px; border-radius:8px; border:1px solid #e6e9ef; }
 .buscador button { padding:9px 12px; border-radius:8px; border:none; background:#2db01a; color:white; cursor:pointer; }
@@ -17,9 +24,6 @@
 .barra-menu ul { display:flex; gap:28px; list-style:none; padding:10px 0; justify-content:center; margin:0;}
 .barra-menu li { font-weight:600; cursor:pointer; }
 .oferta { color: #fff2a8; font-weight:800; }
-
-
-
 
 @media (max-width:900px) {
   .buscador input { width: 220px; }

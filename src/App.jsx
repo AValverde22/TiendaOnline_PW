@@ -2,7 +2,6 @@ import './App.css'
 import Header from './componentes/Header/Header';
 import Footer from './componentes/Footer/Footer';
 import './componentes/landing.css';
-import publicidad from './imagenes/Banner-publicidad.png';
 import topGames from './componentes/TopGames.jsx';
 
 function App() {
@@ -13,7 +12,7 @@ function App() {
       <main>
           <div className="banner">
             <div className="banner-content">
-              <img src={publicidad} alt="Publicidad" className='banner-img' />
+              <img src='src/imagenes/Banner-publicidad.png' alt="Publicidad" className='banner-img' />
             </div>
           </div>
 
@@ -27,11 +26,12 @@ function App() {
         <div className="top-products">
           <h3>Videojuegos más vendidos</h3>
           <div className="top-products-list">
-            {topGames.map((game, idx) => (
-              <div className="product-card" key={idx}>
-                {game.nombre}
-              </div>
-            ))}
+                {topGames.map((game, idx) => (
+            <div className="product-card" key={idx}>
+              <img src={game.img} alt={game.nombre} className="product-img" />
+              <p>{game.nombre}</p>
+            </div>
+          ))} 
           </div>
         </div>
             
