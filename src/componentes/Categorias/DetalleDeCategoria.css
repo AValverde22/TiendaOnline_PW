@@ -1,0 +1,65 @@
+.DetalleDeCategoriaParent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.DetalleDeCategoria {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    
+    align-items: center;
+    align-content: center;
+    text-align: center;
+
+    width: 95vw;
+    margin-bottom: 50px;
+    padding-bottom: 25px;
+
+    border-radius: 7.5px;
+    background-color: white;
+}
+
+.DetalleDeCategoria h1{
+    font-size: 25px;
+}
+
+.descripcion {
+    text-align: justify;
+}
+
+.grid-container-DDC {
+    display: grid;
+    grid-template-columns: 200px 200px;
+    justify-content: space-between;
+
+    margin-top: 25px;
+    margin-bottom: 25px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.grid-container-DDC button {
+    background-color: green;
+    color: white;
+    border-radius: 5px;
+    border: 0px solid;  
+
+    padding-top: 7.5px;
+    padding-bottom: 7.5px;
+
+    font-size: 12px;
+}
+
+.grid-container2-DDC {
+    display: grid;
+    grid-template-columns: 5vw 10vw 40vw 20vw 10vw;
+    column-gap: 20px;
+}
+
+.grid-container2-DDC img {
+    width: 154px;
+    height: 140px;
+    border-radius: 10px;
+}

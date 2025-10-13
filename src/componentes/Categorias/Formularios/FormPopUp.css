@@ -1,0 +1,97 @@
+.PopUpParent{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.PopUp {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    
+    width: 80vw;
+    margin-top: 50px;
+    margin-bottom: 50px;
+
+    border-radius: 7.5px;
+    background-color: white;
+}
+
+.PopUp h1{
+    margin-left: 25px;
+    margin-bottom: 25px;
+    font-size: 25px;
+}
+
+.PopUp table {
+    text-align: center;
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+    
+    margin-left: 100px;
+    margin-right: 100px;
+}
+
+.PopUp table th {
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
+
+.PopUp table tr {
+    border-bottom: 1px solid #ccc;
+
+}
+
+.PopUp table tr td {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.PPCheckbox {
+    width: 25px;
+    border-right: 1px solid #ccc;
+}
+
+.PPTitulo {
+    width: 150px;
+}
+
+.PPCat {
+    width: 150px;
+}
+
+.PPImg {
+    width: 250px;
+        padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.PPImg img {
+    width: 154px;
+    height: 140px;
+    border-radius: 10px;
+}
+
+.grid-container-PopUp {
+    display: grid;
+    grid-template-columns: 200px 200px;
+    justify-content: space-evenly;
+
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.grid-container-PopUp button {
+    background-color: green;
+    color: white;
+    border-radius: 5px;
+    border: 0px solid;  
+
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+}

@@ -1,4 +1,4 @@
-let contador = 5;
+let contador = 7;
 
 let categorias = [
     {
@@ -54,6 +54,8 @@ const get = () => categorias;
 
 const eliminar = (ID) => categorias = categorias.filter((cat) => cat.id !== ID);
 
+const getContador = () => contador;
+const getNombre = (ID) =>  categorias.find((c) => ID == c.id).nombre;
 
-const categoriasApi = {insert, get, eliminar};
+const categoriasApi = {insert, get, eliminar, getContador, getNombre};
 export default categoriasApi;

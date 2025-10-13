@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import usuariosApi from '../../api/usuariosApi'
 
 import FormModificarDatos from './Formularios/FormModificarDatos';
+import Header from '../Header/Header';
+import Footer from '../Footer/Footer';
 
 const ModificarDatosUsuario = () => {
     const usuarioPrueba = {
@@ -38,7 +40,13 @@ const ModificarDatosUsuario = () => {
         navigate("/Todos");
     }
 
-    return (<FormModificarDatos onSubmit = { handleSubmit } user = { usuario } onCancel = { handleCancel }/>);
+    return (
+        <div>
+            <Header/>
+            <FormModificarDatos onSubmit = { handleSubmit } user = { usuario } onCancel = { handleCancel }/>
+            <Footer/>
+        </div>
+    );
 };
 
 export default ModificarDatosUsuario;

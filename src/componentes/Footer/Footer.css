@@ -1,19 +1,22 @@
 .footer {
   width: 100%;
   background: gray;
-  padding: 1.5em 0;
+  padding: 1.5em 2em;
   text-align: center;
   margin-top: 2em;
 }
 .footer-links {
   display: flex;
   justify-content: center;
-  gap: 2em;
+  gap: 1em;
 }
 .footer-link {
   color: #333;
   text-decoration: none;
   font-weight: 500;
+}
+.footer-img{
+  width: 2%;
 }
 .footer-link:hover {
   text-decoration: underline;

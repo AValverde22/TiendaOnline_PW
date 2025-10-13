@@ -1,16 +1,14 @@
-body {
-    background-color: rgba(117, 113, 113, 0.46);
-}
-
 .ListarCategoria {
     background-color: white;
     padding-top: 25px;
     padding-bottom: 25px;
     padding-left: 50px;
     padding-right: 50px;
+
+    min-height: 100vh;
 }
 
-.ListarCategoria h1 {
+.ListarCategoria h1 {   
     font-size: 25px;
 }
 
@@ -18,12 +16,10 @@ body {
     display: grid;
     grid-template-columns: 80% 15%;
     justify-content: space-between;
-
-    
 }
 
 .grid-container-ListarCategoria input[type="text"]{
-        padding: 5px;
+    padding: 5px;
 }
 
 .grid-container-ListarCategoria button {
@@ -43,17 +39,30 @@ body {
     width: 100%;
     border-collapse: collapse;
     border: 1px solid #ccc;
-    border-radius: 1000px;
+    text-align: center;
+}
+
+.ListarCategoria th {
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .ListarCategoria tr {
     border-bottom: 1px solid #ccc;
 }
 
+.ListarCategoria td {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
 .grid-container-td-ListarCategorias {
     display: grid;
     grid-template-columns: auto auto;
     justify-content: space-evenly;
+    column-gap: 5px;
 }
 
 .grid-container-td-ListarCategorias img {
@@ -61,3 +70,6 @@ body {
     height: 25px;
     cursor: pointer;    
 }
+
+.LCId {border-right: 1px solid #ccc;}
+.LCAcciones {border-left: 1px solid #ccc;}

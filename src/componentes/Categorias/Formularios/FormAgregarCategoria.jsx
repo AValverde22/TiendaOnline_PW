@@ -33,9 +33,9 @@ const FormularioCategoria = ({ onSubmit, onCancel }) => {
                     <br></br>
 
                     <label>URL de imagen</label><br></br>
-                    <input type="text" value = {categoria.img} placeholder="URL de la logo de la categoría..."
+                    <input type="text" value = {categoria.img} placeholder="URL del logo de la categoría..."
                         onChange = {(e) => setCategoria({...categoria, img: e.target.value})}/>
-                    <br></br>
+                    <br></br>   
 
                     <div class="grid-botones-AgregarCategoria">
                         <button onClick = {(e) => handleCancel(e)}>Cancelar</button>

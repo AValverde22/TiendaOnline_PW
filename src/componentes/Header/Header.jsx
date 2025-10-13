@@ -26,7 +26,7 @@ const Header = () => {
 
         <div className="acciones">
           <button className="btn-cart">🛒 Carrito</button>
-          <Link to="Login">
+          <Link to="/Login">
             <button className="btn-user">👤 Usuario</button>
           </Link>
         </div>

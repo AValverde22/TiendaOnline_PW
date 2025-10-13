@@ -64,10 +64,10 @@ const Categorias = () => {
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th class="LCId">ID</th>
                         <th>Nombre</th>
                         <th>Descripción</th>   
-                        <th>Acciones</th> 
+                        <th class="LCAcciones">Acciones</th> 
                     </tr>
                 </thead>
                 <tbody>
@@ -75,18 +75,20 @@ const Categorias = () => {
                         categorias.map((c) => {
                             return (
                                 <tr>
-                                    <td>{c.id}</td>
+                                    <td class="LCId">{c.id}</td>
                                     <td>{c.nombre}</td>
                                     <td class="descripcion">{c.descripcion}</td>
-                                    <td class="grid-container-td-ListarCategorias">
-                                        <img 
-                                            onClick = {() => DirigirseDetalleCategoria(c.id)} 
-                                            src="https://www.supercoloring.com/sites/default/files/styles/coloring_thumbnail/public/cif/2022/01/1257-pencil-emoji-coloring-page.png" 
-                                        />
-                                        <img 
-                                            onClick = {() => EliminarCategoria(c.id)} 
-                                            src="https://media.istockphoto.com/id/928418914/es/vector/bote-de-basura-basurero-icono-de-la-papelera.jpg?s=612x612&w=0&k=20&c=rBQCvIJdlIUOaYlpEK_86WD3i7wsyLIQ6C1tjYxrTTQ="
-                                        />
+                                    <td class="LCAcciones">
+                                        <div class="grid-container-td-ListarCategorias">
+                                            <img 
+                                                onClick = {() => DirigirseDetalleCategoria(c.id)} 
+                                                src="https://www.supercoloring.com/sites/default/files/styles/coloring_thumbnail/public/cif/2022/01/1257-pencil-emoji-coloring-page.png" 
+                                            />
+                                            <img 
+                                                onClick = {() => EliminarCategoria(c.id)} 
+                                                src="https://media.istockphoto.com/id/928418914/es/vector/bote-de-basura-basurero-icono-de-la-papelera.jpg?s=612x612&w=0&k=20&c=rBQCvIJdlIUOaYlpEK_86WD3i7wsyLIQ6C1tjYxrTTQ="
+                                            />
+                                        </div>
                                     </td>
                                 </tr>
                             )

@@ -4,7 +4,7 @@ import categoriasApi from "../../api/categoriasApi";
 import productosApi from '../../api/productosApi';
 
 import GameCard from '../GameCard/GameCard';
-import '../gridContainer.css'
+import './DetalleDeCategoria.css'
 
 
 const Detalle = () => {
@@ -49,7 +49,7 @@ const Detalle = () => {
 
     return (
         <>  
-            <div class="grid-container2">
+            <div class="grid-container-DDC">
                 <button class="BotonExterno" onClick = {() => DirigirseListarCategoria()}>Listado de Categorias</button>
                 <button class="BotonExterno" onClick = {() => IrAInicio()}>Inicio</button>
             </div>
@@ -57,29 +57,25 @@ const Detalle = () => {
             {categoriaEsp ? 
             (
                 <>
-                    <aside>
-                        <div class="Formulario">
-                            <h2>DETALLE DE CATEGORÍA</h2>
+                    <div class="DetalleDeCategoriaParent">
+                        <div class="DetalleDeCategoria">
+                            <h1>Detalle de categoría</h1>
+                                <div class="grid-container2-DDC">
+                                    <h3>ID</h3>
+                                    <h3>Nombre</h3>
+                                    <h3>Descripción</h3>
+                                    <h3>Logo</h3>
+                                    <h3>Cantidad de Productos</h3>
 
-                                <table>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Nombre</th>
-                                        <th>Descripción</th>
-                                        <th>Logo</th>
-                                        <th>Cantidad de Productos</th>
-                                    </tr>
-                                    <tr>
-                                        <td>{categoriaEsp.id}</td>
-                                        <td>{categoriaEsp.nombre}</td>
-                                        <td class="descripcion">{categoriaEsp.descripcion}</td>
-                                        <td><img src={categoriaEsp.img}/></td>
-                                        <td>{productosFiltrados.length}</td>
-                                    </tr>
-                                </table>
-    
+                                    <div>{categoriaEsp.id}</div>
+                                    <div>{categoriaEsp.nombre}</div>
+                                    <div class="descripcion">{categoriaEsp.descripcion}</div>
+                                    <div><img src={categoriaEsp.img}/></div>
+                                    <div>{productosFiltrados.length}</div>
+                                </div>
                         </div>
-                    </aside>
+                    </div>
+                    
                     <div class="ContenedorProductos">
                         {productosFiltrados.map((p) => {return (<GameCard {...p}/>)})}                    
                     </div>

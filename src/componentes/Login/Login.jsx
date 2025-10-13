@@ -8,7 +8,7 @@ const Login = () => {
         <div className="loginContenedor">
             <Header />
             <div className="loginFormulario">
-                <h2>Registro</h2>
+                <h2>Registro 2</h2>
                 <form>
                     <label htmlFor='fname'>Primer Nombre</label>
                     <input type="text"  id = "fname" name = "fname"/>

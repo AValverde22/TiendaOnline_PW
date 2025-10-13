@@ -1,4 +1,4 @@
-let contador = 4;
+let contador = 6;
 
 let productos = [
     {
@@ -32,6 +32,22 @@ let productos = [
       precio: 300,
       ID_Categoria: 1,
       img: "https://gamescenter.pe/wp-content/uploads/2025/07/FC-26-Ultimate-Edition-PS5.webp"
+    },
+    {
+      id: 5,
+      titulo: "Rick Grimes's Funko Pop",
+      descripcion: "Figura coleccionable de vinilo del protagonista de la serie 'The Walking Dead'",
+      precio: 150,
+      ID_Categoria: 4,
+      img: "https://i0.wp.com/www.planetafunk.com.pe/wp-content/uploads/2024/10/FUNKO-POP-RICK-GRIMES-306-1.jpg?fit=800%2C800&ssl=1"
+    },
+    {
+      id: 6,
+      titulo: "Audífonos Bluetooth Haylou S30 PRO ANC Hybrid Hi-Res",
+      descripcion: "Audífonos con -43dB para cancelar de ruido profundo e inalámbricos con 80 horas de batería",
+      precio: 150,
+      ID_Categoria: 3,
+      img: "https://media.falabella.com/falabellaPE/138655627_01/w=1500,h=1500,fit=pad"
     }
   ]
 
@@ -44,6 +60,10 @@ const get = () => {
   return productos;
 }
 
-const productosApi = { insert, get }
+const modificarID_Categoria = (idProducto, nuevoIdCategoria) => {
+  for(let i = 0; i < contador; i++) if(productos[i].id == idProducto) {productos[i].ID_Categoria = nuevoIdCategoria; return;}
+}
+
+const productosApi = { insert, get, modificarID_Categoria }
 
 export default productosApi;

@@ -70,6 +70,13 @@ main {
 }
 
 /* ===== CATEGORÍAS ===== */
+.title-categoria{
+  display: block;
+  text-align: center;
+  color: #333;
+  margin-bottom: 1em;
+}
+
 .categoria {
   display: flex;
   flex-direction: row;
@@ -128,6 +135,7 @@ main {
 .new-series {
   margin-bottom: 2em;
   padding: 0 1em;
+  text-align: center;
 }
 
 .new-series h4 {
@@ -142,6 +150,7 @@ main {
   gap: 1em;
   justify-content: center;
   width: 100%;
+  margin-top: 1em;
 }
 
 .series-panel {
@@ -150,12 +159,18 @@ main {
   border-radius: 10px;
   flex: 1;
   text-align: center;
-  min-width: 200px;
-  transition: background-color 0.3s ease;
+  width: 250px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .series-panel:hover {
-  background: #bbdefb;
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+.series-img {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 0.5em;
 }
 
 /* ===== NUEVOS PRODUCTOS ===== */

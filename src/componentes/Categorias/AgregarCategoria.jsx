@@ -5,6 +5,9 @@ import FormAgregarCategoria from './Formularios/FormAgregarCategoria';
 import FormPopUp from './Formularios/FormPopUp';
 import '../gridContainer.css'
 
+import Header from '../Header/Header';
+import Footer from '../Footer/Footer';
+
 const AgregarCategoria = () => {
 
     /* DESACTIVADO POR EL MOMENTO
@@ -30,14 +33,16 @@ const AgregarCategoria = () => {
     const [ showPopUp, setShowPopUp] = useState(false);
     const abrirPopUp = () => {document.body.style.backgroundColor = 'rgba(125, 124, 124, 0.87)'; setShowPopUp(true); }
     const cerrarPopUp = () => {document.body.style.backgroundColor = 'whitesmoke'; setShowPopUp(false); }
+    const crearCategoria = () => navigate("/ListarCategorias");
     
     const navigate = useNavigate(); 
-    const handleCancel = () => navigate("www.google.com");
+    const handleCancel = () => navigate("/ListarCategorias");
+    
 
     return (
         <>
             {!showPopUp && <FormAgregarCategoria onSubmit = { handleSubmit } onCancel = { handleCancel }/>}
-            {showPopUp && <FormPopUp cancelar = { cerrarPopUp } categoria = { cat }/>}
+            {showPopUp && <FormPopUp cancelar = { cerrarPopUp } categoria = { cat } confirmar = { crearCategoria }/>}
         </>
     );
 };
