@@ -32,7 +32,25 @@ const DetallesDeOrden = () => {
         alert("Orden cancelada");
         navigate("/");
     }
+
+    const calcularTotal = () => {
+        let suma = 0;
+        for(let i = 0; i < detalleOrden.productos.length; i++) suma += detalleOrden.productos[i].total;
+        return suma;
+    }
         
+    const confirmarOrden = () => {navigate("/Checkout5");
+
+    if(!detalleOrden){
+        return(
+            <>
+                <Header/>
+                No puede estar aquí
+                <Footer/>
+            </>
+        )
+    }
+
     return (
         <>
             <Header/>
@@ -40,6 +58,9 @@ const DetallesDeOrden = () => {
                 {(detalleOrden.productos) ? (
                     <div class="DetallesDeOrden">
                     <button onClick={() => cancelarOrden()}>Cancelar orden</button>
+                    <button onClick={() => confirmarOrden()}>Confirmar</button>
+                    <div>Fecha realizada: {detalleOrden.fecha}</div>
+                    <div>Total a pagar: {calcularTotal()}</div>
                         <table>
                             <thead>
                                 <tr>
@@ -69,6 +90,6 @@ const DetallesDeOrden = () => {
             <Footer/>
         </>
     );  
-}
+}}
 
 export default DetallesDeOrden;

@@ -37,13 +37,24 @@ const ModificarDatosUsuario = () => {
 
     const handleSubmit = (user) => {
         for(let i = 0; i < usuarios.length; i++) {if(usuarios[i].id == user.id) {usuariosApi.modify(user, i);}}
-        navigate("/Todos");
+        localStorage.setItem('usuarioLogueado', JSON.stringify(user));
+        navigate("/");
     }
+
+    if(!usuario || usuario.rol !== "user"){
+        return (
+            <>
+                <Header />
+                <><h1>No tienes permiso para ver esta página.</h1></>
+                <Footer />
+            </>
+        );
+    }    
 
     return (
         <div>
             <Header/>
-            <FormModificarDatos onSubmit = { handleSubmit } user = { usuario } onCancel = { handleCancel }/>
+            {<FormModificarDatos onSubmit = { handleSubmit } user = { usuario } onCancel = { handleCancel }/>}
             <Footer/>
         </div>
     );

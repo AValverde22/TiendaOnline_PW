@@ -1,87 +1,38 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
+import FormularioUsuario from './RegisterForm/RegisterFormulario';
 import './Register.css';
 import usuariosApi from '../../api/usuariosApi';
 
 const Register = () => {
+    const [usuarios, setUsuarios] = useState([]);
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({
-        nombre: '',
-        apellido: '',
-        username: '',
-        correo: '',
-        password: ''
-    });
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-        // Limpiar errores cuando el usuario empiece a escribir
-        if (error) setError('');
-    };
+    useEffect(() => {
+        const todosUsuarios = usuariosApi.get();
+        setUsuarios(todosUsuarios);
+    }, []);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setError('');
-        setSuccess('');
-
+    const handleSubmit = (usuario) => {
         try {
-            // Crear el objeto userData para la API
-            const userData = {
-                username: formData.username,
-                password: formData.password,
-                correo: formData.correo,
-                nombre: formData.nombre,
-                apellido: formData.apellido,
-                rol: "user" // Por defecto todos son usuarios normales
-            };
 
-            // Llamar a la API para crear el usuario
-            const nuevoUsuario = usuariosApi.add(userData);
-            
-            // Mostrar en consola todos los usuarios para verificar
-            console.log('=== NUEVO USUARIO CREADO ===');
-            console.log(nuevoUsuario);
-            usuariosApi.debugGetAll(); // Mostrar todos los usuarios
-            
-            // Mostrar información del LocalStorage
-            const storageInfo = usuariosApi.getStorageInfo();
-            console.log('=== LOCALSTORAGE INFO ===');
-            console.log('Datos guardados:', storageInfo.hasData);
-            console.log('Tamaño:', storageInfo.size + ' bytes');
-            console.log('Total usuarios:', storageInfo.userCount);
-            
-            setSuccess(`Usuario ${nuevoUsuario.username} registrado exitosamente!`);
-            
-            // Limpiar el formulario
-            setFormData({
-                nombre: '',
-                apellido: '',
-                username: '',
-                correo: '',
-                password: ''
-            });
-
-            // Redirigir al login después de 2 segundos
-            setTimeout(() => {
-                navigate('/Login');
-            }, 2000);
-
-        } catch (error) {
-            setError(error.message);
+            const nuevo = usuariosApi.add(usuario);
+            alert(`Registro completado: ${nuevo.username}`);
+            navigate('/Login');
+        } catch (err) {
+            alert(err.message || 'Error al registrar usuario');
         }
     };
 
     return (
-        <div className="loginContenedor">
+        <div className="registerContenedor">
             <Header />
+
+            <main className="registerMain">
+                <FormularioUsuario onSubmit={handleSubmit} />
+            </main>
 
             <Footer />
         </div>

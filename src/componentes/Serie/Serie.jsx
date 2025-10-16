@@ -1,6 +1,8 @@
 import { useParams, Link } from "react-router-dom";
-import seriesApi from "../../api/seriesApi";
-import productosApi from "../../api/productosApi";
+import seriesApi from "../../api/seriesApi.js";
+import productosApi from "../../api/productosApi.js";
+import Header from "../Header/Header.jsx";
+import Footer from "../Footer/Footer.jsx";
 import "./Serie.css";
 
 function Serie() {
@@ -9,9 +11,17 @@ function Serie() {
   const productos = productosApi.get();
   const juegosDeSerie = productos.filter((p) => p.id_serie === parseInt(id));
 
-  if (!serie) return <h2>Serie no encontrada</h2>;
+  if (!serie) return (<>
+        <Header />
+        <h2>
+          Serie no encontrada 
+        </h2>
+        <Footer />
+      </>);
 
   return (
+    <>
+      <Header />
     <div className="serie-container">
       <div className="serie-header">
         <img src={serie.img} alt={serie.nombre} className="serie-banner" />
@@ -33,6 +43,8 @@ function Serie() {
         ))}
       </div>
     </div>
+    <Footer />
+    </>
   );
 }
 

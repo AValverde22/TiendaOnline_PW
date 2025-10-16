@@ -71,9 +71,19 @@ const nuevosTopGames = topGames.map((game, i) => ({
   titulo: game.nombre,
   descripcion: game.descripcion,
   precio: game.precio,
+  presentacion: game.presentacion,
+  stock: game.stock,
   ID_Categoria: 1, 
   img: game.img
 }));
+
+const update = (id, productoActualizado) => {
+  const index = productos.findIndex(p => p.id == id);
+  
+  if (index !== -1) {
+    productos[index] = { ...productoActualizado, id: parseInt(id) }; 
+  }
+};
 
 
 const series = seriesApi.get();
@@ -85,6 +95,8 @@ const juegosDeSeries = series.flatMap((serie) =>
     titulo: juego.nombre,
     descripcion: juego.descripción,
     precio: juego.precio,
+    presentacion: juego.presentacion,
+    stock: juego.stock,
     ID_Categoria: 1, 
     img: juego.img,
     id_serie: serie.id,
@@ -94,9 +106,6 @@ const juegosDeSeries = series.flatMap((serie) =>
 
 productos = [...productos, ...nuevosTopGames, ...juegosDeSeries];
 contador = productos.length;
-
-
-
 
 const insert = (producto) => {
   producto.id = ++contador;
@@ -111,6 +120,6 @@ const modificarID_Categoria = (idProducto, nuevoIdCategoria) => {
   for(let i = 0; i < contador; i++) if(productos[i].id == idProducto) {productos[i].ID_Categoria = nuevoIdCategoria; return;}
 }
 
-const productosApi = { insert, get, modificarID_Categoria }
-//gracias :p :v
+const productosApi = { insert, get, modificarID_Categoria, update }
+
 export default productosApi;

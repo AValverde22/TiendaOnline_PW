@@ -5,8 +5,14 @@ import categoriasApi from '../../../api/categoriasApi';
 import './FormPopUp.css'
 
 const FormPopUp = ({ cancelar, categoria, confirmar }) => {
+    const [ productosOriginales, setProductosOriginales ] = useState([]);
     const [ productos, setProductos ] = useState([]);
-    useEffect(() => {setProductos(productosApi.get());}, []);
+    const [ textoBusqueda, setTextoBusqueda ] = useState("");
+
+    useEffect(() => {
+        setProductos(productosApi.get());
+        setProductosOriginales(productosApi.get());
+    }, []);
 
     let idPS = [];
     const checkONoCheck = (e) => {
@@ -26,17 +32,27 @@ const FormPopUp = ({ cancelar, categoria, confirmar }) => {
     }
     const handleCerrarPopUp = (e) => {e.preventDefault(); cancelar();}
 
+    useEffect(() => {
+        if(textoBusqueda === "") setProductos(productosOriginales);
+        else handleBuscar();            
+    }, [textoBusqueda]);
+
+    const handleBuscar = () => {
+        const filtrados = productosOriginales.filter((item) => item.titulo.toLowerCase().includes(textoBusqueda.toLowerCase()));
+        setProductos(filtrados);
+    }
+
     return (
         <div class="PopUpParent">
             <div class="PopUp">
                 <h1>Agregar productos a categoría</h1>
-
+                <input type="text" placeholder="Buscar producto..." value = {textoBusqueda} 
+                    onChange = {(event) => setTextoBusqueda(event.target.value)}/>
 
                 <table>
                     <tr>
                         <th></th>
                         <th class="PPTitulo">Título</th>
-                        <th class="PPCat">Categoría actual</th>
                         <th class="PPImg">Imagen Referencial</th>
                     </tr>
 
@@ -45,7 +61,6 @@ const FormPopUp = ({ cancelar, categoria, confirmar }) => {
                             <tr>
                                 <td class="PPCheckbox"><input type="checkbox" id = {p.id} name="producto" value = {p.titulo} onChange = { (e) => checkONoCheck(e) }/></td>
                                 <td class="PPTitulo"><label for = {p.titulo}>{p.titulo}</label></td>
-                                <td class="PPCat"><p>{categoriasApi.getNombre(p.ID_Categoria)}</p></td>
                                 <td class="PPImg"><img src = {p.img}/></td>
                             </tr>
                         );

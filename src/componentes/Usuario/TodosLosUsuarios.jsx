@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import usuariosApi from "../../api/usuariosApi";
+import Header from '../Header/Header'
+import Footer from '../Footer/Footer'
 
 const TodosLosUsuarios = () => {
     const [ usuarios, setUsuarios ] = useState([]);
@@ -7,6 +9,7 @@ const TodosLosUsuarios = () => {
 
     return (
         <>
+            <Header/>
             {
                 usuarios.map((u) => {
                     return (
@@ -24,6 +27,7 @@ const TodosLosUsuarios = () => {
                     )
                 })
             }
+            <Footer/>
         </>
     );
 

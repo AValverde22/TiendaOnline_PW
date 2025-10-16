@@ -35,14 +35,26 @@ const CambiarPassword = () => {
     const handleCancel = () => navigate("/");
 
     const handleSubmit = (user) => {
-        for(let i = 0; i < usuarios.length; i++) {if(usuarios[i].id === user.id) usuariosApi.modify(user, i);}
+        console.log(user)
+        for(let i = 0; i < usuarios.length; i++) {if(usuarios[i].id == user.id) {usuariosApi.modify(user, i);}}
+        localStorage.setItem('usuarioLogueado', JSON.stringify(user));
         navigate("/");
     }
+    
+    if(!usuario || usuario.rol !== "user"){
+        return (
+            <>
+                <Header />
+                <><h1>No tienes permiso para ver esta página.</h1></>
+                <Footer />
+            </>
+        );
+    }    
 
     return (
         <div>
             <Header/>
-            <FormCambiarPassword onSubmit = { handleSubmit } user = { usuario } onCancel = { handleCancel }/>
+            {<FormCambiarPassword onSubmit = { handleSubmit } user = { usuario } onCancel = { handleCancel }/>}
             <Footer/>
         </div>
    

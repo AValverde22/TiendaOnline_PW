@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './FormCambiarPassword.css'
 
 const FormCambiarPassword = ({ onSubmit, user, onCancel }) => {
@@ -6,6 +6,7 @@ const FormCambiarPassword = ({ onSubmit, user, onCancel }) => {
     const [ contra1, setContra1 ] = useState("");
     const [ contra2, setContra2 ] = useState("");
     const [ verificacion, setVerificacion ] = useState("");
+    useEffect(() => {setUsuario(user);}, [user]);
 
     const verificarDesdeContra1 = (e) => {
         const password = e.target.value;

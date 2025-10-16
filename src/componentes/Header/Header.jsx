@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import productosApi from "../../api/productosApi.js";
 import seriesApi from "../../api/seriesApi.js";
 import "./Header.css";
@@ -11,29 +10,29 @@ const Header = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-        const usuarioGuardado = localStorage.getItem('usuarioLogueado');
-        if (usuarioGuardado) {
-            // Si hay un usuario en localStorage, lo guardamos en el estado
-            setUsuario(JSON.parse(usuarioGuardado));
-        }
-    }, []);
-    
-  const handleLogout = () => {
-        localStorage.removeItem('usuarioLogueado'); // Limpia el localStorage
-        setUsuario(null); // Limpia el estado del componente
-        navigate('/login'); // Redirige al login
-    };
+    const usuarioGuardado = localStorage.getItem("usuarioLogueado");
+    if (usuarioGuardado) {
+      setUsuario(JSON.parse(usuarioGuardado));
+    }
+  }, []);
 
-    
+  const handleLogout = () => {
+    localStorage.removeItem("usuarioLogueado");
+    setUsuario(null);
+    navigate("/login");
+  };
+
   const manejarBusqueda = (e) => setBusqueda(e.target.value);
+
   const ejecutarBusqueda = () => {
     const texto = busqueda.trim().toLowerCase();
     if (!texto) return;
 
-    // Buscar primero en productos
     const productos = productosApi.get();
-    const productoEncontrado = productos.find((p) =>
-      p.titulo.toLowerCase().includes(texto)
+    const series = seriesApi.get();
+
+    const productoEncontrado = productos.find(
+      (p) => p.titulo.toLowerCase() === texto
     );
 
     if (productoEncontrado) {
@@ -41,10 +40,8 @@ const Header = () => {
       return;
     }
 
-    // Buscar en series
-    const series = seriesApi.get();
-    const serieEncontrada = series.find((s) =>
-      s.nombre.toLowerCase().includes(texto)
+    const serieEncontrada = series.find(
+      (s) => s.nombre.toLowerCase() === texto
     );
 
     if (serieEncontrada) {
@@ -52,65 +49,93 @@ const Header = () => {
       return;
     }
 
-    // Nada encontrado
-    alert("No se encontró ningún producto o serie con ese nombre 😕");
+    navigate(`/Producto?query=${encodeURIComponent(texto)}`);
   };
 
   return (
     <header className="header-bar">
-      <div className="header-top container">
-        <div className="marca">
-        <img src="/src/imagenes/logo-generico-2.jpg" alt="logo" /><div className="logo">GamePlay</div>
-        </div>
+      {/* Contenedor principal centrado */}
+      <div className="container">
+        <div className="header-top">
+          {/* LOGO */}
+          <Link to="/" className="marca Link-sin-estilo">
+            <img
+              src="/src/imagenes/logo-generico-2.jpg"
+              alt="logo"
+            />
+            <div className="logo">GamePlay</div>
+          </Link>
 
-        <div className="buscador">
-          <input
-            placeholder="Buscar producto, serie o marca..."
-            value={busqueda}
-            onChange={manejarBusqueda}
-          />
-          <button onClick={ejecutarBusqueda}>🔍</button>
-        </div>
+          {/* BUSCADOR */}
+          <div className="buscador">
+            <input
+              placeholder="Buscar producto, serie o marca..."
+              value={busqueda}
+              onChange={manejarBusqueda}
+            />
+            <button onClick={ejecutarBusqueda}>🔍</button>
+          </div>
 
-        <div className="acciones">
-          <button className="btn-cart">🛒 Carrito</button>
-          {!usuario ? (
-                    // CASO 1: Usuario NO logueado
-                    <Link to="/login">
-                        <button className="btn-user">👤 Iniciar Sesión</button>
-                    </Link>
-                ) : usuario.rol === 'admin' ? (
-                    // CASO 2: Usuario es ADMIN
-                    <div className="user-menu">
-                        <Link to="/DashboardAdmin">
-                            <button className="btn-user">⚙️ Panel Admin</button>
-                        </Link>
-                    <button onClick={handleLogout} className="btn-logout">Cerrar Sesión</button>
-                    </div>
-                ) : (
-                    // CASO 3: Usuario NORMAL logueado
-                    <div className="user-menu">
-                        <Link to="/perfil">
-                            {/* Mostramos el nombre del usuario si está disponible */}
-                            <button className="btn-user">👤 {usuario.nombre || 'Mi Perfil'}</button>
-                        </Link>
-                    <div className="user-menu">
-                      <button onClick={handleLogout} className="btn-logout">Cerrar Sesión</button>
-                    </div>
-                    </div>
-                )}
-          
+          {/* ACCIONES */}
+          <div className="acciones">
+            <button
+              className="btn-cart"
+              onClick={() => navigate("/Carrito")}
+            >
+              🛒 Carrito
+            </button>
+
+            {!usuario ? (
+              // Usuario no logueado
+              <Link to="/login">
+                <button className="btn-user">👤 Iniciar Sesión</button>
+              </Link>
+            ) : usuario.rol === "admin" ? (
+              // Usuario admin
+              <div className="user-menu">
+                <Link to="/DashboardAdmin">
+                  <button className="btn-user">⚙️ Panel Admin</button>
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="btn-logout"
+                >
+                  Cerrar Sesión
+                </button>
+              </div>
+            ) : (
+              // Usuario normal logueado
+              <div className="user-menu">
+                <Link to="/MainPageUser">
+                  <button className="btn-user">
+                    👤 {usuario.nombre || "Mi Perfil"}
+                  </button>
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="btn-logout"
+                >
+                  Cerrar Sesión
+                </button>
+              </div>
+            )}
+          </div>
         </div>
-        
       </div>
 
+      {/* Menú inferior */}
       <nav className="barra-menu">
         <div className="container">
           <ul>
-            <li>Categorías</li>
-            <Link to="/Producto" className="Link-sin-estilo" ><li>Productos</li></Link>
-            <li>Nosotros</li>
-            <li className="oferta">Ofertas</li>
+            <Link to="/mostrarcategorias" className="Link-sin-estilo">
+              <li>Categorías</li>
+            </Link>
+            <Link to="/Producto" className="Link-sin-estilo">
+              <li>Productos</li>
+            </Link>
+            <Link to="/nosotros" className="Link-sin-estilo">
+              <li>Nosotros</li>
+            </Link>
           </ul>
         </div>
       </nav>

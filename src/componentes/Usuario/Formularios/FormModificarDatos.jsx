@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react'
 import './FormModificarDatos.css'
 
 const FormModificarDatos = ({ onSubmit, user, onCancel }) => {
-    const [ user2, setUser2] = useState(user);
+    const [user2, setUser2] = useState(user);
+    useEffect(() => {setUser2(user);}, [user]);
+
     const handleSubmit = (e) => {e.preventDefault(); onSubmit(user2);}
     const handleCancel = (e) => {e.preventDefault(); onCancel();}
 
@@ -12,29 +14,30 @@ const FormModificarDatos = ({ onSubmit, user, onCancel }) => {
                 <h1>Modificar Datos</h1>
                 
                 <div class="ParentDeImagen-MDU">
-                    <img src={user.img}/>
+                    {(user2.img === "") ? (<img src={`https://i.pravatar.cc/150?u=${user2.id}`}/>) : (<img src={user2.img}/>)}
                 </div>
+                
                 <form class="grid-container-MDU">
                     <div>
                         <label>Nombre</label><br></br>
-                        <input type="text" value = {user.nombre}
-                            onChange = {(e) => setUser2({...user, nombre: e.target.value})}/>
+                        <input type="text" value = {user2.nombre}
+                            onChange = {(e) => setUser2({...user2, nombre: e.target.value})}/>
                     </div>
                     <div>
                         <label>Apellido</label><br></br>
-                        <input type="text" value = {user.apellido}
-                            onChange = {(e) => setUser2({...user, apellido: e.target.value})}/>
+                        <input type="text" value = {user2.apellido}
+                            onChange = {(e) => setUser2({...v, apellido: e.target.value})}/>
                     </div>
 
                     <div>
                         <label>Correo</label><br></br>
-                        <input type="text" value = {user.correo}
-                           onChange = {(e) => setUser2({...user, correo: e.target.value})}/>
+                        <input type="text" value = {user2.correo}
+                           onChange = {(e) => setUser2({...user2, correo: e.target.value})}/>
                     </div>
                     <div>
                         <label>Foto de perfil</label><br></br>
-                        <input type="text" value = {user.img}
-                           onChange = {(e) => setUser2({...user, img: e.target.value})}/>
+                        <input type="text" value = {user2.img}
+                           onChange = {(e) => setUser2({...user2, img: e.target.value})}/>
                     </div>
                 </form>
 

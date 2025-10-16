@@ -31,23 +31,32 @@ body{background-color: rgba(125, 124, 124, 0.87);}
     border-collapse: collapse;
     border: 1px solid #ccc;
     
-    margin-left: 100px;
-    margin-right: 100px;
+    width: 70vw;
+    margin-left: 5vw;
+}
+
+.PopUp input[type="text"]{
+    width: 70vw;
+    margin-left: 5vw;
+
+    padding: 10px;
+    margin-bottom: 10px;
 }
 
 .PopUp table th {
     padding-top: 25px;
     padding-bottom: 25px;
+    text-align: center;
 }
 
 .PopUp table tr {
     border-bottom: 1px solid #ccc;
-
 }
 
 .PopUp table tr td {
     padding-left: 10px;
     padding-right: 10px;
+    text-align: center;
 }
 
 .PPCheckbox {
@@ -64,8 +73,8 @@ body{background-color: rgba(125, 124, 124, 0.87);}
 }
 
 .PPImg {
-    width: 250px;
-        padding-top: 10px;
+    width: 5px;
+    padding-top: 10px;
     padding-bottom: 10px;
 }
 

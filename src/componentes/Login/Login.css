@@ -1,11 +1,10 @@
-/* ======== CONTENEDOR PRINCIPAL ======== */
 .ContenedorRegistro {
     display: flex;
     flex-direction: column;
     background-color: #f2f2f2;
 }
 
-/* ======== FORMULARIO ======== */
+
 .Registro {
     width: 360px;
     margin: 60px auto;
@@ -22,7 +21,7 @@
     font-size: 1.5rem;
 }
 
-/* ======== CAMPOS ======== */
+
 .Registro form {
     display: flex;
     flex-direction: column;
@@ -50,7 +49,7 @@
     outline: none;
 }
 
-/* ======== BOTÓN INICIAR SESIÓN ======== */
+
 .Registro input[type="submit"] {
     background-color: #007bff;
     color: #fff;
@@ -66,7 +65,7 @@
     background-color: #0056b3;
 }
 
-/* ======== BOTÓN NUEVA CUENTA ======== */
+
 .NewAccount {
     margin-top: 10px;
     width: 100%;
@@ -84,16 +83,18 @@
     background-color: #1e7e34;
 }
 
-/* ======== ENLACE (Link) ======== */
+
 .Registro a {
     text-decoration: none;
 }
+.btn-sumbit{
 
-/* ======== RESPONSIVE ======== */
-@media (max-width: 480px) {
-    .Registro {
-        width: 90%;
-        margin: 40px auto;
-        padding: 20px;
-    }
+    margin-top: 10px;
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+
+
 }
+

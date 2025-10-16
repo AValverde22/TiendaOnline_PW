@@ -9,6 +9,7 @@ import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 
 const AgregarCategoria = () => {
+    const [ administrador, setAdministrador ] = useState({});
 
     useEffect(() => {
         const admin = JSON.parse(localStorage.getItem("usuarioLogueado"));
@@ -16,7 +17,7 @@ const AgregarCategoria = () => {
         if(!admin || admin.rol !== "admin") {
             alert("¡No es administrador!");
             navigate("/");
-        } 
+        } else setAdministrador(admin)
 
     }, [])
 
@@ -36,13 +37,22 @@ const AgregarCategoria = () => {
     
     const navigate = useNavigate(); 
     const handleCancel = () => navigate("/ListarCategorias");
-    
+
+    if(!administrador || administrador.rol !== "admin"){
+        return (
+            <>
+                <Header />
+                <><h1>No tienes permiso para ver esta página.</h1></>
+                <Footer />
+            </>
+        );
+    }
 
     return (
         <>
             <Header/>
             {!showPopUp && <FormAgregarCategoria onSubmit = { handleSubmit } onCancel = { handleCancel }/>}
-            {showPopUp && <FormPopUp cancelar = { cerrarPopUp } categoria = { cat } confirmar = { crearCategoria }/>}
+            {showPopUp && <FormPopUp cancelar = { cerrarPopUp } categoria = { cat } confirmar = { crearCategoria }/>} 
             <Footer/>
         </>
     );

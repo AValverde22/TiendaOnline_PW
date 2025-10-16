@@ -3,7 +3,7 @@ import './GameCard.css'
 
 const GameCard = (props) => {
     const navigate = useNavigate();
-    const irADetalleProducto = (ID) => navigate(`/Producto/${ID}`);
+    const irADetalleProducto = (ID) => navigate(`/EditarProducto/${ID}`);
 
     return (
         <article onClick={() => irADetalleProducto(props.id)}>

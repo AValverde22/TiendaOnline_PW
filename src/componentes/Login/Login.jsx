@@ -46,7 +46,11 @@ function Login() {
                         <Link to="/Register">
                             <button className="NewAccount" >Crear Cuenta</button>
                         </Link>
+                        <Link to="/OlvidarContraseña">
+                            <button className="OlvidarPassword" >Olvidé mi contraseña</button>
+                        </Link>
                     </form>
+
                 </div>
                 </main>
             <Footer />

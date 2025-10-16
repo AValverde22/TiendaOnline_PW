@@ -1,27 +1,86 @@
-
 .footer {
-    width: 100%;
-    background: gray;
-    padding: 1.5em 2em;
-    text-align: center;          
-    left: 0;
-    margin: 0;
+  background: #1a1a1a;
+  color: #f1f1f1;
+  padding: 40px 20px 20px 20px;
+  font-family: 'Orbitron', sans-serif;
 }
 
-/* El resto de tu CSS para el footer sigue igual */
-.footer-links {
-    display: flex;
-    justify-content: center;
-    gap: 1em;
+.footer-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
+
+.footer-section h3 {
+  color: #2ecc71;
+  margin-bottom: 10px;
+}
+
+.footer-logo {
+  font-size: 1.8rem;
+  color: #2ecc71;
+  margin-bottom: 10px;
+   gap: 10px;
+}
+
+.footer-logo img,
+.footer-logo-img {
+  height: 1.8em; 
+  width: auto;
+  object-fit: contain;
+}
+
+.footer-description {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #dcdcdc;
+}
+
+.footer-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-list li {
+  margin-bottom: 8px;
+  color: #ccc;
+}
+
 .footer-link {
-    color: #333;
-    text-decoration: none;
-    font-weight: 500;
+  color: #ccc;
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
-.footer-img{
-    width: 2%;
-}
+
 .footer-link:hover {
-    text-decoration: underline;
+  color: #2ecc71;
+}
+
+.footer-socials {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.footer-social {
+  color: #2ecc71;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.footer-social:hover {
+  color: #27ae60;
+}
+
+.footer-bottom {
+  text-align: center;
+  border-top: 1px solid #333;
+  margin-top: 40px;
+  padding-top: 15px;
+  font-size: 0.9rem;
+  color: #aaa;
 }

@@ -1,20 +1,34 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import usuariosApi from '../../api/usuariosApi';
 import "./DashboardAdmin.css";
 
-// Componente para mostrar los detalles del usuario seleccionado
+const handleToggleStatus = async (user) => {
+        const newStatus = user.estado === 'activo' ? 'inactivo' : 'activo';
+
+        try {
+            await usuariosApi.put(`/usuarios/${user.id}`, {
+                ...user, // Envía el resto de los datos del usuario
+                estado: newStatus // Envía el nuevo estado
+            });
+
+
+            setCurrentUsers(currentUsers.map(u => 
+                u.id === user.id ? { ...u, estado: newStatus } : u
+            ));
+
+        } catch (error) {
+            console.error("Error al actualizar el estado del usuario:", error);
+            alert("No se pudo cambiar el estado del usuario. Inténtalo de nuevo.");
+        }}
+        
 const UserDetail = ({ user }) => {
     if (!user) {
-        return (
-            <div className="user-detail-placeholder">
-                <h2>Selecciona un usuario</h2>
-                <p>Haz clic en una fila de la tabla para ver sus detalles.</p>
-            </div>
-        );
+        return <p className="user-detail-placeholder">Selecciona un usuario para ver sus detalles.</p>;
     }
-
+    
     return (
         <div className="user-detail-card">
             <div className="user-info">
@@ -22,11 +36,10 @@ const UserDetail = ({ user }) => {
                     <h2>{user.nombre} {user.apellido}</h2>
                     <p><strong>Correo:</strong> {user.correo}</p>
                     <p><strong>Username:</strong> {user.username}</p>
-                    {/* Para que esto sea dinámico, el objeto 'user' debería tener una propiedad 'estado' */}
-                    <p><strong>Estado:</strong> <span className="estado-activo">Activo</span></p>
+                    <p><strong>Estado:</strong> <span className={user.estado === 'activo' ? 'estado-activo' : 'estado-inactivo'}>{user.estado}</span></p>
                 </div>
                 <img 
-                    src={`https://i.pravatar.cc/150?u=${user.id}`} 
+                    src={user.img || `https://i.pravatar.cc/150?u=${user.id}`} 
                     alt={`Avatar de ${user.nombre}`}
                     className="user-avatar" 
                 />
@@ -52,38 +65,125 @@ const UserDetail = ({ user }) => {
                             ))}
                         </tbody>
                     </table>
-                ) : (
-                    <p>Este usuario aún no ha realizado ninguna orden.</p>
-                )}
+                ) : <p>Este usuario no tiene órdenes.</p>}
             </div>
         </div>
     );
 };
 
-// Componente principal del Dashboard
+const UserTable = ({ users, onUserSelect, selectedUser }) => { 
+    return (
+        <div className="tabla-container">
+            <table className="user-table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {users.map(user => (
+                        <tr 
+                            key={user.id} 
+                            className={selectedUser?.id === user.id ? 'selected-row' : ''}
+                        >
+                            <td className="user-cell">
+                                <img src={user.img || `https://i.pravatar.cc/150?u=${user.id}`} alt={`Avatar de ${user.nombre}`} />
+                                <span>{`${user.nombre} ${user.apellido}`}</span>
+                            </td>
+                            <td><span className={user.estado === 'activo' ? 'estado-activo' : 'estado-inactivo'}>{user.estado}</span></td>
+                            <td className="action-buttons">
+                                <button 
+                                className={`btn-action ${user.estado === 'activo' ? 'btn-deactivate' : 'btn-activate'}`}
+                                onClick={() => handleToggleStatus(user)}>
+                                {user.estado === 'activo' ? 'Desactivar' : 'Activar'}
+                                </button>
+                                <button className="btn-detalles" onClick={(e) => { e.stopPropagation(); onUserSelect(user); }}>Ver Detalles</button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
+};
+
+const OrderTable = ({ orders }) => {
+    if (!orders || orders.length === 0) {
+        return <div className="tabla-container"><p>No hay órdenes para mostrar en esta página.</p></div>;
+    }
+    return (
+        <div className="tabla-container">
+            <table className="user-table">
+                <thead>
+                    <tr>
+                        <th>#ID Orden</th>
+                        <th>Usuario</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {orders.map(order => (
+                        <tr key={`${order.userId}-${order.id}`}>
+                            <td>#{order.id.toString().padStart(4, '0')}</td>
+                            <td className="user-cell">
+                                <img src={order.userImg || `https://i.pravatar.cc/150?u=${order.userId}`} alt={`Avatar de ${order.username}`} />
+                                <span>{order.username}</span>
+                            </td>
+                            <td>{new Date(order.fecha).toLocaleDateString()}</td>
+                            <td>S/ {order.total.toFixed(2)}</td>
+                            <td>
+                                <span className={`status-action ${order.estado === 'entregado' ? 'status-entregado' : 'status-p-entregar'}`}>{order.estado}</span>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
+};
+
 const DashboardAdmin = () => {
     const [usuarios, setUsuarios] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [usersPerPage] = useState(7);
     const [selectedUser, setSelectedUser] = useState(null);
+    const [userCurrentPage, setUserCurrentPage] = useState(1);
+    const [orderCurrentPage, setOrderCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(5);
 
     useEffect(() => {
         const todosLosUsuarios = usuariosApi.get();
-        setUsuarios(todosLosUsuarios);
-        if (todosLosUsuarios.length > 0) {
-            setSelectedUser(todosLosUsuarios[0]);
+        const usuariosFiltrados = todosLosUsuarios.filter(user => user.rol !== 'admin');
+        setUsuarios(usuariosFiltrados);
+
+        if (usuariosFiltrados.length > 0) {
+            setSelectedUser(usuariosFiltrados[0]);
         }
     }, []);
 
-    const indexOfLastUser = currentPage * usersPerPage;
-    const indexOfFirstUser = indexOfLastUser - usersPerPage;
-    const currentUsers = usuarios.slice(indexOfFirstUser, indexOfLastUser);
-    const totalPages = Math.ceil(usuarios.length / usersPerPage);
+    const allOrders = useMemo(() => {
+        return usuarios.flatMap(user => 
+            user.ordenes.map(orden => ({
+                ...orden,
+                userId: user.id,
+                username: user.username,
+                userImg: user.img,
+                total: orden.productos.reduce((acc, p) => acc + p.total, 0)
+            }))
+        );
+    }, [usuarios]);
 
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
-    const nextPage = () => setCurrentPage(prev => (prev < totalPages ? prev + 1 : prev));
-    const prevPage = () => setCurrentPage(prev => (prev > 1 ? prev - 1 : prev));
-    const handleUserSelect = (user) => setSelectedUser(user);
+    const indexOfLastUser = userCurrentPage * itemsPerPage;
+    const indexOfFirstUser = indexOfLastUser - itemsPerPage;
+    const currentUsers = usuarios.slice(indexOfFirstUser, indexOfLastUser);
+    const totalUserPages = Math.ceil(usuarios.length / itemsPerPage);
+
+    const indexOfLastOrder = orderCurrentPage * itemsPerPage;
+    const indexOfFirstOrder = indexOfLastOrder - itemsPerPage;
+    const currentOrders = allOrders.slice(indexOfFirstOrder, indexOfLastOrder);
+    const totalOrderPages = Math.ceil(allOrders.length / itemsPerPage);
 
     return (
         <div className='DashboardAdmin'>
@@ -91,78 +191,78 @@ const DashboardAdmin = () => {
             <main className='main-content'>
                 <h1>Dashboard Admin</h1>
                 <section className='cards'>
-                     <ul>
+                    <ul>
                         <li>Usuarios Registrados: <span>{usuarios.length}</span></li>
-                        <li>Órdenes Realizadas: <span>{usuarios.flatMap(user => user.ordenes).length}</span></li>
+                        <li>Órdenes Realizadas: <span>{allOrders.length}</span></li>
                         <li>Ingresos totales: 
                             <span>
-                            $ {
-                                usuarios.flatMap(user => user.ordenes)
-                                    .flatMap(order => order.productos)
-                                    .reduce((acc, curr) => acc + curr.total, 0)
-                                    .toFixed(2)
+                            S/ {
+                                allOrders.reduce((acc, curr) => acc + curr.total, 0).toFixed(2)
                             }
                             </span>
                         </li>
-                     </ul>
+                    </ul>
                 </section>
 
-                <div className="dashboard-content">
-                    <section className="tabla-container">
-                        <h2>Usuarios Registrados</h2>
-                        <table className="user-table">
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {currentUsers.map((user) => (
-                                    <tr 
-                                      key={user.id} 
-                                      className={selectedUser?.id === user.id ? 'selected-row' : ''}
-                                      // Al hacer clic en cualquier parte de la fila se selecciona el usuario
-                                      onClick={() => handleUserSelect(user)}
-                                    >
-                                        <td>
-                                            <div className="user-cell">
-                                                <img src={`https://i.pravatar.cc/40?u=${user.id}`} alt="avatar" />
-                                                <span>{`${user.nombre} ${user.apellido}`}</span>
-                                            </div>
-                                        </td>
-                                        <td><span className="estado-activo">Activo</span></td>
-                                        <td>
-                                            <div className="action-buttons">
-                                                <button className="btn-desactivar">Desactivar</button>
-                                                {/* Este botón ahora es visual, la selección ocurre en la fila */}
-                                                <button className="btn-detalles">Ver detalle</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        <div className="pagination">
-                           <button onClick={prevPage} disabled={currentPage === 1}>&lt;</button>
-                           {Array.from({ length: totalPages }, (_, i) => (
-                               <button
-                                   key={i + 1}
-                                   onClick={() => paginate(i + 1)}
-                                   className={currentPage === i + 1 ? 'active' : ''}
-                               >
-                                   {i + 1}
-                               </button>
-                           ))}
-                           <button onClick={nextPage} disabled={currentPage === totalPages}>&gt;</button>
-                        </div>
-                    </section>
+                <div className="dashboard-layout">
                     
-                    <section className="detalle-container">
-                        <UserDetail user={selectedUser}/>
-                    </section>
+                    <div className="top-row">
+                        <div className="column-left">
+                            <div className="column-header">
+                                <div>
+                                    <h2>Usuarios Registrados</h2>
+                                </div>
+                                <div>
+                                    <Link to= "/ListadoUsuariosAdmin">
+                                        <button className='btn-ver-todos'>Ver Todos los Usuarios</button>
+                                    </Link>
+                                </div>
+                            </div>
+                            <UserTable users={currentUsers} onUserSelect={setSelectedUser} selectedUser={selectedUser} />
+                            <div className="pagination">
+                                {Array.from({ length: totalUserPages }, (_, i) => (
+                                    <button key={`user-page-${i}`} onClick={() => setUserCurrentPage(i + 1)} className={userCurrentPage === i + 1 ? 'active' : ''}>
+                                        {i + 1}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="column-right">
+                            <div className="column-header">
+                                <h2>Detalles del Usuario</h2>
+                            </div>
+                            <div>
+                                <UserDetail user={selectedUser} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bottom-row">
+                        <div className="column-header">
+                            <div>
+                                <h2>Historial de Órdenes</h2>
+                            </div>
+                            <div className = "separation">
+                                <Link to = "/ListadoProductos">
+                                    <button className='btn-ver-todos'>Ver Productos</button>
+                                </Link>
+                                <Link to = "/ListadoOrdenesAdmin">
+                                    <button className='btn-ver-todos'>Ver Todos las Órdenes</button>
+                                </Link>
+                            </div>
+                        </div>
+                        <OrderTable orders={currentOrders} />
+                        <div className="pagination" id='abajo'>
+                             {Array.from({ length: totalOrderPages }, (_, i) => (
+                                <button key={`order-page-${i}`} onClick={() => setOrderCurrentPage(i + 1)} className={orderCurrentPage === i + 1 ? 'active' : ''}>
+                                    {i + 1}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
                 </div>
+
             </main>
             <Footer/>
         </div>
@@ -170,4 +270,3 @@ const DashboardAdmin = () => {
 };
 
 export default DashboardAdmin;
-

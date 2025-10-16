@@ -59,7 +59,7 @@ const modificar = (cat) => {
 }
 
 const getContador = () => contador;
-const getNombre = (ID) =>  categorias.filter((c) => ID == c.id).nombre;
+const getNombre = (ID) => categorias.filter((c) => ID == c.id)[0].nombre
 
 const categoriasApi = {insert, get, eliminar, modificar, getContador, getNombre};
 export default categoriasApi;
