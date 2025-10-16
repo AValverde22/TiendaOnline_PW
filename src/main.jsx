@@ -12,6 +12,11 @@ import TodosLosUsuariosPage from './routes/TodosLosUsuariosPage.jsx'
 import DetallesDeOrdenPage from './routes/DetallesDeOrdenPage.jsx'
 import RegistroUsuarioPage from './routes/RegistroUsuarioPage.jsx'
 import LoginUsuarioPage from './routes/LoginUsuarioPage.jsx'
+import DashboardAdminPage from './routes/DashboardAdmin.jsx'
+import ProductoPage from "./routes/ProductoPage.jsx"
+import DetalledeProducto from "./componentes/Producto/DetalledeProducto.jsx"
+import Serie from "./componentes/Serie/Serie.jsx";
+import ListadoProductos from "./componentes/Producto/ListadoProductos.jsx"
 
 const router = createBrowserRouter([
     {
@@ -19,40 +24,59 @@ const router = createBrowserRouter([
         element: <App />
       },
     {
-        path: "Login",
+        path: "/Login",
         element: <LoginUsuarioPage/>
     },
     {
-        path: "Register",
+        path: "/Register",
         element: <RegistroUsuarioPage/>
     },
     {
-        path: "AgregarCategoria",
+        path: "/AgregarCategoria",
         element: <AgregarCategoriaPage/>
     },
     {
-        path: "ListarCategorias",
+        path: "/ListarCategorias",
         element: <ListarCategoriasPage/>
     },
     {
-        path: "DetalleDeCategoria",
+        path: "/DetalleDeCategoria",
         element: <DetalleDeCategoriaPage/>
     },
     {
-        path: "ModificarDatosUsuario",
+        path: "/ModificarDatosUsuario",
         element: <ModificarDatosUsuarioPage/>
     },
     {
-        path: "CambiarPassword",
+        path: "/CambiarPassword",
         element: <CambiarPasswordPage/>
     },
     {
-        path: "DetalleDeOrden",
+        path: "/DetalleDeOrden",
         element: <DetallesDeOrdenPage/>
     },
     {
-        path: "Todos",
+        path: "/Todos",
         element: <TodosLosUsuariosPage/>
+    },
+    {
+        path: "/DashboardAdmin",
+        element: <DashboardAdminPage/>
+    },
+    {
+        path: "/Producto",
+        element: <ProductoPage/>
+    },
+     {   path: "/Producto/:id", 
+        element: <DetalledeProducto/>,
+    },
+    {
+        path: "/serie/:id",
+        element: <Serie />,
+    },
+    {
+        path: "/ListadoProductos",
+        element: <ListadoProductos/>,
     }
 ]);
 

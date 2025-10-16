@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import usuariosApi from '../../api/usuariosApi'
 
@@ -14,29 +14,29 @@ const ModificarDatosUsuario = () => {
         nombre: "Nombre",
         apellido: "Apellido",
         correo: "correo@example.com",
+        img: "https://ih1.redbubble.net/image.2758100916.0157/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.jpg",
         rol: "user"
     };
 
     const usuarios = usuariosApi.get();
     const [ usuario, setUsuario ] = useState(usuarioPrueba);
 
-    /* DESACTIVADO POR EL MOMENTO
-    useEffect(() => {
-        const user = JSON.parse(localStorage.getItem("Usuario"));
-
-        if(!user) {
-            alert("¡No ha iniciado sesión!");
-            navigate("");
-        } else setUsuario(user);
+   useEffect(() => {
+        const user = JSON.parse(localStorage.getItem("usuarioLogueado"));
+        
+        if(user && user.rol == "user") {setUsuario(user);}
+        else{
+            alert("¡No es cliente!");
+            navigate("/");
+        } 
 
     }, [])
-    */
 
     const navigate = useNavigate();
-    const handleCancel = () => navigate("www.google.com");
+    const handleCancel = () => navigate("/");
 
     const handleSubmit = (user) => {
-        for(let i = 0; i < usuarios.length; i++) {if(usuarios[i].id === user.id) usuariosApi.modify(user, i);}
+        for(let i = 0; i < usuarios.length; i++) {if(usuarios[i].id == user.id) {usuariosApi.modify(user, i);}}
         navigate("/Todos");
     }
 

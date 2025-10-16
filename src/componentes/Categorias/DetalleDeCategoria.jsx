@@ -4,6 +4,8 @@ import categoriasApi from "../../api/categoriasApi";
 import productosApi from '../../api/productosApi';
 
 import GameCard from '../GameCard/GameCard';
+import Header from '../Header/Header';
+import Footer from '../Footer/Footer';
 import './DetalleDeCategoria.css'
 
 
@@ -14,17 +16,15 @@ const Detalle = () => {
     const [ todosLosProductos, setTodosLosProductos ] = useState([]);
     const [ productosFiltrados, setProductosFiltrados ] = useState([]);
 
-   /* DESACTIVADO POR EL MOMENTO
     useEffect(() => {
-        const admin = JSON.parse(localStorage.getItem("Usuario"));
-
+        const admin = JSON.parse(localStorage.getItem("usuarioLogueado"));
         if(!admin || admin.rol !== "admin") {
             alert("¡No es administrador!");
-            navigate("/");
+           navigate("/");
         } 
 
     }, [])
-    */
+    
 
     useEffect(() => {
         const ID = localStorage.getItem("ID_Categoria");
@@ -45,13 +45,25 @@ const Detalle = () => {
 
     const navigate = useNavigate();
     const DirigirseListarCategoria = () => {navigate("/ListarCategorias"); localStorage.removeItem("ID_Categoria");}
-    const IrAInicio = () => navigate("www.google.com");
+
+    const EliminarCategoria = () => {
+        categoriasApi.eliminar(ID_Categoria);
+        alert("Categoria Eliminada");
+        navigate("/ListarCategorias");
+    }
+
+    const GuardarCambios = () => {
+        categoriasApi.modificar(categoriaEsp);
+        alert("Categoria modificada");
+        navigate("/ListarCategorias");
+    }
 
     return (
         <>  
+            <Header/>
             <div class="grid-container-DDC">
                 <button class="BotonExterno" onClick = {() => DirigirseListarCategoria()}>Listado de Categorias</button>
-                <button class="BotonExterno" onClick = {() => IrAInicio()}>Inicio</button>
+                <div></div>
             </div>
 
             {categoriaEsp ? 
@@ -68,19 +80,32 @@ const Detalle = () => {
                                     <h3>Cantidad de Productos</h3>
 
                                     <div>{categoriaEsp.id}</div>
-                                    <div>{categoriaEsp.nombre}</div>
-                                    <div class="descripcion">{categoriaEsp.descripcion}</div>
-                                    <div><img src={categoriaEsp.img}/></div>
+                                    <textarea value = {categoriaEsp.nombre}
+                                        onChange={(e) => setCategoriaEsp({...categoriaEsp, nombre: e.target.value})}/>
+                                    <textarea class="descripcion" value={categoriaEsp.descripcion} 
+                                        onChange={(e) => setCategoriaEsp({...categoriaEsp, descripcion: e.target.value})}/>
+                                    <div>
+                                        <img src={categoriaEsp.img}/>
+                                        <input type="text" value={categoriaEsp.img}
+                                            onChange={(e) => setCategoriaEsp({...categoriaEsp, img: e.target.value})}/>
+                                    </div>
+                                    
                                     <div>{productosFiltrados.length}</div>
                                 </div>
                         </div>
                     </div>
-                    
+
                     <div class="ContenedorProductos">
                         {productosFiltrados.map((p) => {return (<GameCard {...p}/>)})}                    
                     </div>
+
+                    <div class="grid-container-DDC">
+                        <button class="BotonExterno" onClick = {() => EliminarCategoria()}>Eliminar categoria</button>
+                        <button class="BotonExterno" onClick = {() => GuardarCambios()}>Guardar cambios</button>
+                    </div>
                 </>
             ) : (<>No se encontró la categoría.</>)}
+            <Footer/>
         </>
     );
 };

@@ -50,6 +50,7 @@
     padding-bottom: 7.5px;
 
     font-size: 12px;
+    cursor: pointer;
 }
 
 .grid-container2-DDC {
@@ -62,4 +63,10 @@
     width: 154px;
     height: 140px;
     border-radius: 10px;
+}
+
+.grid-container2-DDC textarea{
+    text-align: justify;
+    overflow-wrap: break-word;
+    resize: none;
 }

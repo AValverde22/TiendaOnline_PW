@@ -1,0 +1,19 @@
+.cart-page {
+  display: flex;
+  gap: 24px;
+  padding: 40px;
+}
+
+.cart-list {
+  flex: 2;
+}
+
+.cart-summary {
+  flex: 1;
+}
+
+@media (max-width: 900px) {
+  .cart-page {
+    flex-direction: column;
+  }
+}

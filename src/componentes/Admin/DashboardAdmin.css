@@ -1,0 +1,32 @@
+.DashboardAdmin{
+  width: 100%;
+  min-height: 100vh;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.cards ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; 
+  gap: 20px; 
+  list-style-type: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.cards li {
+  background:#2ea32b; 
+  color: white; 
+  border-radius: 8px; 
+  padding: 20px 30px;
+  
+  display: flex;
+  justify-content: space-between;
+  align-items: center; 
+  
+  min-width: 280px; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  
+}

@@ -52,10 +52,14 @@ const insert = (categoria) => {
 
 const get = () => categorias;
 
-const eliminar = (ID) => categorias = categorias.filter((cat) => cat.id !== ID);
+const eliminar = (ID) => categorias = categorias.filter((cat) => cat.id != ID);
+const modificar = (cat) => {
+    const ID = cat.id;
+    for(let i = 0; i < categorias.length; i++) {if(categorias[i].id == ID) categorias[i] = cat;}
+}
 
 const getContador = () => contador;
-const getNombre = (ID) =>  categorias.find((c) => ID == c.id).nombre;
+const getNombre = (ID) =>  categorias.filter((c) => ID == c.id).nombre;
 
-const categoriasApi = {insert, get, eliminar, getContador, getNombre};
+const categoriasApi = {insert, get, eliminar, modificar, getContador, getNombre};
 export default categoriasApi;

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import usuariosApi from '../../api/usuariosApi'
 
@@ -20,24 +20,23 @@ const CambiarPassword = () => {
     const usuarios = usuariosApi.get();
     const [ usuario, setUsuario ] = useState(usuarioPrueba);
 
-    /* DESACTIVADO POR EL MOMENTO
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem("Usuario"));
+        const user = JSON.parse(localStorage.getItem("usuarioLogueado"));
 
-        if(!user) {
-            alert("¡No ha iniciado sesión!");
+        if(user && user.rol == "user") setUsuario(user);
+        else{
+            alert("¡No es cliente!");
             navigate("/");
-        } else setUsuario(user);
+        } 
 
     }, [])
-    */
 
     const navigate = useNavigate();
-    const handleCancel = () => navigate("www.google.com");
+    const handleCancel = () => navigate("/");
 
     const handleSubmit = (user) => {
         for(let i = 0; i < usuarios.length; i++) {if(usuarios[i].id === user.id) usuariosApi.modify(user, i);}
-        navigate("/Todos");
+        navigate("/");
     }
 
     return (

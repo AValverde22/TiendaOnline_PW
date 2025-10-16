@@ -17,6 +17,7 @@ const TodosLosUsuarios = () => {
                             {u.nombre} <br></br>
                             {u.apellido} <br></br>
                             {u.correo} <br></br>
+                            {u.img}<br></br>
                             {u.rol} <br></br>
                             <br></br>
                         </>

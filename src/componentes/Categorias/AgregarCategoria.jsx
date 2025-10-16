@@ -10,9 +10,8 @@ import Footer from '../Footer/Footer';
 
 const AgregarCategoria = () => {
 
-    /* DESACTIVADO POR EL MOMENTO
     useEffect(() => {
-        const admin = JSON.parse(localStorage.getItem("Usuario"));
+        const admin = JSON.parse(localStorage.getItem("usuarioLogueado"));
 
         if(!admin || admin.rol !== "admin") {
             alert("¡No es administrador!");
@@ -20,7 +19,7 @@ const AgregarCategoria = () => {
         } 
 
     }, [])
-    */
+
 
     useEffect(() => {localStorage.removeItem("ID_Categoria");}, [])
 
@@ -41,8 +40,10 @@ const AgregarCategoria = () => {
 
     return (
         <>
+            <Header/>
             {!showPopUp && <FormAgregarCategoria onSubmit = { handleSubmit } onCancel = { handleCancel }/>}
             {showPopUp && <FormPopUp cancelar = { cerrarPopUp } categoria = { cat } confirmar = { crearCategoria }/>}
+            <Footer/>
         </>
     );
 };

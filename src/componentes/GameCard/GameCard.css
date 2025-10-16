@@ -5,13 +5,20 @@ article {
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin: 20px;
 
     background-color: white;
     
     text-align: center;
-    word-wrap: break-word;
-
+    word-wrap: break-word;  
 }
+
+article:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
 
 article img {
     width: 176px;

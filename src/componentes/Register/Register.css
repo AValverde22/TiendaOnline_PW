@@ -1,100 +1,109 @@
-/* ======== CONTENEDOR PRINCIPAL ======== */
-.ContenedorRegistro {
+/* ======= CONTENEDOR PRINCIPAL ======= */
+.loginContenedor {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background-color: #f2f2f2;
+    background-color: #f4f4f4;
 }
 
-/* ======== FORMULARIO ======== */
-.Registro {
-    width: 360px;
+/* ======= FORMULARIO ======= */
+.loginFormulario {
+    width: 380px;
     margin: 60px auto;
     padding: 30px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.Registro h2 {
+.loginFormulario h2 {
     text-align: center;
-    color: #333333;
     margin-bottom: 25px;
-    font-size: 1.5rem;
+    color: #333;
+    font-size: 1.6rem;
 }
 
-/* ======== CAMPOS ======== */
-.Registro form {
+/* ======= CAMPOS ======= */
+.loginFormulario form {
     display: flex;
     flex-direction: column;
 }
 
-.Registro label {
+.loginFormulario label {
     margin-bottom: 6px;
     font-weight: bold;
     color: #444;
 }
 
-.Registro input[type="email"],
-.Registro input[type="password"] {
+.loginFormulario input[type="text"],
+.loginFormulario input[type="email"],
+.loginFormulario input[type="password"] {
     padding: 10px;
     margin-bottom: 15px;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 6px;
     font-size: 0.95rem;
-    transition: border-color 0.2s ease;
+    transition: all 0.3s ease;
 }
 
-.Registro input[type="email"]:focus,
-.Registro input[type="password"]:focus {
+.loginFormulario input[type="text"]:focus,
+.loginFormulario input[type="email"]:focus,
+.loginFormulario input[type="password"]:focus {
     border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
     outline: none;
 }
 
-/* ======== BOTÓN INICIAR SESIÓN ======== */
-.Registro input[type="submit"] {
+/* ======= BOTÓN SUBMIT ======= */
+.loginFormulario input[type="submit"] {
     background-color: #007bff;
-    color: #fff;
+    color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     padding: 10px;
     font-weight: bold;
+    font-size: 1rem;
     cursor: pointer;
+    margin-top: 5px;
     transition: background-color 0.3s ease;
 }
 
-.Registro input[type="submit"]:hover {
+.loginFormulario input[type="submit"]:hover {
     background-color: #0056b3;
 }
 
-/* ======== BOTÓN NUEVA CUENTA ======== */
-.NewAccount {
+/* ======= BOTÓN VOLVER ======= */
+.Back {
     margin-top: 10px;
     width: 100%;
     padding: 10px;
-    background-color: #28a745;
+    background-color: #6c757d;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-.NewAccount:hover {
-    background-color: #1e7e34;
+.Back:hover {
+    background-color: #5a6268;
 }
 
-/* ======== ENLACE (Link) ======== */
-.Registro a {
+/* ======= ENLACE (Link) ======= */
+.loginFormulario a {
     text-decoration: none;
 }
 
-/* ======== RESPONSIVE ======== */
+/* ======= RESPONSIVE ======= */
 @media (max-width: 480px) {
-    .Registro {
+    .loginFormulario {
         width: 90%;
-        margin: 40px auto;
         padding: 20px;
+        margin: 40px auto;
+    }
+
+    .loginFormulario h2 {
+        font-size: 1.4rem;
     }
 }
