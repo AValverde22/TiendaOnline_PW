@@ -1,0 +1,136 @@
+.AllOrdersPage .main-content {
+    padding: 2em;
+    background-color: #f8f9fa;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2em;
+}
+
+.page-header h1 {
+    margin: 0;
+    color: #333;
+}
+
+.search-bar {
+    display: flex;
+    gap: 10px;
+}
+
+.search-bar input {
+    width: 350px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+}
+
+.search-button {
+    border: none;
+    background-color: #28a745;
+    color: white;
+    padding: 0 25px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.search-button:hover {
+    background-color: #218838;
+}
+
+.all-orders-table-container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; 
+}
+
+.order-table th,
+.order-table td {
+    padding: 16px 20px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+.order-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.order-table thead th {
+    background-color: #f9f9f9;
+    font-weight: 600;
+    color: #555;
+    text-transform: uppercase;
+}
+
+.order-table th:nth-child(1) { width: 10%; } /* #ORDEN */
+.order-table th:nth-child(2) { width: 25%; } /* Usuario */
+.order-table th:nth-child(3) { width: 20%; } /* Fecha */
+.order-table th:nth-child(4) { width: 15%; } /* Total */
+.order-table th:nth-child(5) { width: 15%; } /* Estado */
+.order-table th:nth-child(6) { width: 15%; } /* Acciones */
+
+.user-cell {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.user-cell img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.order-id {
+    color: #28a745;
+    font-weight: bold;
+}
+
+/* ESTADOS Y BOTONES  */
+.status-entregado, .status-por-entregar {
+    font-weight: bold;
+}
+
+.status-entregado {
+    color: #28a745; 
+}
+
+.status-por-entregar {
+    color: #dc3545; 
+}
+
+.btn-ver-detalle-orden {
+    border: none;
+    background-color: #28a745;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 0.85em;
+    cursor: pointer;
+    transition: filter 0.2s;
+}
+
+.btn-ver-detalle-orden:hover {
+    filter: brightness(0.9);
+}
+
+.no-results {
+    text-align: center;
+    padding: 3em;
+    font-size: 1.2em;
+    color: #777;
+}

@@ -1,0 +1,57 @@
+.DetallesDeOrdenParent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 15vw;
+}
+
+.DetalleDeOrden{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+
+    width: 600px;
+    height: 450px;
+
+    border-radius: 7.5px;
+    background-color: white;
+}
+
+.DetallesDeOrden table{
+    width: 70vw;
+
+    margin-bottom: 50px;
+    margin-top: 25px;
+
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+    text-align: center;
+    background-color: white;
+}
+
+.DetallesDeOrden table td {
+    padding: 20px;
+}
+
+.DetallesDeOrden table tr {
+    border-bottom: 1px solid #ccc;
+}
+
+.DetallesDeOrden button {
+    width: 70vw;
+
+    background-color: green;
+    color: white;
+    border-radius: 5px;
+    border: 0px solid;  
+
+    padding-top: 7.5px;
+    padding-bottom: 7.5px;
+
+    margin-top: 25px;
+    margin-bottom: 25px;
+
+    font-size: 15px;
+    cursor: pointer;
+}
+

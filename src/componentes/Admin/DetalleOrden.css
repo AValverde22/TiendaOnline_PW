@@ -1,0 +1,110 @@
+.OrderDetailPage .main-content {
+    padding: 4em;
+    background-color: #f8f9fa;
+    display: flex;
+}
+
+
+
+.OrderDetailPage .back-link {
+    display: inline-block;
+    margin-bottom: 1em;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.OrderDetailPage .order-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2em;
+}
+
+.OrderDetailPage .order-detail-header h1 {
+    margin: 0;
+    color: #333;
+}
+
+.OrderDetailPage .order-summary p {
+    margin: 0 0 0.5em 0;
+    text-align: right;
+    color: #555;
+    font-size: 1.1em;
+}
+
+.OrderDetailPage .order-summary p span {
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+
+.OrderDetailPage .product-list-container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    padding: 2em;
+}
+
+.OrderDetailPage .product-list-container h2 {
+    margin-top: 0;
+    margin-bottom: 1.5em;
+    color: #333;
+}
+
+.OrderDetailPage .product-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.OrderDetailPage .product-table th,
+.OrderDetailPage .product-table td {
+    padding: 16px 20px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+.OrderDetailPage .product-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.OrderDetailPage .product-table thead th {
+    background-color: #f9f9f9;
+    font-weight: 600;
+    color: #555;
+    text-transform: uppercase;
+}
+
+.OrderDetailPage .product-cell {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.OrderDetailPage .product-cell img {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.OrderDetailPage .product-id {
+    color: #28a745;
+    font-weight: bold;
+}
+
+
+.OrderDetailPage .status-entregado, 
+.OrderDetailPage .status-por-entregar { 
+    font-weight: bold; 
+    text-transform: capitalize; 
+}
+
+.OrderDetailPage .status-entregado { 
+    color: #28a745; 
+}
+
+.OrderDetailPage .status-por-entregar { 
+    color: #dc3545; 
+}

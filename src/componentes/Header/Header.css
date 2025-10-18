@@ -1,0 +1,151 @@
+
+
+.header-bar {
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: #fff;
+  border-bottom: 1px solid #eef2f6;
+}
+
+
+.container {
+  width: 95%;
+  max-width: 1180px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+  gap: 16px;
+}
+
+/* ===== LOGO ===== */
+.marca {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.marca img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  margin-right: 10px;
+}
+
+.logo {
+  font-weight: 800;
+  font-size: 22px;
+  font-family: "Orbitron", sans-serif;
+  color: black;
+}
+
+/* ===== BUSCADOR ===== */
+.buscador {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+}
+
+.buscador input {
+  width: 480px;
+  max-width: 60%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #e6e9ef;
+  outline: none;
+  font-family: "Poppins", sans-serif;
+}
+
+.buscador button {
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: none;
+  background: #2ea32b;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.buscador button:hover {
+  background: #249524;
+}
+
+/* ===== ACCIONES (carrito, usuario, logout) ===== */
+.acciones {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn-cart,
+.btn-logout,
+.btn-user {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background: #efffef;
+  cursor: pointer;
+  font-family: "Orbitron", sans-serif;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.btn-user {
+  background: #fff;
+  border: 1px solid #e6e9ef;
+}
+
+.btn-user:hover,
+.btn-cart:hover,
+.btn-logout:hover {
+  transform: scale(1.05);
+  background: #e4ffe4;
+}
+
+.user-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+/* ===== BARRA DE NAVEGACIÓN ===== */
+.barra-menu {
+  background: #2ea32b;
+  color: white;
+}
+
+.barra-menu ul {
+  display: flex;
+  justify-content: center; /* Centra los items del menú */
+  gap: 28px;
+  list-style: none;
+  padding: 10px 0;
+  margin: 0;
+}
+
+.barra-menu li {
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.barra-menu li:hover {
+  opacity: 0.8;
+}
+
+/* ===== LINKS ===== */
+.Link-sin-estilo {
+  text-decoration: none;
+  color: inherit;
+}
