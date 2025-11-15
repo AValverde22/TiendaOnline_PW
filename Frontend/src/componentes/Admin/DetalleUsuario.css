@@ -1,0 +1,131 @@
+
+.UserProfilePage .main-content {
+    padding: 2em;
+    background-color: #f8f9fa;
+}
+
+.UserProfilePage .profile-header {
+    margin-bottom: 2em;
+}
+
+.UserProfilePage .profile-header h1 {
+    margin: 0;
+    color: #333;
+}
+
+.UserProfilePage .back-link {
+    display: inline-block;
+    margin-bottom: 1em;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.UserProfilePage .profile-layout {
+    display: flex;
+    gap: 2em;
+    align-items: flex-start;
+}
+
+
+.UserProfilePage .profile-card {
+    flex: 1;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.UserProfilePage .profile-card-header {
+    text-align: center;
+    padding: 2em;
+    border-bottom: 1px solid #eee;
+}
+
+.UserProfilePage .profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1em;
+    border: 4px solid #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.UserProfilePage .profile-name h2 {
+    margin: 0;
+}
+
+.UserProfilePage .profile-name p {
+    margin: 0.2em 0 1em 0;
+    color: #777;
+}
+
+.UserProfilePage .profile-card-body {
+    padding: 2em;
+}
+
+.UserProfilePage .profile-card-body h3 {
+    margin-top: 0;
+    margin-bottom: 1em;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5em;
+}
+
+.UserProfilePage .profile-card-body p {
+    margin: 0.5em 0;
+    line-height: 1.6;
+}
+
+
+.UserProfilePage .order-history-container {
+    flex: 2;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    padding: 2em;
+}
+
+.UserProfilePage .order-history-container h3 {
+    margin-top: 0;
+    margin-bottom: 1.5em;
+}
+
+.UserProfilePage .order-history-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.UserProfilePage .order-history-table th,
+.UserProfilePage .order-history-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+.UserProfilePage .order-history-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.UserProfilePage .order-history-table thead th {
+    background-color: #f9f9f9;
+    font-weight: 600;
+    color: #555;
+    text-align: left;
+}
+
+
+.UserProfilePage .estado-activo, 
+.UserProfilePage .estado-inactivo, 
+.UserProfilePage .status-entregado, 
+.UserProfilePage .status-por-entregar { 
+    font-weight: bold; 
+    text-transform: capitalize; 
+}
+
+.UserProfilePage .estado-activo { color: #28a745; }
+.UserProfilePage .estado-inactivo { color: #dc3545; }
+.UserProfilePage .status-entregado { color: #28a745; }
+.UserProfilePage .status-por-entregar { color: #dc3545; }
+.UserProfilePage .order-id { font-weight: bold; color: #007bff; }
+

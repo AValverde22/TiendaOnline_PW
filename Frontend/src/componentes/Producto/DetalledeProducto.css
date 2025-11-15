@@ -1,0 +1,145 @@
+/* 
+ESTILO DETALLE DE PRODUCTO
+*/
+.detalle-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 40px;
+  padding: 40px;
+  background-color: #f5f6fa;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.detalle-imagen {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.detalle-imagen img {
+  height: 300px;
+  width: 300px;
+  border: 1px solid #ddd;
+  object-fit: fill;
+}
+/* 
+INFORMACIÓN DEL PRODUCTO
+*/
+.detalle-info {
+  height: 400px;
+  max-width: 500px;
+  background-color: #fff;
+  padding: 25px;
+  border: 1px solid #ddd;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.botones-detalle{
+  margin-top: auto;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  align-items: center;
+}
+
+.detalle-titulo {
+  font-size: 1.8rem;
+  color: #222;
+  margin-bottom: 10px;
+}
+
+.detalle-categoria {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.detalle-descripcion {
+  font-size: 1rem;
+  color: #444;
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
+.detalle-precio {
+  font-weight: bold;
+  font-size: 1.3rem;
+  color: #007bff;
+  margin-bottom: 20px;
+}
+
+/*
+ BOTÓN VOLVER
+*/
+
+.btn-volver {
+  border: 1px solid #007bff;
+  background-color: transparent;
+  color: #007bff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-volver:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+/*
+SECCIÓN DE PRODUCTOS RELACIONADOS
+*/
+.relacionados-section {
+  padding: 40px;
+  background-color: #ffffff;
+  border-top: 1px solid #ddd;
+  text-align: center;
+}
+
+.relacionados-section h2 {
+  font-size: 1.6rem;
+  color: #222;
+  margin-bottom: 25px;
+}
+
+.relacionados-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+  justify-items: center;
+}
+
+.relacionado-tarjeta {
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  width: 230px;
+  padding: 15px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.relacionado-tarjeta:hover {
+  background-color: #e9ecef;
+}
+
+.relacionado-tarjeta img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.relacionado-tarjeta h3 {
+  font-size: 1rem;
+  color: #222;
+  margin: 5px 0;
+}
+
+.precio-relacionado {
+  font-weight: bold;
+  color: #007bff;
+  font-size: 1rem;
+}
+
