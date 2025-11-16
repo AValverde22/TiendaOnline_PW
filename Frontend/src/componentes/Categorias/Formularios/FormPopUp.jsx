@@ -4,15 +4,10 @@ import productosApi from '../../../api/productosApi';
 import categoriasApi from '../../../api/categoriasApi';
 import './FormPopUp.css'
 
-const FormPopUp = ({ cancelar, categoria, confirmar }) => {
-    const [ productosOriginales, setProductosOriginales ] = useState([]);
-    const [ productos, setProductos ] = useState([]);
+const FormPopUp = ({ cancelar, categoria, confirmar, productos }) => {
+    const [ productosOriginales, setProductosOriginales ] = useState(productos);
+    const [ products, setProducts ] = useState([]);
     const [ textoBusqueda, setTextoBusqueda ] = useState("");
-
-    useEffect(() => {
-        setProductos(productosApi.get());
-        setProductosOriginales(productosApi.get());
-    }, []);
 
     let idPS = [];
     const checkONoCheck = (e) => {
@@ -23,23 +18,33 @@ const FormPopUp = ({ cancelar, categoria, confirmar }) => {
         else idPS = idPS.filter((ids) => ids !== idSeleccionado)
     }
 
-    const agregarProductosACategoria = (e) => {
+    const agregarProductosACategoria = async (e) => {
         e.preventDefault();
-        categoriasApi.insert(categoria);
-        const ultIDCategorias = categoriasApi.getContador();
-        for(let i = 0; i < idPS.length; i++) productosApi.modificarID_Categoria(idPS[i], ultIDCategorias);
+
+        await categoriasApi.create(categoria);
+        const ultIDCategoria = await categoriasApi.findByName(categoria.nombre).id;
+
+        for(let i = 0; i < idPS.length; i++){   
+            let p = await productosApi.findOne(idPS[i]);
+            p = {...p, ID_Categoria: ultIDCategoria};
+
+            await productosApi.update(p);
+        } 
+
+        console.log("Categoria creada");
         confirmar();
     }
+
     const handleCerrarPopUp = (e) => {e.preventDefault(); cancelar();}
 
     useEffect(() => {
-        if(textoBusqueda === "") setProductos(productosOriginales);
+        if(textoBusqueda === "") setProducts(productosOriginales);
         else handleBuscar();            
     }, [textoBusqueda]);
 
     const handleBuscar = () => {
         const filtrados = productosOriginales.filter((item) => item.titulo.toLowerCase().includes(textoBusqueda.toLowerCase()));
-        setProductos(filtrados);
+        setProducts(filtrados);
     }
 
     return (
@@ -56,7 +61,7 @@ const FormPopUp = ({ cancelar, categoria, confirmar }) => {
                         <th class="PPImg">Imagen Referencial</th>
                     </tr>
 
-                    {productos.map((p) => {
+                    {products.map((p) => {
                         return(
                             <tr>
                                 <td class="PPCheckbox"><input type="checkbox" id = {p.id} name="producto" value = {p.titulo} onChange = { (e) => checkONoCheck(e) }/></td>

@@ -18,15 +18,13 @@ const ModificarDatosUsuario = () => {
         rol: "user"
     };
 
-    const usuarios = usuariosApi.get();
     const [ usuario, setUsuario ] = useState(usuarioPrueba);
-
    useEffect(() => {
         const user = JSON.parse(localStorage.getItem("usuarioLogueado"));
         
-        if(user && user.rol == "user") {setUsuario(user);}
+        if(user && user.rol == "user") setUsuario(user);
         else{
-            alert("¡No es cliente!");
+            alert("¡No es usuario!");
             navigate("/");
         } 
 
@@ -35,29 +33,31 @@ const ModificarDatosUsuario = () => {
     const navigate = useNavigate();
     const handleCancel = () => navigate("/");
 
-    const handleSubmit = (user) => {
-        for(let i = 0; i < usuarios.length; i++) {if(usuarios[i].id == user.id) {usuariosApi.modify(user, i);}}
+    const handleSubmit = async (user) => {
+        await usuariosApi.update(user);
+        console.log("Datos actualizados.");
+
         localStorage.setItem('usuarioLogueado', JSON.stringify(user));
         navigate("/");
     }
 
-    if(!usuario || usuario.rol !== "user"){
-        return (
+    return (
+        <> 
+            {(!usuario || usuario.rol !== "user") ? 
             <>
                 <Header />
                 <><h1>No tienes permiso para ver esta página.</h1></>
                 <Footer />
             </>
-        );
-    }    
-
-    return (
-        <div>
-            <Header/>
-            {<FormModificarDatos onSubmit = { handleSubmit } user = { usuario } onCancel = { handleCancel }/>}
-            <Footer/>
-        </div>
-    );
+            :
+            <>
+                <Header/>
+                {<FormModificarDatos onSubmit = { handleSubmit } user = { usuario } onCancel = { handleCancel }/>}
+                <Footer/>
+            </>
+            }
+        </>
+    )
 };
 
 export default ModificarDatosUsuario;

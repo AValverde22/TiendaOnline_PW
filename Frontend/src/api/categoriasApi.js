@@ -1,4 +1,18 @@
-let contador = 7;
+import base from './base.js'
+
+const endpoint = 'categoria';
+
+const findAll = async (token) => await base.get(endpoint, token);
+const create = async (payload) => await base.post(endpoint, payload);
+const update = async (payload) => await base.put(endpoint, payload);
+const remove = async (id) => await base.remove(`${endpoint}/${id}`);
+const findOne = async (id) => await base.get(`${endpoint}/${id}`);
+const findByName = async (name) => await base.get(`${endpoint}/${name}`);
+
+const categoriasApi = { findAll, create, update, remove, findOne, findByName };
+export default categoriasApi;
+
+/*let contador = 7;
 
 let categorias = [
     {
@@ -63,3 +77,4 @@ const getNombre = (ID) => categorias.filter((c) => ID == c.id)[0].nombre
 
 const categoriasApi = {insert, get, eliminar, modificar, getContador, getNombre};
 export default categoriasApi;
+*/

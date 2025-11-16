@@ -14,10 +14,10 @@ const CambiarPassword = () => {
         nombre: "Nombre",
         apellido: "Apellido",
         correo: "correo@example.com",
+        img: "https://ih1.redbubble.net/image.2758100916.0157/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.jpg",
         rol: "user"
     };
 
-    const usuarios = usuariosApi.get();
     const [ usuario, setUsuario ] = useState(usuarioPrueba);
 
     useEffect(() => {
@@ -25,41 +25,38 @@ const CambiarPassword = () => {
 
         if(user && user.rol == "user") setUsuario(user);
         else{
-            alert("¡No es cliente!");
+            alert("¡No es usuario!");
             navigate("/");
         } 
-
     }, [])
 
     const navigate = useNavigate();
     const handleCancel = () => navigate("/");
 
-    const handleSubmit = (user) => {
-        console.log(user)
-        for(let i = 0; i < usuarios.length; i++) {if(usuarios[i].id == user.id) {usuariosApi.modify(user, i);}}
+    const handleSubmit = async (user) => {
+        await usuariosApi.update(user);
+        console.log("Contraseña actualizada.");
+
         localStorage.setItem('usuarioLogueado', JSON.stringify(user));
         navigate("/");
     }
     
-    if(!usuario || usuario.rol !== "user"){
-        return (
+    return (
+        <>
+            {(!usuario || usuario.rol !== "user") ? 
             <>
                 <Header />
                 <><h1>No tienes permiso para ver esta página.</h1></>
                 <Footer />
             </>
-        );
-    }    
-
-    return (
-        <div>
-            <Header/>
-            {<FormCambiarPassword onSubmit = { handleSubmit } user = { usuario } onCancel = { handleCancel }/>}
-            <Footer/>
-        </div>
-   
-
-);
+            :
+            <>
+                <Header/>
+                {<FormCambiarPassword onSubmit = { handleSubmit } user = { usuario } onCancel = { handleCancel }/>}
+                <Footer/>
+            </>}
+        </>
+    );
 };
 
 export default CambiarPassword;

@@ -1,4 +1,15 @@
-let usuariosDefault = [
+import base from './base.js'
+
+const endpoint = 'categoria';
+
+const login = async (payload) => await base.post(endpoint + '/login', payload);
+const update = async (payload) => await base.put(endpoint, payload);
+// falta register y demás métodos, tambien crear carpeta Context y archivo userContext.jsx.
+
+const usuariosApi = { login, update };
+export default usuariosApi;
+
+/* let usuariosDefault = [
   {
     id: 1,
     username: "admin",
@@ -464,4 +475,5 @@ const getTotalSpent = (ID) => {
     //   return user ? [...user.ordenes] : null;
     // };
     */
+
     

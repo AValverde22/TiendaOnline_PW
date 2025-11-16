@@ -13,6 +13,13 @@ const findOne = async (req, res) => {
     return sendResults(result, res, "No se han encontrado registros.");
 }
 
+const findByName = async (req, res) => {
+    const name = req.params.nombre;
+    const result = await repository.findByName(name);
+
+    return sendResults(result, res, "No se han encontrado registros.");
+}
+
 const create = async (req, res) => {
     const object = req.body;
     const createObj = await repository.create(object);
@@ -39,5 +46,5 @@ const sendResults = (result, res, message) => {
     else return res.status(500).json({ message });
 }
 
-const controller = { findAll, findOne, create, update, remove };
+const controller = { findAll, findOne, findByName, create, update, remove };
 export default controller;

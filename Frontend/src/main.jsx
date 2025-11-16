@@ -54,11 +54,11 @@ const router = createBrowserRouter([
         element: <RegistroUsuarioPage/>
     },
     {
-        path: "/AgregarCategoria",
+        path: "/Categoria/Agregar",
         element: <AgregarCategoriaPage/>
     },
     {
-        path: "/ListarCategorias",
+        path: "/Categoria",
         element: <ListarCategoriasPage/>
     },
     {
@@ -66,7 +66,7 @@ const router = createBrowserRouter([
         element: <MostrarCategoria />
     },
     {
-        path: "/DetalleDeCategoria",
+        path: "/Categoria/:id",
         element: <DetalleDeCategoriaPage/>
     },
     {

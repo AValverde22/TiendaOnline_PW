@@ -24,5 +24,17 @@ const login = async (req, res) => {
     } catch (error) {console.log(error);}
 }
 
-const controller = { registrar, login };
+const update = async (req, res) => {
+    const object = req.body;    
+    const updatedObj = await repository.update(object);
+
+    return sendResults(updatedObj, res, "Error al actualizar el objeto.");
+}
+
+const sendResults = (result, res, message) => {
+    if (result) return res.status(200).json(result);
+    else return res.status(500).json({ message });
+}
+
+const controller = { registrar, login, update };
 export default controller;
