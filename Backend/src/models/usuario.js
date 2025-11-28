@@ -9,7 +9,11 @@ const Usuario = sequelize.define('usuario', {
     },
     correo: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true,
+        validate: {
+            isEmail: true
+        }
     },
     username: {
         type: DataTypes.STRING,
@@ -30,11 +34,13 @@ const Usuario = sequelize.define('usuario', {
     rol: {
         type: DataTypes.STRING,
         allowNull: false,
+        defaultValue: 'USER'
     },
     estado: {
         type: DataTypes.STRING,
-        allowNull: false
-    }, 
+        allowNull: false,
+        defaultValue: 'ACTIVO'
+    },
     direccion: {
         type: DataTypes.STRING,
         allowNull: false

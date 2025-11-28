@@ -1,4 +1,4 @@
-
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
@@ -6,12 +6,25 @@ import categoriasApi from "../../api/categoriasApi.js";
 import "./MostrarCategoria.css";
 
 function MostrarCategoria() {
-  const categorias = categoriasApi.get();
-    const navigate = useNavigate();
+  const [categorias, setCategorias] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const obtenerCategorias = async () => {
+      try {
+        const data = await categoriasApi.findAll();
+        setCategorias(data);
+      } catch (error) {
+        console.error("Error al cargar categorías:", error);
+      }
+    };
+    obtenerCategorias();
+  }, []);
 
   const irAProductosDeCategoria = (nombreCategoria) => {
     navigate(`/Producto/categoria/${encodeURIComponent(nombreCategoria)}`);
   };
+
   return (
     <>
       <Header />
@@ -24,11 +37,11 @@ function MostrarCategoria() {
         </p>
 
         <div className="categorias-grid">
-          {categorias.map((cat) => (
-            <div key={cat.id} className="categoria-card" onClick={() => irAProductosDeCategoria(cat.nombre)}>
-              <img src={cat.img} alt={cat.nombre} className="categoria-img" />
-              <h2 className="categoria-nombre">{cat.nombre}</h2>
-              <p className="categoria-descripcion">{cat.descripcion}</p>
+          {categorias.map((categoria) => (
+            <div key={categoria.id} className="categoria-card" onClick={() => irAProductosDeCategoria(categoria.nombre)}>
+              <img src={categoria.img} alt={categoria.nombre} className="categoria-img" />
+              <h2 className="categoria-nombre">{categoria.nombre}</h2>
+              <p className="categoria-descripcion">{categoria.descripcion}</p>
             </div>
           ))}
         </div>

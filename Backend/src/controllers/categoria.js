@@ -8,13 +8,13 @@ const findAll = async (req, res) => {
 
 const findOne = async (req, res) => {
     const id = req.params.id;
-    const result = await repository.findOne(id);
+    const result = await repository.findById(id);
 
     return sendResults(result, res, "No se han encontrado registros.");
 }
 
 const findByName = async (req, res) => {
-    const name = req.params.nombre;
+    const name = req.params.name;
     const result = await repository.findByName(name);
 
     return sendResults(result, res, "No se han encontrado registros.");
@@ -28,15 +28,16 @@ const create = async (req, res) => {
 }
 
 const update = async (req, res) => {
-    const object = req.body;    
-    const updatedObj = await repository.update(object);
+    const id = req.params.id;
+    const object = req.body;
+    const updatedObj = await repository.update(id, object);
 
     return sendResults(updatedObj, res, "Error al actualizar el objeto.");
 }
 
 const remove = async (req, res) => {
     const id = req.params.id;
-    const result = await repository.remove(id);
+    const result = await repository.delete(id);
 
     return sendResults(result, res, "Error al eliminar el objeto.");
 }

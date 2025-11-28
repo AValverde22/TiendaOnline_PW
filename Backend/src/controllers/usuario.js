@@ -1,39 +1,50 @@
-import usuarioService from '../services/usuario.js'
+import usuarioService from '../services/usuario.js';
 
 const registrar = async (req, res) => {
     try {
-        const {correo, username, password, nombre, apellido, rol, estado, direccion, telefono, distrito, img} = req.body;
+        // Pasamos todo el body al servicio
+        const response = await usuarioService.registrar(req.body);
 
-        const response = await usuarioService.registrar({correo, username, password, nombre, apellido, rol, estado, direccion, telefono, distrito, img});
-
-        if(response.success) return res.status(201).json(response);
-        else return res.status(500).json(response);
+        if (response.success) {
+            return res.status(201).json(response);
+        } else {
+            // Si falla (ej. correo duplicado o faltan datos) devolvemos 400
+            return res.status(400).json(response);
+        }
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: "Error inesperado.", error});
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: "Error inesperado en el servidor."
+        });
     }
-}
+};
 
 const login = async (req, res) => {
     try {
         const { correo, password } = req.body;
+
         const result = await usuarioService.login({ correo, password });
 
-        if(result.success) return res.status(200).json(result);
-        else return res.status(500).json(result);
-    } catch (error) {console.log(error);}
-}
+        if (result.success) {
+            return res.status(200).json(result);
+        } else {
+            // Error de credenciales -> 401 Unauthorized
+            return res.status(401).json(result);
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: "Error interno del servidor."
+        });
+    }
+};
 
+// Asumiendo que quisieras un update básico también
 const update = async (req, res) => {
-    const object = req.body;    
-    const updatedObj = await repository.update(object);
-
-    return sendResults(updatedObj, res, "Error al actualizar el objeto.");
-}
-
-const sendResults = (result, res, message) => {
-    if (result) return res.status(200).json(result);
-    else return res.status(500).json({ message });
+    // Implementación pendiente en servicio, pero dejamos la estructura
+    return res.status(501).json({ message: "No implementado aún" });
 }
 
 const controller = { registrar, login, update };

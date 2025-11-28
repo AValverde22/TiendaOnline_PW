@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { UserProvider } from './api/context/UserContext.jsx'
 
 import App from './App.jsx'
 import AgregarCategoriaPage from "./routes/AgregarCategoriaPage.jsx"
@@ -34,16 +35,14 @@ import ListadoOrdenesPage from './routes/ListadoOrdenesPage.jsx'
 import OlvidarContraseña from "./componentes/Login/OlvidarContraseña.jsx"
 import RecuperarContraseña from "./componentes/Login/RecuperarContraseña.jsx"
 
-
-
 const router = createBrowserRouter([
     {
-        path: "/",  
+        path: "/",
         element: <App />
-      },
+    },
     {
         path: "/Login",
-        element: <LoginUsuarioPage/>
+        element: <LoginUsuarioPage />
     },
     {
         path: "/nosotros",
@@ -51,15 +50,15 @@ const router = createBrowserRouter([
     },
     {
         path: "/Register",
-        element: <RegistroUsuarioPage/>
+        element: <RegistroUsuarioPage />
     },
     {
         path: "/Categoria/Agregar",
-        element: <AgregarCategoriaPage/>
+        element: <AgregarCategoriaPage />
     },
     {
         path: "/Categoria",
-        element: <ListarCategoriasPage/>
+        element: <ListarCategoriasPage />
     },
     {
         path: "/mostrarcategorias",
@@ -67,39 +66,39 @@ const router = createBrowserRouter([
     },
     {
         path: "/Categoria/:id",
-        element: <DetalleDeCategoriaPage/>
+        element: <DetalleDeCategoriaPage />
     },
     {
         path: "/ModificarDatosUsuario",
-        element: <ModificarDatosUsuarioPage/>
+        element: <ModificarDatosUsuarioPage />
     },
     {
         path: "/CambiarPassword",
-        element: <CambiarPasswordPage/>
+        element: <CambiarPasswordPage />
     },
     {
         path: "/DetalleDeOrden",
-        element: <DetallesDeOrdenPage/>
+        element: <DetallesDeOrdenPage />
     },
     {
         path: "/Todos",
-        element: <TodosLosUsuariosPage/>
+        element: <TodosLosUsuariosPage />
     },
     {
         path: "/DashboardAdmin",
-        element: <DashboardAdminPage/>
+        element: <DashboardAdminPage />
     },
     {
         path: "/Producto",
-        element: <ProductoPage/>
-    },
-    {
-        path: "/Producto/categoria/:nombreCategoria",  
         element: <ProductoPage />
     },
-     {   
-        path: "/Producto/:id", 
-        element: <DetalledeProducto/>,
+    {
+        path: "/Producto/categoria/:nombreCategoria",
+        element: <ProductoPage />
+    },
+    {
+        path: "/Producto/:id",
+        element: <DetalledeProducto />,
     },
     {
         path: "/serie/:id",
@@ -107,7 +106,7 @@ const router = createBrowserRouter([
     },
     {
         path: "/ListadoProductos",
-        element: <ListadoProductosPage/>,
+        element: <ListadoProductosPage />,
     },
     {
         path: "/Carrito",
@@ -135,19 +134,19 @@ const router = createBrowserRouter([
     },
     {
         path: "/AgregarProducto",
-        element: <AgregarProducto/>
+        element: <AgregarProducto />
     },
     {
         path: "/EditarProducto/:id",
-        element: <AgregarProducto/>
+        element: <AgregarProducto />
     },
     {
         path: "/MainPageUser",
-        element: <MainPage/>
+        element: <MainPage />
     },
     {
         path: "/admin/orders/:userId/:orderId",
-        element: <DetalleOrdenPage/>
+        element: <DetalleOrdenPage />
     },
     {
         path: "/admin/users/:userId",
@@ -155,25 +154,27 @@ const router = createBrowserRouter([
     },
     {
         path: "/ListadoUsuariosAdmin",
-        element: <ListadoUsuariosPage/>
+        element: <ListadoUsuariosPage />
     },
     {
         path: "/ListadoOrdenesAdmin",
-        element: <ListadoOrdenesPage/>
+        element: <ListadoOrdenesPage />
     },
     {
         path: "/OlvidarContraseña",
-        element: <OlvidarContraseña/>
+        element: <OlvidarContraseña />
     },
     {
         path: "/RecuperarContraseña",
-        element: <RecuperarContraseña/>
+        element: <RecuperarContraseña />
     },
 
 ]);
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
-        <RouterProvider router={router}/>
+        <UserProvider>
+            <RouterProvider router={router} />
+        </UserProvider>
     </StrictMode>
 )

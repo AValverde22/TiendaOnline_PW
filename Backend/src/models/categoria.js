@@ -1,7 +1,7 @@
 import sequelize from '../config/database.js'
 import { DataTypes } from 'sequelize'
 
-const Categoria = sequelize.define('categoria', {
+const Categoria = sequelize.define('categorias', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -9,7 +9,8 @@ const Categoria = sequelize.define('categoria', {
     },
     nombre: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     descripcion: {
         type: DataTypes.STRING,
@@ -18,7 +19,10 @@ const Categoria = sequelize.define('categoria', {
     img: {
         type: DataTypes.STRING,
         allowNull: false
-    }
+    },
+}, {
+    tableName: 'categorias',
+    timestamps: true
 });
 
 export default Categoria;

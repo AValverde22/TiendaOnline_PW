@@ -1,62 +1,104 @@
-import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
-import usuariosApi from '../../api/usuariosApi';
-import { useNavigate } from 'react-router-dom';
 import './Login.css';
+import { useUser } from '../../api/context/UserContext';
 
 function Login() {
-
     const navigate = useNavigate();
+    const { login } = useUser();
 
-    const [ password1, setPassword] = useState('');
-    const [ email1, setEmail] = useState('');    
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [errorMsg, setErrorMsg] = useState('');
+    const [cargando, setCargando] = useState(false);
 
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        console.log("Intentando login...");
+        setErrorMsg('');
+        setCargando(true);
 
-    const handleLogin =()=>{
-        console.log("entro")
-        const resultado = usuariosApi.get().find((u) => u.correo.toLowerCase() === email1.toLowerCase() && u.password === password1);
+        try {
+            const respuesta = await login({
+                correo: email,
+                password: password
+            });
 
-        if (resultado){
-            localStorage.setItem('usuarioLogueado', JSON.stringify(resultado));
-            navigate('/');
+            if (respuesta.success) {
+                console.log("Login exitoso");
+                navigate('/');
+            } else {
+                setErrorMsg(respuesta.message || "Credenciales inválidas");
             }
-        else 
-            alert("Credenciales inválidas");
-        
-
+        } catch (error) {
+            console.error('Error al iniciar sesión:', error);
+            setErrorMsg('Error de conexión con el servidor');
+        } finally {
+            setCargando(false);
+        }
     };
-    
-    return (
 
+    return (
         <div className="ContenedorRegistro">
             <Header />
-                <main className='main-content'>
+            <main className='main-content'>
                 <div className="Registro">
                     <h2>Login</h2>
-                    <form>
+
+                    <form onSubmit={handleLogin}>
                         <label htmlFor='email'>Correo Electrónico</label>
-                        <input type="email"  id = "email" name = "email" value={email1} onChange={(e) => setEmail(e.target.value)}/>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+
                         <label htmlFor='password'>Contraseña</label>
-                        <input type="password"  id = "password" name = "password" value={password1} onChange={(e)=> setPassword(e.target.value)} />
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
 
-                        <button type="button" className="btnLogin" onClick={() => handleLogin()}> Iniciar Sesion</button>
-                        
-                        <Link to="/Register">
-                            <button className="btnLogin" >Crear Cuenta</button>
-                        </Link>
-                        <Link to="/OlvidarContraseña">
-                            <button className="btnLogin" >Olvidé mi contraseña</button>
-                        </Link>
+                        {errorMsg && <p style={{ color: 'red', textAlign: 'center' }}>{errorMsg}</p>}
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+
+                            {/* Botón Principal (Submit) */}
+                            <button type="submit" className="btnLogin" disabled={cargando}>
+                                {cargando ? "Cargando..." : "Iniciar Sesión"}
+                            </button>
+                            {/* CAMBIO: Botones con onClick y navigate */}
+                            <button
+                                type="button"
+                                className="btnLogin"
+                                onClick={() => navigate('/Register')}
+                            >
+                                Crear Cuenta
+                            </button>
+
+                            <button
+                                type="button"
+                                className="btnLogin"
+                                onClick={() => navigate('/OlvidarContraseña')}
+                            >
+                                Olvidé mi contraseña
+                            </button>
+
+                        </div>
                     </form>
-
                 </div>
-                </main>
+            </main>
             <Footer />
         </div>
-        
-
     );
 };
 
