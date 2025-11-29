@@ -12,18 +12,17 @@ const Orden = sequelize.define('orden', {
         defaultValue: DataTypes.NOW
     },
     estado: {
-        type: DataTypes.STRING, // 'pendiente', 'pagado', 'enviado', 'entregado'
+        type: DataTypes.STRING,
         defaultValue: 'pendiente'
     },
     total: {
-        type: DataTypes.DECIMAL(10, 2), // Usamos DECIMAL para dinero, nunca FLOAT
+        type: DataTypes.DECIMAL(10, 2),
         allowNull: false
     },
     direccion_envio: {
         type: DataTypes.STRING,
-        allowNull: true // Puede ser la misma del usuario o una nueva
+        allowNull: true
     }
-    // NOTA: Sequelize agregará automáticamente "usuarioId" cuando definamos la relación
 }, {
     tableName: 'ordenes',
     timestamps: true

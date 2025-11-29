@@ -1,52 +1,10 @@
 import { useEffect, useState, useMemo } from 'react';
-import { Link } from 'react-router-dom'; 
+import { Link } from 'react-router-dom';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import usuariosApi from '../../api/usuariosApi';
+import TableComponent from './TableComponent';
 import './ListadoOrdenes.css';
-const AllOrdersTable = ({ orders }) => {
-    return (
-        <div className="all-orders-table-container">
-            <table className="order-table">
-                <thead>
-                    <tr>
-                        <th>#ORDEN</th>
-                        <th>Usuario</th>
-                        <th>Fecha de orden</th>
-                        <th>Total</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {orders.map(order => (
-                        <tr key={`${order.userId}-${order.id}`}>
-                            <td className="order-id">#{order.id.toString().padStart(4, '0')}</td>
-                            <td className="user-cell">
-                                <img src={order.userImg || `https://i.pravatar.cc/150?u=${order.userId}`} alt={`Avatar de ${order.username}`} />
-                                <span>{order.username}</span>
-                            </td>
-                            <td>{new Date(order.fecha).toLocaleDateString()}</td>
-                            <td>S/ {order.total.toFixed(2)}</td>
-                            <td>
-                                <span className={order.estado === 'entregado' ? 'status-entregado' : 'status-por-entregar'}>
-                                    {order.estado}
-                                </span>
-                            </td>
-                            <td className="action-buttons">
-                                {/* 2. ENVUELVE EL BOTÓN EN UN LINK DINÁMICO */}
-                                <Link to={`/admin/orders/${order.userId}/${order.id}`}>
-                                    <button className="btn-ver-detalle-orden">Ver detalle</button>
-                                </Link>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    );
-};
-
 
 const ListadoOrdenes = () => {
     const [allOrders, setAllOrders] = useState([]);
@@ -57,7 +15,7 @@ const ListadoOrdenes = () => {
     useEffect(() => {
         const todosLosUsuarios = usuariosApi.get();
         // Aplanar todas las órdenes de todos los usuarios en una sola lista
-        const flattenedOrders = todosLosUsuarios.flatMap(user => 
+        const flattenedOrders = todosLosUsuarios.flatMap(user =>
             user.ordenes.map(orden => ({
                 ...orden,
                 userId: user.id,
@@ -89,9 +47,43 @@ const ListadoOrdenes = () => {
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+    // --- CONFIGURACIÓN DE COLUMNAS ---
+    const columns = [
+        { header: '#ORDEN', className: 'order-id', render: (order) => `#${order.id.toString().padStart(4, '0')}` },
+        {
+            header: 'Usuario',
+            className: 'user-cell',
+            render: (order) => (
+                <>
+                    <img src={order.userImg || `https://i.pravatar.cc/150?u=${order.userId}`} alt={`Avatar de ${order.username}`} />
+                    <span>{order.username}</span>
+                </>
+            )
+        },
+        { header: 'Fecha de orden', render: (order) => new Date(order.fecha).toLocaleDateString() },
+        { header: 'Total', render: (order) => `S/ ${order.total.toFixed(2)}` },
+        {
+            header: 'Estado',
+            render: (order) => (
+                <span className={order.estado === 'entregado' ? 'status-entregado' : 'status-por-entregar'}>
+                    {order.estado}
+                </span>
+            )
+        },
+        {
+            header: 'Acciones',
+            className: 'action-buttons',
+            render: (order) => (
+                <Link to={`/admin/orders/${order.userId}/${order.id}`}>
+                    <button className="btn-ver-detalle-orden">Ver detalle</button>
+                </Link>
+            )
+        }
+    ];
+
     return (
         <div className='AllOrdersPage'>
-            <Header/>
+            <Header />
             <main className='main-content'>
                 <div className="page-header">
                     <h1>Listado de órdenes</h1>
@@ -105,10 +97,13 @@ const ListadoOrdenes = () => {
                         <button className="search-button">Buscar</button>
                     </div>
                 </div>
-                
+
                 {currentOrders.length > 0 ? (
                     <>
-                        <AllOrdersTable orders={currentOrders} />
+                        <TableComponent
+                            columns={columns}
+                            data={currentOrders}
+                        />
                         <div className="pagination">
                             {Array.from({ length: totalPages }, (_, i) => (
                                 <button key={i + 1} onClick={() => paginate(i + 1)} className={currentPage === i + 1 ? 'active' : ''}>
@@ -121,7 +116,7 @@ const ListadoOrdenes = () => {
                     <p className="no-results">No se encontraron órdenes que coincidan con la búsqueda.</p>
                 )}
             </main>
-            <Footer/>
+            <Footer />
         </div>
     );
 };

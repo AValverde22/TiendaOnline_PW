@@ -18,7 +18,7 @@ const authMiddleware = (req, res, next) => {
 
         // 2. Verificar el token usando la variable de entorno
         // Si JWT_SECRET no existe, usamos una cadena vacía para forzar error (seguridad)
-        const secret = process.env.JWT_SECRET || 'SecretoInseguroParaDev';
+        const secret = process.env.JWT_SECRET || 'EstaEsUnaFraseSuperSecretaYLargaQueNadieAdivinara123!';
 
         const decoded = jwt.verify(token, secret);
 
@@ -42,4 +42,25 @@ const authMiddleware = (req, res, next) => {
     }
 };
 
-export default authMiddleware;
+const verifyAdmin = (req, res, next) => {
+    // Asumimos que authMiddleware ya se ejecutó y req.usuario existe
+    if (!req.usuario) {
+        return res.status(401).json({
+            success: false,
+            message: "Acceso denegado: Usuario no autenticado."
+        });
+    }
+
+    // Verificamos el rol (Case sensitive según como lo guardes en BD, usualmente 'ADMIN')
+    if (req.usuario.rol !== 'ADMIN') {
+        return res.status(403).json({
+            success: false,
+            message: "Acceso denegado: Se requieren permisos de administrador."
+        });
+    }
+
+    next();
+};
+
+export { authMiddleware, verifyAdmin };
+export default authMiddleware; // Default export para compatibilidad si alguien importa sin llaves

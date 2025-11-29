@@ -1,11 +1,10 @@
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs'; // Asegúrate de haber instalado: npm install bcryptjs
+import bcrypt from 'bcryptjs';
 import repository from '../repositories/usuario.js';
 
-const SECRET_KEY = process.env.JWT_SECRET || 'SeSuponeQueAquiDeberiaDeIrUnTokenXDDD';
+const SECRET_KEY = process.env.JWT_SECRET || 'EstaEsUnaFraseSuperSecret aYLargaQueNadieAdivinara123!';
 
 const generarToken = (usuario) => {
-    // Guardamos ID, Username y Rol en el token (útil para el frontend)
     return jwt.sign(
         {
             id: usuario.id,
@@ -21,7 +20,6 @@ const registrar = async (datosUsuario) => {
     try {
         const { correo, username, password, nombre, apellido, direccion, telefono, distrito } = datosUsuario;
 
-        // Validación de campos mínimos obligatorios
         if (!correo || !username || !password || !nombre || !apellido) {
             return {
                 success: false,
@@ -29,17 +27,13 @@ const registrar = async (datosUsuario) => {
             };
         }
 
-        // Preparamos el objeto.
-        // NOTA: No encriptamos el password aquí porque el Hook del Modelo lo hará.
         const nuevoUsuario = {
-            ...datosUsuario, // Copiamos todo (incluyendo img, rol, estado si vienen)
+            ...datosUsuario,
             createdAt: new Date(),
             updatedAt: new Date()
         };
 
         const usuarioCreado = await repository.create(nuevoUsuario);
-
-        // Generamos token para que el usuario quede logueado al registrarse
         const token = generarToken(usuarioCreado);
 
         return {
@@ -56,7 +50,6 @@ const registrar = async (datosUsuario) => {
 
     } catch (error) {
         console.error('Error en servicio registrar:', error);
-        // Manejo de error de duplicados (SequelizeUniqueConstraintError)
         if (error.name === 'SequelizeUniqueConstraintError') {
             return { success: false, message: 'El correo o username ya están registrados.' };
         }
@@ -70,25 +63,20 @@ const login = async ({ correo, password }) => {
             return { success: false, message: 'Usuario y/o contraseña requeridos.' };
         }
 
-        // 1. Buscamos el usuario
         const usr = await repository.findByEmail(correo);
 
         if (!usr) {
             return { success: false, message: 'Credenciales inválidas.' };
         }
 
-        // 2. Comparamos contraseña
-        // usr.password viene de la BD (encriptada)
         const isPasswordValid = await bcrypt.compare(password, usr.password);
 
         if (!isPasswordValid) {
             return { success: false, message: 'Credenciales inválidas.' };
         }
 
-        // 3. Generamos Token
         const token = generarToken(usr);
 
-        // 4. Retornamos datos limpios (sin password)
         return {
             success: true,
             message: 'Inicio de sesión exitoso',
@@ -97,7 +85,7 @@ const login = async ({ correo, password }) => {
                 id: usr.id,
                 nombre: usr.nombre,
                 apellido: usr.apellido,
-                username: usr.username, // CORREGIDO: antes decía usr.usuario
+                username: usr.username,
                 rol: usr.rol,
                 img: usr.img
             }
@@ -117,5 +105,30 @@ const findAll = async () => {
     }
 };
 
-const usuarioService = { registrar, login, findAll };
+const update = async (id, datos) => {
+    try {
+        const usuarioActualizado = await repository.update(id, datos);
+
+        if (!usuarioActualizado) {
+            return {
+                success: false,
+                message: "Usuario no encontrado."
+            };
+        }
+
+        return {
+            success: true,
+            message: "Usuario actualizado exitosamente.",
+            usuario: usuarioActualizado
+        };
+    } catch (error) {
+        console.error("Error en servicio update:", error);
+        return {
+            success: false,
+            message: error.message || "Error al actualizar usuario."
+        };
+    }
+};
+
+const usuarioService = { registrar, login, findAll, update };
 export default usuarioService;

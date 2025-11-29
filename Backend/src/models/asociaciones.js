@@ -5,28 +5,23 @@ import DetalleOrden from './detalleOrden.js';
 import Categoria from './categoria.js';
 import Serie from './serie.js';
 
-// --- Usuario y Orden ---
-// Un usuario tiene muchas ordenes
+// --- USUARIO <-> ORDEN ---
 Usuario.hasMany(Orden, { foreignKey: 'usuarioId', as: 'ordenes' });
-// Una orden pertenece a un usuario
 Orden.belongsTo(Usuario, { foreignKey: 'usuarioId', as: 'usuario' });
 
-// --- Producto y Detalle ---
+// --- PRODUCTO <-> DETALLE ---
 Producto.hasMany(DetalleOrden, { foreignKey: 'productoId' });
 DetalleOrden.belongsTo(Producto, { foreignKey: 'productoId', as: 'producto' });
 
 // --- CATEGORÍA <-> PRODUCTO ---
-// Una categoría tiene muchos productos
 Categoria.hasMany(Producto, { foreignKey: 'categoriaId', as: 'productos' });
-
-// Un producto pertenece a una categoría
 Producto.belongsTo(Categoria, { foreignKey: 'categoriaId', as: 'categoria' });
 
-// Relación: Una Serie tiene muchos Productos
+// --- SERIE <-> PRODUCTO ---
 Serie.hasMany(Producto, { foreignKey: 'serieId', as: 'productos' });
 Producto.belongsTo(Serie, { foreignKey: 'serieId', as: 'serie' });
 
-// Relación: Una Orden tiene muchos Detalles
+// --- ORDEN <-> DETALLE ---
 Orden.hasMany(DetalleOrden, { foreignKey: 'ordenId', as: 'detalles' });
 DetalleOrden.belongsTo(Orden, { foreignKey: 'ordenId', as: 'orden' });
 

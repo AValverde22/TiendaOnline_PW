@@ -1,4 +1,4 @@
-.DashboardAdmin{
+.DashboardAdmin {
   width: 100%;
   min-height: 100vh;
   background: #fff;
@@ -9,43 +9,47 @@
 .cards ul {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center; 
-  gap: 20px; 
+  justify-content: center;
+  gap: 20px;
   list-style-type: none;
   padding: 0;
   margin: 20px 0;
 }
 
-#abajo{
+#abajo {
   margin-bottom: 1.5em;
 }
 
-.separation{
+.separation {
   display: flex;
   gap: 20px;
 }
 
 .cards li {
-  background:#2ea32b; 
-  color: white; 
-  border-radius: 8px; 
+  background: #2ea32b;
+  color: white;
+  border-radius: 8px;
   padding: 20px 30px;
   gap: 1em;
-
   display: flex;
-  align-items: center; 
-  
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
-  
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.dashboard-content{
+.dashboard-content {
   display: flex;
   gap: 2em;
   align-items: flex-start;
 }
 
-.btn-ver-todos{
+.dashboard-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  padding: 20px;
+}
+
+.btn-ver-todos {
   font-family: 'Orbitron';
   text-align: center;
   font-size: 13px;
@@ -53,124 +57,269 @@
   color: white;
   border: none;
   border-radius: 8px;
-  padding: 10px;
+  padding: 10px 15px;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
-.btn-ver-todos:hover{
+.btn-ver-todos:hover {
   background-color: #218838;
 }
 
-.user-table{
-  padding: 1.5em;
+/* Estilos de tabla mejorados con selectores específicos */
+.tabla-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.DashboardAdmin .user-table, .AllUsersPage .user-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  border: 1px solid #ccc;
-  border-collapse: separate;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
-
-.user-table th, .user-table td{
+.DashboardAdmin .user-table th, .AllUsersPage .user-table th,
+.DashboardAdmin .user-table td, .AllUsersPage .user-table td {
   padding: 12px 15px;
-  vertical-align: middle;
+  vertical-align: middle !important;
+  text-align: left;
+  border-bottom: 1px solid #eee;
 }
-
-.user-table thead th{
+.DashboardAdmin .user-table thead, .AllUsersPage .user-table thead {
+  background: #f8f9fa;
+}
+.DashboardAdmin .user-table thead th, .AllUsersPage .user-table thead th {
   font-size: 0.9em;
   color: #555;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.DashboardAdmin .user-table tbody tr, .AllUsersPage .user-table tbody tr {
+  transition: background-color 0.2s;
+}
+.DashboardAdmin .user-table tbody tr:hover, .AllUsersPage .user-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+.DashboardAdmin .user-table tbody tr.selected-row, .AllUsersPage .user-table tbody tr.selected-row {
+  /* Sin fondo */
+}
+.DashboardAdmin .user-table tbody tr:last-child td, .AllUsersPage .user-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.DashboardAdmin .user-table .user-cell, .AllUsersPage .user-table .user-cell {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+.DashboardAdmin .user-table .user-cell img, .AllUsersPage .user-table .user-cell img {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  flex-shrink: 0 !important;
+}
+.DashboardAdmin .user-table .action-buttons, .AllUsersPage .user-table .action-buttons {
+  display: flex !important;
+  gap: 8px !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
 }
 
-.user-cell{
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.user-cell img{
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.accion-buttons button {
-  border: none;
-  padding: 8px 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 0.85em;
-}
-
-.action-buttons{
-  display: flex;
-  gap: 8px;
-}
-
-
-.action-buttons button{
+.DashboardAdmin .action-buttons button, .AllUsersPage .action-buttons button {
   border: none;
   padding: 8px 12px;
   border-radius: 6px;
   cursor: pointer;
   font-family: 'Orbitron';
   font-size: 0.85em;
-  transition: filter 0.2s, box-shadow 0.2s;   
+  transition: filter 0.2s, box-shadow 0.2s;
   white-space: nowrap;
+  margin: 0;
+  line-height: 1;
 }
 
-.action-buttons button:hover {
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    filter: brightness(0.95);
+/* Asegurar botones centrados en células de acción */
+.DashboardAdmin .user-table .action-buttons button, .AllUsersPage .user-table .action-buttons button {
+  vertical-align: middle;
+}
+.DashboardAdmin .action-buttons button:hover, .AllUsersPage .action-buttons button:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  filter: brightness(0.95);
 }
 
-.btn-action{
+.btn-action {
   color: white;
 }
 
-.btn-deactivate, .btn-activate{
+.btn-deactivate,
+.btn-activate {
   background-color: #2ea32b;
 }
 
-/*Fila Superior*/
-.top-row{
+.btn-ver-detalle {
+  background-color: #007bff;
+  color: white;
+  font-family: 'Orbitron';
+}
+
+/* Paginación */
+.pagination {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pagination button:hover {
+  background: #f0f0f0;
+}
+
+.pagination button.active {
+  background: #2ea32b;
+  color: white;
+  border-color: #2ea32b;
+}
+
+/* Filas */
+.top-row {
   display: flex;
   gap: 2em;
   align-items: flex-start;
 }
 
-.column-left{
+.bottom-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.column-left {
   flex: 3;
   display: flex;
   flex-direction: column;
+  gap: 15px;
 }
 
-.column-header{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.column-right{
+.column-right {
   flex: 2;
   display: flex;
   flex-direction: column;
+  gap: 15px;
 }
 
-.user-avatar {
-  width: 160px;
-  height: 160px;
-  object-fit: contain;
+.column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
-.user-detail-card{
+.column-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+/* Detalle del usuario */
+.user-detail-card {
   background: #ffffff;
   padding: 1.5em;
-  margin: 0%;
+  margin: 0;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
-  border: 1px solid #ccc;
-  border-collapse: separate;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #eee;
 }
 
 .user-info {
   display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.user-text {
+  flex: 1;
+}
+
+.user-text h2 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 1.5em;
+}
+
+.user-text p {
+  margin: 8px 0;
+  color: #666;
+  font-size: 0.95em;
+}
+
+.user-text strong {
+  color: #2ea32b;
+  margin-right: 5px;
+}
+
+.user-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.order-history h3 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 1.2em;
+}
+
+.user-detail-placeholder {
+  text-align: center;
+  color: #999;
+  padding: 40px;
+  font-size: 1.1em;
+}
+
+/* Estados */
+.estado-activo {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.estado-inactivo {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+/* Estados de órdenes */
+.status-entregado {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.status-p-entregar {
+  color: #ffc107;
+  font-weight: 600;
+}
+
+/* Pantalla de carga */
+.loading-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 1.2em;
+  color: #666;
 }

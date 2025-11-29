@@ -3,49 +3,8 @@ import { Link } from 'react-router-dom';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import usuariosApi from '../../api/usuariosApi';
+import TableComponent from './TableComponent';
 import './ListadoUsuarios.css';
-
-
-const AllUsersTable = ({ users }) => {
-    return (
-        <div className="all-users-table-container">
-            <table className="user-table">
-                <thead>
-                    <tr>
-                        <th>Usuario</th>
-                        <th>Fecha de Registro</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {users.map(user => (
-                        <tr key={user.id}>
-                            <td className="user-cell">
-                                <img src={user.img || `https://i.pravatar.cc/150?u=${user.id}`} alt={`Avatar de ${user.nombre}`} />
-                                <div className="user-cell-info">
-                                    <span>{`${user.nombre} ${user.apellido}`}</span>
-                                    <small>{user.correo}</small>
-                                </div>
-                            </td>
-                            <td>{user.fechaRegistro}</td>
-                            <td><span className={user.estado === 'activo' ? 'estado-activo' : 'estado-inactivo'}>{user.estado}</span></td>
-                            <td className="action-buttons">
-                                <button className={`btn-action ${user.estado === 'activo' ? 'btn-deactivate' : 'btn-activate'}`}>
-                                    {user.estado === 'activo' ? 'Desactivar' : 'Activar'}
-                                </button>
-                                
-                                <Link to={`/admin/users/${user.id}`}>
-                                    <button className="btn-detalles">Ver Perfil</button>
-                                </Link>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    );
-};
 
 const ListadoUsuarios = () => {
     const [allUsers, setAllUsers] = useState([]);
@@ -67,12 +26,11 @@ const ListadoUsuarios = () => {
             .filter(user => user.rol !== 'admin')
             .map(user => ({
                 ...user,
-
                 fechaRegistro: simulateRegistrationDate(user.id)
             }));
         setAllUsers(usuariosFiltrados);
     }, []);
-    
+
     const filteredUsers = useMemo(() => {
         if (!searchTerm) {
             return allUsers;
@@ -85,10 +43,48 @@ const ListadoUsuarios = () => {
         );
     }, [searchTerm, allUsers]);
 
+    // --- CONFIGURACIÓN DE COLUMNAS ---
+    const columns = [
+        {
+            header: 'Usuario',
+            className: 'user-cell',
+            render: (user) => (
+                <>
+                    <img src={user.img || `https://i.pravatar.cc/150?u=${user.id}`} alt={`Avatar de ${user.nombre}`} />
+                    <div className="user-cell-info">
+                        <span>{`${user.nombre} ${user.apellido}`}</span>
+                        <small>{user.correo}</small>
+                    </div>
+                </>
+            )
+        },
+        { header: 'Fecha de Registro', accessor: 'fechaRegistro' },
+        {
+            header: 'Estado',
+            render: (user) => (
+                <span className={user.estado === 'activo' ? 'estado-activo' : 'estado-inactivo'}>{user.estado}</span>
+            )
+        },
+        {
+            header: 'Acciones',
+            className: 'action-buttons',
+            render: (user) => (
+                <>
+                    <button className={`btn-action ${user.estado === 'activo' ? 'btn-deactivate' : 'btn-activate'}`}>
+                        {user.estado === 'activo' ? 'Desactivar' : 'Activar'}
+                    </button>
+
+                    <Link to={`/admin/users/${user.id}`}>
+                        <button className="btn-detalles">Ver Perfil</button>
+                    </Link>
+                </>
+            )
+        }
+    ];
 
     return (
         <div className='AllUsersPage'>
-            <Header/>
+            <Header />
             <main className='main-content'>
                 <div className="page-header">
                     <h1>Gestión de Usuarios</h1>
@@ -101,14 +97,14 @@ const ListadoUsuarios = () => {
                         />
                     </div>
                 </div>
-                
-                {filteredUsers.length > 0 ? (
-                    <AllUsersTable users={filteredUsers} />
-                ) : (
-                    <p className="no-results">No se encontraron usuarios que coincidan con la búsqueda.</p>
-                )}
+
+                <TableComponent
+                    columns={columns}
+                    data={filteredUsers}
+                    emptyMessage="No se encontraron usuarios que coincidan con la búsqueda."
+                />
             </main>
-            <Footer/>
+            <Footer />
         </div>
     );
 };

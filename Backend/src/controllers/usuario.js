@@ -54,11 +54,35 @@ const findAll = async (req, res) => {
     }
 };
 
-// Asumiendo que quisieras un update básico también
 const update = async (req, res) => {
-    // Implementación pendiente en servicio, pero dejamos la estructura
-    return res.status(501).json({ message: "No implementado aún" });
-}
+    try {
+        const { id } = req.params;
+        const datos = req.body;
+
+        // Validar que el ID existe
+        if (!id) {
+            return res.status(400).json({
+                success: false,
+                message: "ID de usuario requerido."
+            });
+        }
+
+        // Llamar al servicio para actualizar
+        const resultado = await usuarioService.update(id, datos);
+
+        if (!resultado.success) {
+            return res.status(404).json(resultado);
+        }
+
+        return res.status(200).json(resultado);
+    } catch (error) {
+        console.error("Error en update:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Error al actualizar usuario."
+        });
+    }
+};
 
 const controller = { registrar, login, update, findAll };
 export default controller;

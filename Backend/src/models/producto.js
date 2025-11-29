@@ -15,17 +15,14 @@ const Producto = sequelize.define('producto', {
         }
     },
     descripcion: {
-        // Usamos TEXT para permitir descripciones largas (más de 255 caracteres)
         type: DataTypes.TEXT,
         allowNull: true
     },
     precio: {
-        // DECIMAL es vital para dinero. (10, 2) significa 10 dígitos totales, 2 decimales.
-        // Ejemplo máximo: 99999999.99
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
         validate: {
-            min: 0 // No permitir precios negativos
+            min: 0
         }
     },
     stock: {
@@ -46,12 +43,9 @@ const Producto = sequelize.define('producto', {
         defaultValue: true
     },
     // === LLAVE FORÁNEA EXPLÍCITA ===
-    // Aunque Sequelize la crea sola en las asociaciones, es buena práctica 
-    // definirla aquí para saber que existe y poder pasarla al crear el producto.
     categoriaId: {
         type: DataTypes.INTEGER,
         allowNull: false // Todo producto DEBE tener una categoría
-        // references: { model: 'categorias', key: 'id' } // Opcional, Sequelize lo maneja en asociaciones
     },
     serieId: {
         type: DataTypes.INTEGER,
@@ -59,7 +53,7 @@ const Producto = sequelize.define('producto', {
     }
 }, {
     tableName: 'productos',
-    timestamps: true // Crea createdAt y updatedAt
+    timestamps: true
 });
 
 export default Producto;

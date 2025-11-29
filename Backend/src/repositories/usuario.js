@@ -1,14 +1,10 @@
 import model from '../models/usuario.js';
 import RepositoryBase from './RepositoryBase.js';
-// Importamos sequelize para operaciones complejas si fuera necesario
 import sequelize from '../config/database.js';
 import Usuario from '../models/usuario.js';
-// Importamos Orden y demás DESDE asociaciones para asegurar que las relaciones estén cargadas
 import { Orden, DetalleOrden, Producto } from '../models/asociaciones.js';
 
 const repository = new RepositoryBase(model);
-
-// Extensión del repositorio base con métodos específicos de Usuario
 
 repository.findByUsername = async function (username) {
     try {
@@ -21,7 +17,6 @@ repository.findByUsername = async function (username) {
 
 repository.findByEmail = async function (email) {
     try {
-        // Mapeo: parametro 'email' busca en columna 'correo'
         return await model.findOne({ where: { correo: email } });
     } catch (error) {
         console.error('Error en findByEmail:', error);
@@ -29,10 +24,9 @@ repository.findByEmail = async function (email) {
     }
 };
 
-// Implementación de getTotalSpent
 repository.getTotalSpent = async function (idUsuario) {
     try {
-        return 0; // Placeholder hasta que implementemos Órdenes
+        return 0;
     } catch (error) {
         console.error('Error en getTotalSpent:', error);
         return 0;
@@ -42,15 +36,15 @@ repository.getTotalSpent = async function (idUsuario) {
 repository.findAll = async function () {
     try {
         const usuarios = await Usuario.findAll({
-            attributes: { exclude: ['password'] }, // Seguridad: No devolver contraseñas
+            attributes: { exclude: ['password'] },
             include: [
                 {
                     model: Orden,
-                    as: 'ordenes', // Debe coincidir con el alias de asociaciones.js
+                    as: 'ordenes',
                     include: [
                         {
                             model: DetalleOrden,
-                            as: 'detalles', // Debe coincidir con el alias
+                            as: 'detalles',
                             include: [
                                 {
                                     model: Producto,
@@ -61,11 +55,32 @@ repository.findAll = async function () {
                     ]
                 }
             ],
-            order: [['id', 'ASC']] // Ordenar por ID
+            order: [['id', 'ASC']]
         });
 
         return usuarios;
     } catch (error) {
+        throw error;
+    }
+};
+
+repository.update = async function (id, datos) {
+    try {
+        const usuario = await Usuario.findByPk(id);
+
+        if (!usuario) {
+            return null;
+        }
+
+        await usuario.update(datos);
+
+        const usuarioActualizado = await Usuario.findByPk(id, {
+            attributes: { exclude: ['password'] }
+        });
+
+        return usuarioActualizado;
+    } catch (error) {
+        console.error('Error en update:', error);
         throw error;
     }
 };
