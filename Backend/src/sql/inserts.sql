@@ -48,3 +48,37 @@ INSERT INTO "productos" ("nombre", "descripcion", "precio", "stock", "img", "cat
     ('Gears of War', 'Marcus Fenix lidera al Escuadrón Delta...', 250.00, 10, 'https://cdn.gearsofwar.com/gearsofwar/sites/2/2024/05/GearsOfWar_thumbnail-664e4063714f1.png', 1, 3, true, NOW(), NOW()),
     ('Gears of War 2', 'El Escuadrón Delta lleva la guerra al interior del mundo subterráneo...', 250.00, 10, 'https://i.ytimg.com/vi/IU9H36cwfFc/maxresdefault.jpg', 1, 3, true, NOW(), NOW()),
     ('Gears of War 3', 'Marcus y su equipo luchan por la supervivencia final...', 250.00, 10, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9Y8z3rbd7q5p2d6KFcVkt_HzsohXRMFz_Tw&s', 1, 3, true, NOW(), NOW());
+
+INSERT INTO "usuarios" 
+("correo", "username", "password", "nombre", "apellido", "rol", "estado", "direccion", "telefono", "distrito", "img", "createdAt", "updatedAt") 
+VALUES
+(
+    'admin@tienda.com', 
+    'admin', 
+    '$2b$10$DhQ2bHOttISXHS3dA8xgPuPQpwdZTVIthOE5KK1IpAi27aX9XthAq', -- Pass: 123456
+    'Admin', 
+    'Principal', 
+    'ADMIN', 
+    'ACTIVO', 
+    'Av. Central 123', 
+    '999888777', 
+    'Lima', 
+    'https://cdn-icons-png.flaticon.com/512/147/147142.png', 
+    NOW(), 
+    NOW()
+),
+(
+    'user@tienda.com', 
+    'usuario1', 
+    '$2b$10$DhQ2bHOttISXHS3dA8xgPuPQpwdZTVIthOE5KK1IpAi27aX9XthAq', -- Pass: 123456
+    'Juan', 
+    'Perez', 
+    'USER', 
+    'ACTIVO', 
+    'Jr. Los Olivos 456', 
+    '987654321', 
+    'Miraflores', 
+    'https://cdn-icons-png.flaticon.com/512/147/147144.png', 
+    NOW(), 
+    NOW()
+);

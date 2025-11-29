@@ -1,38 +1,40 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+// Asumiendo que estas rutas siguen existiendo en tu proyecto
 import productosApi from "../../api/productosApi.js";
 import seriesApi from "../../api/seriesApi.js";
 import "./Header.css";
 
+// IMPORTAMOS EL CONTEXTO
+import { useUser } from "../../api/context/UserContext.jsx";
+
 const Header = () => {
   const [busqueda, setBusqueda] = useState("");
-  const [usuario, setUsuario] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const usuarioGuardado = localStorage.getItem("usuarioLogueado");
-    if (usuarioGuardado) {
-      setUsuario(JSON.parse(usuarioGuardado));
-    }
-  }, []);
+  // CONECTAMOS CON EL CONTEXTO
+  // Extraemos lo que necesitamos: el usuario actual, si está logueado y la función de salir
+  const { user, isAuthenticated, logout } = useUser();
 
   const handleLogout = () => {
-    localStorage.removeItem("usuarioLogueado");
-    setUsuario(null);
+    logout(); // El contexto se encarga de limpiar el localStorage y el estado
     navigate("/login");
   };
 
+  // --- Lógica de Búsqueda (Se mantiene igual) ---
   const manejarBusqueda = (e) => setBusqueda(e.target.value);
 
   const ejecutarBusqueda = () => {
     const texto = busqueda.trim().toLowerCase();
     if (!texto) return;
 
-    const productos = productosApi.get();
-    const series = seriesApi.get();
+    // Nota: Asegúrate de que estos .get() sean síncronos o manejen promesas correctamente.
+    // Si son asíncronos en el futuro, agrega async/await aquí.
+    const productos = productosApi.get() || [];
+    const series = seriesApi.get() || [];
 
     const productoEncontrado = productos.find(
-      (p) => p.titulo.toLowerCase() === texto
+      (p) => p.titulo && p.titulo.toLowerCase() === texto
     );
 
     if (productoEncontrado) {
@@ -41,7 +43,7 @@ const Header = () => {
     }
 
     const serieEncontrada = series.find(
-      (s) => s.nombre.toLowerCase() === texto
+      (s) => s.nombre && s.nombre.toLowerCase() === texto
     );
 
     if (serieEncontrada) {
@@ -51,10 +53,10 @@ const Header = () => {
 
     navigate(`/Producto?query=${encodeURIComponent(texto)}`);
   };
+  // ---------------------------------------------
 
   return (
     <header className="header-bar">
-      {/* Contenedor principal centrado */}
       <div className="container">
         <div className="header-top">
           {/* LOGO */}
@@ -72,6 +74,7 @@ const Header = () => {
               placeholder="Buscar producto, serie o marca..."
               value={busqueda}
               onChange={(e) => manejarBusqueda(e)}
+              onKeyDown={(e) => e.key === 'Enter' && ejecutarBusqueda()} // UX: Buscar al dar Enter
             />
             <button onClick={ejecutarBusqueda}>🔍</button>
           </div>
@@ -85,39 +88,49 @@ const Header = () => {
               🛒 Carrito
             </button>
 
-            {!usuario ? (
-              // Usuario no logueado
+            {/* === AQUÍ OCURRE LA MAGIA DEL CONTEXTO === */}
+
+            {!isAuthenticated ? (
+              // CASO 1: NO LOGUEADO
               <Link to="/login">
                 <button className="btn-user">👤 Iniciar Sesión</button>
               </Link>
-            ) : usuario.rol === "admin" ? (
-              // Usuario admin
-              <div className="user-menu">
-                <Link to="/DashboardAdmin">
-                  <button className="btn-user">⚙️ Panel Admin</button>
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="btn-logout"
-                >
-                  Cerrar Sesión
-                </button>
-              </div>
             ) : (
-              // Usuario normal logueado
-              <div className="user-menu">
-                <Link to="/MainPageUser">
-                  <button className="btn-user">
-                    👤 {usuario.nombre || "Mi Perfil"}
+              // CASO 2: LOGUEADO (Verificamos Rol)
+              // Nota: En BD insertamos 'ADMIN', así que comparamos con mayúsculas
+              user?.rol === "ADMIN" ? (
+                // Sub-caso: Es Admin
+                <div className="user-menu">
+                  {/* Botón extra solo para ver que es admin */}
+                  <span style={{ fontSize: '12px', marginRight: '5px', fontWeight: 'bold' }}>[ADMIN]</span>
+
+                  <Link to="/DashboardAdmin">
+                    <button className="btn-user">⚙️ Panel Admin</button>
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="btn-logout"
+                  >
+                    Cerrar Sesión
                   </button>
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="btn-logout"
-                >
-                  Cerrar Sesión
-                </button>
-              </div>
+                </div>
+              ) : (
+                // Sub-caso: Usuario Normal
+                <div className="user-menu">
+                  <Link to="/MainPageUser">
+                    <button className="btn-user">
+                      {/* Usamos user.nombre del contexto */}
+                      👤 {user?.nombre || "Mi Perfil"}
+                    </button>
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="btn-logout"
+                  >
+                    Cerrar Sesión
+                  </button>
+                </div>
+              )
             )}
           </div>
         </div>

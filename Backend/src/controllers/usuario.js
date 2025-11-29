@@ -41,11 +41,24 @@ const login = async (req, res) => {
     }
 };
 
+const findAll = async (req, res) => {
+    try {
+        const users = await usuarioService.findAll();
+        return res.status(200).json(users);
+    } catch (error) {
+        console.error("Error al obtener usuarios:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Error al recuperar los usuarios."
+        });
+    }
+};
+
 // Asumiendo que quisieras un update básico también
 const update = async (req, res) => {
     // Implementación pendiente en servicio, pero dejamos la estructura
     return res.status(501).json({ message: "No implementado aún" });
 }
 
-const controller = { registrar, login, update };
+const controller = { registrar, login, update, findAll };
 export default controller;

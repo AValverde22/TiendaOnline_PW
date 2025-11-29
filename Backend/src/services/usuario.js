@@ -108,5 +108,14 @@ const login = async ({ correo, password }) => {
     }
 };
 
-const usuarioService = { registrar, login };
+const findAll = async () => {
+    try {
+        return await repository.findAll();
+    } catch (error) {
+        console.error("Error en servicio findAll:", error);
+        throw error;
+    }
+};
+
+const usuarioService = { registrar, login, findAll };
 export default usuarioService;

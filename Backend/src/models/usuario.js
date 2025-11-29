@@ -59,6 +59,4 @@ const Usuario = sequelize.define('usuario', {
     }
 });
 
-// FALTAN ORDENES
-
 export default Usuario;

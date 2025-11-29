@@ -52,6 +52,10 @@ const Producto = sequelize.define('producto', {
         type: DataTypes.INTEGER,
         allowNull: false // Todo producto DEBE tener una categoría
         // references: { model: 'categorias', key: 'id' } // Opcional, Sequelize lo maneja en asociaciones
+    },
+    serieId: {
+        type: DataTypes.INTEGER,
+        allowNull: true // No todos los productos pertenecen a una serie
     }
 }, {
     tableName: 'productos',

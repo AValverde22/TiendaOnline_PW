@@ -2,6 +2,9 @@ import model from '../models/usuario.js';
 import RepositoryBase from './RepositoryBase.js';
 // Importamos sequelize para operaciones complejas si fuera necesario
 import sequelize from '../config/database.js';
+import Usuario from '../models/usuario.js';
+// Importamos Orden y demás DESDE asociaciones para asegurar que las relaciones estén cargadas
+import { Orden, DetalleOrden, Producto } from '../models/asociaciones.js';
 
 const repository = new RepositoryBase(model);
 
@@ -27,25 +30,43 @@ repository.findByEmail = async function (email) {
 };
 
 // Implementación de getTotalSpent
-// NOTA: Esto requiere que existan tablas 'ordenes' o 'pedidos' relacionadas.
-// Por ahora, retornamos 0 para que no rompa el código si lo llamas.
 repository.getTotalSpent = async function (idUsuario) {
     try {
-        // EJEMPLO DE CÓMO SERÍA CON SEQUELIZE RAW QUERY (PostgreSQL):
-        /*
-        const [results] = await sequelize.query(`
-            SELECT SUM(total) as total_gastado 
-            FROM ordenes 
-            WHERE "usuarioId" = :id
-        `, { replacements: { id: idUsuario } });
-        
-        return results[0].total_gastado || 0;
-        */
-
         return 0; // Placeholder hasta que implementemos Órdenes
     } catch (error) {
         console.error('Error en getTotalSpent:', error);
         return 0;
+    }
+};
+
+repository.findAll = async function () {
+    try {
+        const usuarios = await Usuario.findAll({
+            attributes: { exclude: ['password'] }, // Seguridad: No devolver contraseñas
+            include: [
+                {
+                    model: Orden,
+                    as: 'ordenes', // Debe coincidir con el alias de asociaciones.js
+                    include: [
+                        {
+                            model: DetalleOrden,
+                            as: 'detalles', // Debe coincidir con el alias
+                            include: [
+                                {
+                                    model: Producto,
+                                    as: 'producto'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            order: [['id', 'ASC']] // Ordenar por ID
+        });
+
+        return usuarios;
+    } catch (error) {
+        throw error;
     }
 };
 

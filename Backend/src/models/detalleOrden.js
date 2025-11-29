@@ -23,7 +23,7 @@ const DetalleOrden = sequelize.define('detalle_orden', {
         allowNull: false
     }
 }, {
-    tableName: 'detalles_ordenes',
+    tableName: 'detalle_orden',
     timestamps: false // Generalmente no necesitamos timestamps para el detalle
 });
 

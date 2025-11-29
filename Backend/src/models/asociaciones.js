@@ -26,4 +26,8 @@ Producto.belongsTo(Categoria, { foreignKey: 'categoriaId', as: 'categoria' });
 Serie.hasMany(Producto, { foreignKey: 'serieId', as: 'productos' });
 Producto.belongsTo(Serie, { foreignKey: 'serieId', as: 'serie' });
 
+// Relación: Una Orden tiene muchos Detalles
+Orden.hasMany(DetalleOrden, { foreignKey: 'ordenId', as: 'detalles' });
+DetalleOrden.belongsTo(Orden, { foreignKey: 'ordenId', as: 'orden' });
+
 export { Usuario, Orden, Producto, DetalleOrden, Categoria, Serie };

@@ -2,6 +2,7 @@ import app from './app.js';
 import sequelize from './src/config/database.js';
 import './src/models/asociaciones.js';
 
+
 // === 1. IMPORTAR TU FUNCIÓN PLANTAR ===
 // Ajusta la ruta dependiendo de dónde guardaste plantar.js
 import { sembrarBaseDeDatos } from './src/sql/plantar.js';
