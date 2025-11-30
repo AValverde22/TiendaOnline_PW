@@ -1,136 +1,258 @@
-
-.AllOrdersPage .main-content {
-    padding: 2em;
-    background-color: #f8f9fa;
+/* --- LAYOUT GENERAL --- */
+.AllUsersPage {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f4f6f9;
+    /* Fondo gris claro suave */
 }
 
+.AllUsersPage .main-content {
+    padding: 30px;
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* --- HEADER DE LA PÁGINA --- */
 .page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2em;
+    margin-bottom: 25px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .page-header h1 {
     margin: 0;
     color: #333;
+    font-size: 1.5rem;
+    font-weight: 700;
 }
 
-.search-bar {
-    display: flex;
-    gap: 10px;
-}
-
+/* --- BARRA DE BÚSQUEDA --- */
 .search-bar input {
-    width: 350px;
-    padding: 12px 15px;
-    border-radius: 8px;
+    width: 300px;
+    padding: 10px 15px;
     border: 1px solid #ddd;
-    font-size: 1rem;
-}
-
-.search-button {
-    border: none;
-    background-color: #28a745;
-    color: white;
-    padding: 0 25px;
     border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s;
+    font-size: 0.95rem;
+    transition: border-color 0.3s;
+    background-color: #fafafa;
 }
 
-.search-button:hover {
-    background-color: #218838;
+.search-bar input:focus {
+    outline: none;
+    border-color: #2ea32b;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(46, 163, 43, 0.1);
 }
 
-.all-orders-table-container {
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+/* --- CONTENEDOR DE LA TABLA --- */
+.table-wrapper {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     overflow: hidden;
+    /* Para bordes redondeados */
+    padding: 20px;
 }
 
-.order-table {
+/* --- ESTILOS DE LA TABLA (Heredados de TableComponent) --- */
+.user-table {
     width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed; 
+    border-collapse: separate;
+    border-spacing: 0;
 }
 
-.order-table th,
-.order-table td {
-    padding: 16px 20px;
+.user-table th {
+    background-color: #f8f9fa;
+    color: #666;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    padding: 15px 20px;
     text-align: left;
-    border-bottom: 1px solid #eee;
-    vertical-align: middle;
+    border-bottom: 2px solid #eee;
 }
 
-.order-table tbody tr:last-child td {
+.user-table td {
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+    color: #444;
+}
+
+.user-table tr:hover td {
+    background-color: #f9fbfd;
+    /* Highlight al pasar mouse */
+}
+
+.user-table tr:last-child td {
     border-bottom: none;
 }
 
-.order-table thead th {
-    background-color: #f9f9f9;
-    font-weight: 600;
-    color: #555;
-    text-transform: uppercase;
+/* --- COLUMNA: USUARIO (Avatar + Texto) --- */
+.user-col {
+    width: 40%;
 }
 
-.order-table th:nth-child(1) { width: 10%; } /* #ORDEN */
-.order-table th:nth-child(2) { width: 25%; } /* Usuario */
-.order-table th:nth-child(3) { width: 20%; } /* Fecha */
-.order-table th:nth-child(4) { width: 15%; } /* Total */
-.order-table th:nth-child(5) { width: 15%; } /* Estado */
-.order-table th:nth-child(6) { width: 15%; } /* Acciones */
-
-.user-cell {
+.user-cell-content {
     display: flex;
     align-items: center;
     gap: 15px;
 }
-.user-cell img {
+
+.user-avatar-small {
     width: 45px;
     height: 45px;
     border-radius: 50%;
     object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.order-id {
-    color: #28a745;
-    font-weight: bold;
+.user-info-text {
+    display: flex;
+    flex-direction: column;
 }
 
-.status-entregado, .status-por-entregar {
-    font-weight: bold;
+.user-name {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
 }
 
-.status-entregado {
-    color: #28a745; 
+.user-email {
+    color: #888;
+    font-size: 0.85rem;
 }
 
-.status-por-entregar {
-    color: #dc3545; 
-}
+/* --- COLUMNA: ESTADO --- */
+/* --- FIJAR ANCHO DE COLUMNAS PARA EVITAR MOVIMIENTOS --- */
 
-.btn-ver-detalle-orden {
-    border: none;
-    background-color: #28a745;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-weight: bold;
-    font-size: 0.85em;
-    cursor: pointer;
-    transition: filter 0.2s;
-}
-
-.btn-ver-detalle-orden:hover {
-    filter: brightness(0.9);
-}
-
-.no-results {
+/* 1. Columna de Estado: Ancho fijo y centrado */
+.status-col {
+    width: 120px;
+    /* Espacio suficiente para la palabra más larga */
     text-align: center;
-    padding: 3em;
-    font-size: 1.2em;
-    color: #777;
+    white-space: nowrap;
+    /* Evita que se rompa en dos líneas */
+}
+
+/* 2. Columna de Acciones: Ancho fijo para los botones */
+.actions-col {
+    width: 200px;
+    /* Ajusta según el tamaño de tus botones */
+    text-align: right;
+    /* O center, según prefieras */
+    white-space: nowrap;
+}
+
+/* 3. El Badge (Píldora): Truco para que mida lo mismo sea ACTIVO o INACTIVO */
+.status-badge {
+    padding: 6px 0;
+    /* Quitamos padding lateral y usamos width */
+    width: 90px;
+    /* ANCHO FIJO: La píldora siempre medirá 90px */
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    display: inline-block;
+    /* Necesario para que el width funcione */
+    text-align: center;
+    /* Centramos el texto dentro de la píldora */
+}
+
+.status-badge.active {
+    background-color: #e6f8e7;
+    color: #2ea32b;
+    border: 1px solid #2ea32b;
+}
+
+.status-badge.inactive {
+    background-color: #fff5f5;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    display: inline-block;
+}
+
+.status-badge.active {
+    background-color: #e6f8e7;
+    color: #2ea32b;
+    border: 1px solid #2ea32b;
+}
+
+.status-badge.inactive {
+    background-color: #fff5f5;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+/* --- COLUMNA: ACCIONES --- */
+.action-buttons-wrapper {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    /* Alineados a la izquierda dentro de su celda */
+    align-items: center;
+}
+
+button {
+    font-family: 'Orbitron', sans-serif;
+    /* Tu fuente personalizada */
+    cursor: pointer;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.btn-status-toggle {
+    min-width: 110px;
+    color: white;
+}
+
+.btn-deactivate {
+    background-color: #dc3545;
+    /* Rojo */
+}
+
+.btn-deactivate:hover {
+    background-color: #c82333;
+}
+
+.btn-activate {
+    background-color: #28a745;
+    /* Verde */
+}
+
+.btn-activate:hover {
+    background-color: #218838;
+}
+
+.btn-view-profile {
+    background-color: #007bff;
+    /* Azul */
+    color: white;
+}
+
+.btn-view-profile:hover {
+    background-color: #0069d9;
 }

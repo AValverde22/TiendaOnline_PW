@@ -1,56 +1,60 @@
-import repository from '../repositories/producto.js';
+import repository from '../repositories/producto.js'
 
 const findAll = async (req, res) => {
-    const data = await repository.findAll();
-    return sendResults(data, res, "No hay productos registrados.");
-};
+    const respuesta = await repository.findAll();
+    return sendResults(respuesta, res, "No se han encontrado registros.");
+}
 
+// CORREGIDO: Renombrado de findOne a findById para coincidir con la ruta
 const findById = async (req, res) => {
-    const { id } = req.params;
-    const data = await repository.findById(id);
-    return sendResults(data, res, "Producto no encontrado.");
-};
+    const id = req.params.id;
+    const result = await repository.findById(id); 
+    return sendResults(result, res, "Producto no encontrado.");
+}
 
-// Esta es la función que usará tu página de 'MostrarProductos'
+// NUEVO: Agregado para coincidir con la ruta /categoria/:nombreCategoria
 const findByCategoria = async (req, res) => {
     const { nombreCategoria } = req.params;
-    const data = await repository.findAllByCategoryName(nombreCategoria);
-
-    return sendResults(data, res, `No se encontraron productos en la categoría: ${nombreCategoria}`);
-};
+    // Llamamos a la función especial que creaste en el repositorio
+    const result = await repository.findAllByCategoryName(nombreCategoria);
+    
+    return sendResults(result, res, "No se encontraron productos en esta categoría.");
+}
 
 const create = async (req, res) => {
-    const data = await repository.create(req.body);
-    return sendResults(data, res, "Error al crear producto.");
-};
+    const object = req.body;
+    const createObj = await repository.create(object);
+    return sendResults(createObj, res, "Error al crear el objeto.");
+}
 
-// === NUEVO: UPDATE ===
 const update = async (req, res) => {
-    const { id } = req.params;
-    const data = await repository.update(id, req.body);
-    return sendResults(data, res, "Error al actualizar producto.");
-};
+    const id = req.params.id;
+    const object = req.body;
+    const updatedObj = await repository.update(id, object);
+    return sendResults(updatedObj, res, "Error al actualizar el objeto.");
+}
 
-// === NUEVO: REMOVE ===
 const remove = async (req, res) => {
-    const { id } = req.params;
-    const data = await repository.delete(id);
-    return sendResults(data, res, "Error al eliminar producto.");
-};
+    const id = req.params.id;
+    // Asegúrate que tu RepositoryBase tenga el método .remove o .delete
+    const result = await repository.remove(id); 
+    return sendResults(result, res, "Error al eliminar el objeto.");
+}
 
-const sendResults = (result, res, errorMsg) => {
+// Función auxiliar para no repetir código
+const sendResults = (result, res, message) => {
     if (result) return res.status(200).json(result);
-    else return res.status(404).json({ message: errorMsg });
-};
+    else return res.status(500).json({ message });
+}
 
-// === IMPORTANTE: AGREGARLAS AL EXPORT ===
-const controller = {
-    findAll,
-    findById,
-    findByCategoria,
-    create,
-    update,
-    remove
+// EXPORTACIÓN CORREGIDA: Ahora incluye findById y findByCategoria
+const controller = { 
+    findAll, 
+    findById, 
+    findByCategoria, 
+    create, 
+    update, 
+    remove 
 };
 
 export default controller;

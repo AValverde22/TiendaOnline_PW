@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
-import productosApi from '../../api/productosApi';
+import productosApi from '../../api/productosApi'; // Asegúrate de que este archivo exista
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import ConfirmModal from './ConfirmModal';
@@ -8,19 +8,27 @@ import "./ListadoProductos.css";
 
 function ListadoProductos() {
     const [productos, setProductos] = useState([]);
-    
-
     const [currentPage, setCurrentPage] = useState(1);
     const [productsPerPage] = useState(6); 
-
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [productToDelete, setProductToDelete] = useState(null);
     
+    // --- 1. CORRECCIÓN DE LA CARGA DE DATOS ---
     useEffect(() => {
+        const cargarProductos = async () => {
+            try {
+                // Usamos findAll y await
+                const respuesta = await productosApi.findAll();
+                
+                // Validación de seguridad (Array vs Objeto)
+                const lista = Array.isArray(respuesta) ? respuesta : (respuesta.data || []);
+                setProductos(lista);
+            } catch (error) {
+                console.error("Error al cargar productos:", error);
+            }
+        };
 
-                const productos1 =  productosApi.get();
-                setProductos(productos1)
-         
+        cargarProductos();
     }, []);
 
     const handleOpenModal = (product) => {
@@ -33,24 +41,31 @@ function ListadoProductos() {
         setProductToDelete(null);
     };
 
-
-    const handleConfirmDelete = () => {
+    // --- 2. CORRECCIÓN DEL BORRADO (CONEXIÓN A BD) ---
+    const handleConfirmDelete = async () => {
         if (productToDelete) {
+            try {
+                // Llamamos a la API para borrar en la Base de Datos
+                await productosApi.remove(productToDelete.id);
 
-            const updatedProducts = productos.filter(p => p.id !== productToDelete.id);
-            setProductos(updatedProducts);
+                // Si la API responde bien, actualizamos la UI
+                const updatedProducts = productos.filter(p => p.id !== productToDelete.id);
+                setProductos(updatedProducts);
+            } catch (error) {
+                console.error("Error al eliminar producto:", error);
+                alert("No se pudo eliminar el producto.");
+            }
         }
-
         handleCloseModal();
     };
-
 
     const indexOfLastProduct = currentPage * productsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
     
-    const currentProducts = productos.slice(indexOfFirstProduct, indexOfLastProduct);
-    
-    const totalPages = Math.ceil(productos.length / productsPerPage);
+    // Validación por si productos es undefined al inicio
+    const safeProducts = Array.isArray(productos) ? productos : [];
+    const currentProducts = safeProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+    const totalPages = Math.ceil(safeProducts.length / productsPerPage);
 
     return (
         <div className="product-list-container">
@@ -63,16 +78,15 @@ function ListadoProductos() {
                             <button className="btn-search">Buscar</button>
                         </div>
                         <div className="action-buttons-group">
-                            <Link to="/ListarCategorias" className="btn-primary">
-                            <button className="btn-filter">Categorías</button>
+                            <Link to="/ListarCategorias">
+                                <button className="btn-filter btn-primary">Categorías</button>
                             </Link>
-                            <Link to="/AgregarProducto" className="btn-primary">
-                                <button className="btn-filter">Agregar Producto</button>
+                            <Link to="/AgregarProducto">
+                                <button className="btn-filter btn-primary">Agregar Producto</button>
                             </Link>
                         </div>
                     </div>
                 </div>
-
 
             <div className="table-wrapper">
                 <table>
@@ -87,31 +101,38 @@ function ListadoProductos() {
                         </tr>
                     </thead>
                     <tbody>
-
-                        {currentProducts.map((product) => (
-                            <tr key={product.id}>
-                                <td className="product-id">#{product.id}</td>
-                                <td>
-                                    <div className="product-name-cell">
-                                        <img 
-                                            src={product.img || 'https://via.placeholder.com/40'} 
-                                            alt={product.nombre} 
-                                            className="producto-imagen" 
-                                        />
-                                        <span>{product.nombre}</span>
-                                    </div>
-                                </td>
-                                <td>{product.presentacion}</td>
-                                <td className="product-description">{product.descripcion}</td>
-                                <td>{product.stock}</td>
-                                <td>
-                                    <div className="product-actions">
-                                        <Link to={`/EditarProducto/${product.id}`} className="bton-editar">✏️</Link>
-                                        <button className="bton-borrar" onClick={() => handleOpenModal(product)}>🗑️</button>
-                                    </div>
+                        {currentProducts.length > 0 ? (
+                            currentProducts.map((product) => (
+                                <tr key={product.id}>
+                                    <td className="product-id">#{product.id}</td>
+                                    <td>
+                                        <div className="product-name-cell">
+                                            <img 
+                                                src={product.img || 'https://via.placeholder.com/40'} 
+                                                alt={product.nombre} 
+                                                className="producto-imagen" 
+                                            />
+                                            <span>{product.nombre}</span>
+                                        </div>
+                                    </td>
+                                    <td>{product.presentacion}</td>
+                                    <td className="product-description">{product.descripcion}</td>
+                                    <td>{product.stock}</td>
+                                    <td>
+                                        <div className="product-actions">
+                                            <Link to={`/EditarProducto/${product.id}`} className="bton-editar">✏️</Link>
+                                            <button className="bton-borrar" onClick={() => handleOpenModal(product)}>🗑️</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="6" style={{textAlign: 'center', padding: '20px'}}>
+                                    No hay productos registrados.
                                 </td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
             </div>
@@ -127,11 +148,12 @@ function ListadoProductos() {
                     </button>
                 ))}
             </div>
+            
             <ConfirmModal
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
                 onConfirm={handleConfirmDelete}
-                productName={productToDelete ? productToDelete.titulo : ''}
+                productName={productToDelete ? productToDelete.nombre : ''} // Cambié .titulo por .nombre (según tu DB)
             />
             <Footer />
         </div>
@@ -139,5 +161,3 @@ function ListadoProductos() {
 }
 
 export default ListadoProductos;
-    
-    

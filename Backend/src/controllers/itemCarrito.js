@@ -1,0 +1,51 @@
+import repository from '../repositories/itemCarrito.js'
+
+const findAll = async (req, res) => {
+    const respuesta = await repository.findAll();
+
+    return sendResults(respuesta, res, "No se han encontrado registros.");
+}
+
+const findOne = async (req, res) => {
+    const id = req.params.id;
+    const result = await repository.findById(id);
+
+    return sendResults(result, res, "No se han encontrado registros.");
+}
+
+const findByName = async (req, res) => {
+    const name = req.params.name;
+    const result = await repository.findByName(name);
+
+    return sendResults(result, res, "No se han encontrado registros.");
+}
+
+const create = async (req, res) => {
+    const object = req.body;
+    const createObj = await repository.create(object);
+
+    return sendResults(createObj, res, "Error al crear el objeto.");
+}
+
+const update = async (req, res) => {
+    const id = req.params.id;
+    const object = req.body;
+    const updatedObj = await repository.update(id, object);
+
+    return sendResults(updatedObj, res, "Error al actualizar el objeto.");
+}
+
+const remove = async (req, res) => {
+    const id = req.params.id;
+    const result = await repository.delete(id);
+
+    return sendResults(result, res, "Error al eliminar el objeto.");
+}
+
+const sendResults = (result, res, message) => {
+    if (result) return res.status(200).json(result);
+    else return res.status(500).json({ message });
+}
+
+const controller = { findAll, findOne, findByName, create, update, remove };
+export default controller;

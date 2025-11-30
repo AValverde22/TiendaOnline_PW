@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from 'react';
-import base from '../base.js'; // <--- Importamos TU archivo base
+import base from '../base.js';
 
 const UserContext = createContext();
 
@@ -8,22 +8,19 @@ export const UserProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    // 1. Efecto para verificar sesión al recargar (F5)
+    // 1. VERIFICAR SESIÓN AL RECARGAR
     useEffect(() => {
-        const checkLogin = async () => {
+        const checkLogin = () => {
             const token = localStorage.getItem('token');
-            const usuarioGuardado = localStorage.getItem('tienda_usuario'); // Usamos tu clave
+            // CAMBIO: Usamos 'usuario' para estandarizar
+            const usuarioGuardado = localStorage.getItem('usuario'); 
 
             if (token && usuarioGuardado) {
                 try {
-                    // Opcional: Validar token con backend
-                    // Nota: base.get requiere el token como segundo parámetro según tu código
-                    // await base.get('usuarios/verify', token); 
-
                     setUser(JSON.parse(usuarioGuardado));
                     setIsAuthenticated(true);
                 } catch (error) {
-                    console.error("Sesión inválida o expirada");
+                    console.error("Error al leer sesión");
                     logout();
                 }
             }
@@ -33,60 +30,45 @@ export const UserProvider = ({ children }) => {
         checkLogin();
     }, []);
 
-    // 2. Función de Login
+    // 2. LOGIN CENTRALIZADO
     const login = async (credenciales) => {
         try {
-            // USANDO TU BASE.JS
-            // Nota: Como base.js ya tiene 'http://localhost:3005/api/', 
-            // solo pasamos 'usuarios/login' (sin barra al inicio para evitar //)
             const data = await base.post('usuarios/login', credenciales);
 
-            // Validamos la respuesta lógica del backend
             if (data.success) {
-                const usuarioData = data.usuario || data; // Ajuste por si el backend varía estructura
+                const usuarioData = data.usuario || data; 
 
+                // Actualizamos el estado de React
                 setUser(usuarioData);
                 setIsAuthenticated(true);
 
-                // Guardar en localStorage
-                localStorage.setItem('tienda_usuario', JSON.stringify(usuarioData));
+                // CAMBIO: Guardamos en localStorage con la clave 'usuario'
+                localStorage.setItem('usuario', JSON.stringify(usuarioData));
+                
                 if (data.token) localStorage.setItem('token', data.token);
 
-                return { success: true };
+                // Devolvemos el usuario para que el Login sepa qué rol tiene
+                return { success: true, usuario: usuarioData }; 
             } else {
-                // El backend respondió (ej: 401), pero con success: false
-                return {
-                    success: false,
-                    message: data.message || 'Credenciales incorrectas'
-                };
+                return { success: false, message: data.message || 'Credenciales incorrectas' };
             }
 
         } catch (error) {
             console.error("Error crítico en login:", error);
-            // Esto captura errores de red (servidor apagado) o fallos de JSON
-            return {
-                success: false,
-                message: "Error de conexión con el servidor"
-            };
+            return { success: false, message: "Error de conexión" };
         }
     };
 
-    // 3. Función de Logout
+    // 3. LOGOUT
     const logout = () => {
         setUser(null);
         setIsAuthenticated(false);
-        localStorage.removeItem('tienda_usuario');
+        localStorage.removeItem('usuario'); // Borramos 'usuario'
         localStorage.removeItem('token');
     };
 
     return (
-        <UserContext.Provider value={{
-            user,
-            isAuthenticated,
-            loading,
-            login,
-            logout
-        }}>
+        <UserContext.Provider value={{ user, isAuthenticated, loading, login, logout }}>
             {!loading && children}
         </UserContext.Provider>
     );
@@ -94,8 +76,6 @@ export const UserProvider = ({ children }) => {
 
 export const useUser = () => {
     const context = useContext(UserContext);
-    if (!context) {
-        throw new Error('useUser debe usarse dentro de un UserProvider');
-    }
+    if (!context) throw new Error('useUser debe usarse dentro de un UserProvider');
     return context;
 };

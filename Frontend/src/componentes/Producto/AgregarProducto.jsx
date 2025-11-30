@@ -1,126 +1,223 @@
 import { useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import productosApi from '../../api/productosApi';
+import categoriasApi from '../../api/categoriasApi';
+import { useUser } from '../../api/context/UserContext'; 
 import "./AgregarProducto.css";
 
+// Estado inicial (Sin presentación)
 const inicial = {
   nombre: '',
-  presentacion: '',
-  categoria: '',
+  marca: '',
+  categoriaId: '', 
   descripcion: '',
   stock: 0,
+  precio: 0,       
   img: '',
-
 };
-function AgregarProducto(){
+
+function AgregarProducto() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const esEdicion = Boolean(id);
 
-    const Editar = Boolean(id); 
+    const { user } = useUser();              // <-- AÑADIDO
+    const token = localStorage.getItem("token"); // <-- AÑADIDO
 
     const [producto, setProducto] = useState(inicial);
+    const [listaCategorias, setListaCategorias] = useState([]);
     const [loading, setLoading] = useState(false);
 
-
+    // 1. Cargar Datos
     useEffect(() => {
-
-        if (Editar) {
+        const cargarDatos = async () => {
             try {
-                
-                const productoFiltradoArray = productosApi.get().filter(p => p.id == id);
+                // Cargar Categorías
+                const respCategorias = await categoriasApi.findAll();
+                const cats = Array.isArray(respCategorias) ? respCategorias : (respCategorias.data || []);
+                setListaCategorias(cats);
 
-                
-                if (productoFiltradoArray.length > 0) {
-                    
-                    setProducto(productoFiltradoArray[0]); 
-                } else {
-                    console.error(`Producto con ID ${id} no encontrado.`);
-                    
-                    navigate('/admin/productos');
+                // Cargar Producto si es edición
+                if (esEdicion) {
+                    const dataProducto = await productosApi.findById(id);
+                    if (dataProducto) {
+                        setProducto({
+                            ...dataProducto,
+                            categoriaId: dataProducto.categoriaId || '',
+                            stock: Number(dataProducto.stock),
+                            precio: Number(dataProducto.precio)
+                        });
+                    } else {
+                        alert("Producto no encontrado");
+                        navigate('/ListadoProductos');
+                    }
                 }
             } catch (error) {
-                console.error("Error al filtrar los productos:", error);
+                console.error("Error al cargar datos:", error);
             }
-        }
-  
-    }, [id, Editar, navigate]);
+        };
 
+        cargarDatos();
+    }, [id, esEdicion, navigate]);
+
+    // 2. Manejo de Inputs
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setProducto({ ...producto, [name]: value });
     };
 
-    const handleSubmit = (e) => {
+    // 3. Guardar
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        
+        setLoading(true);
+
+        const datosAEnviar = {
+            nombre: producto.nombre,
+            marca: producto.marca,
+            descripcion: producto.descripcion,
+            img: producto.img,
+            stock: Number(producto.stock),
+            precio: Number(producto.precio),
+            categoriaId: Number(producto.categoriaId),
+        };
+
         try {
-            if (Editar) { 
-
-                productosApi.update(id, producto);
-                alert('Producto actualizado con éxito');
-
+            if (esEdicion) { 
+                await productosApi.update(id, datosAEnviar, token);   // <-- TOKEN AÑADIDO
+                alert('✅ Producto actualizado con éxito');
             } else {
-
-                productosApi.insert(producto);
-                alert('Producto creado con éxito');
+                await productosApi.create(datosAEnviar, token);       // <-- TOKEN AÑADIDO
+                alert('✅ Producto creado con éxito');
             }
-            
+
+            navigate('/ListadoProductos');
 
         } catch (error) {
-            console.error("Error al guardar el producto:", error);
-            alert('Hubo un error al guardar el producto');
+            console.error("Error al guardar:", error);
+            alert('❌ Hubo un error al guardar. Revisa la consola.');
+
+        } finally {
+            setLoading(false);
         }
     };
 
-
     return (
-        
-        <div className="form-container">
+        <div className="form-page-container">
             <Header />
-
-            <h1>{Editar ? 'Editar' : 'Agregar un producto'}</h1>
-            
-            <form onSubmit={handleSubmit}>
-                <div className="form-left">
-                <label>Nombre del producto</label>
-                <input type="text" name="nombre" value={producto.nombre} onChange={handleInputChange} />
+            <div className="form-content-wrapper">
+                <h1 className="form-title">{esEdicion ? 'Editar Producto' : 'Agregar Nuevo Producto'}</h1>
                 
-                <label>Presentación</label>
-                <input type="text" name="presentacion" value={producto.presentacion} onChange={handleInputChange} />
+                <form onSubmit={handleSubmit} className="product-form">
+                    <div className="form-grid">
+                        {/* COLUMNA IZQUIERDA */}
+                        <div className="form-column">
+                            <div className="form-group">
+                                <label>Nombre del producto</label>
+                                <input 
+                                    type="text" 
+                                    name="nombre" 
+                                    value={producto.nombre} 
+                                    onChange={handleInputChange} 
+                                    required 
+                                    placeholder="Ej: Laptop Gamer"
+                                />
+                            </div>
 
-                <label>Categoría</label>
-                <select name="categoria" value={producto.categoria} onChange={handleInputChange}>
-                    <option value="">Seleccione una categoría</option>
-                    <option value="Consola">Consola</option>
-                    <option value="Videojuegos">Videojuegos</option>
-                    <option value="Coleccionable">Coleccionable</option>
-                </select>
-                
-                <label>Descripción</label>
-                <textarea name="descripcion" value={producto.descripcion} onChange={handleInputChange}></textarea>
-                </div>
+                            <div className="form-group">
+                                <label>Marca</label>
+                                <input 
+                                    type="text" 
+                                    name="marca" 
+                                    value={producto.marca} 
+                                    onChange={handleInputChange} 
+                                    required 
+                                    placeholder="Ej: Sony, Dell, Nintendo"
+                                />
+                            </div>
 
-                <div className="form-right">
-                <label>Imagen</label>
-                <div className="image-uploader">
-                    {producto.img ? <img src={producto.img} alt="Vista previa"/> : <span>Arrastra tu imagen o selecciónala</span>}
-                </div>
-                <input type="text" name="img" placeholder="URL de la imagen" value={producto.img} onChange={handleInputChange} />
+                            <div className="form-group">
+                                <label>Categoría</label>
+                                <select 
+                                    name="categoriaId" 
+                                    value={producto.categoriaId} 
+                                    onChange={handleInputChange}
+                                    required
+                                >
+                                    <option value="">Seleccione una categoría</option>
+                                    {listaCategorias.map((cat) => (
+                                        <option key={cat.id} value={cat.id}>
+                                            {cat.nombre}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            
+                            <div className="form-group">
+                                <label>Descripción</label>
+                                <textarea 
+                                    name="descripcion" 
+                                    value={producto.descripcion} 
+                                    onChange={handleInputChange}
+                                    rows="5"
+                                ></textarea>
+                            </div>
+                        </div>
 
+                        {/* COLUMNA DERECHA */}
+                        <div className="form-column">
+                            <label>Imagen</label>
+                            <div className="image-preview-box">
+                                {producto.img ? (
+                                    <img src={producto.img} alt="Vista previa" />
+                                ) : (
+                                    <div className="placeholder-text">Vista previa</div>
+                                )}
+                            </div>
+                            <input 
+                                type="text" 
+                                name="img" 
+                                className="img-input"
+                                placeholder="Pega la URL de la imagen aquí" 
+                                value={producto.img} 
+                                onChange={handleInputChange} 
+                            />
 
-                <label>Stock</label>
-                <input type="number" name="stock" value={producto.stock} onChange={handleInputChange} />
-                
-                <button type="submit" className="btn-submit">
-                    {Editar ? '✓ Editar producto' : '✓ Crear producto'}
-                </button>
-                </div>
-            </form>
+                            <div className="form-row-split">
+                                <div className="form-group">
+                                    <label>Stock</label>
+                                    <input 
+                                        type="number" 
+                                        name="stock" 
+                                        value={producto.stock} 
+                                        onChange={handleInputChange} 
+                                        min="0"
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Precio (S/)</label>
+                                    <input 
+                                        type="number" 
+                                        name="precio" 
+                                        value={producto.precio} 
+                                        onChange={handleInputChange} 
+                                        step="0.01"
+                                        min="0"
+                                    />
+                                </div>
+                            </div>
+                            
+                            <button type="submit" className="btn-submit" disabled={loading}>
+                                {loading ? 'Guardando...' : (esEdicion ? 'Guardar Cambios' : 'Crear Producto')}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
             <Footer />
         </div>
-  );
+    );
 }
+
 export default AgregarProducto;

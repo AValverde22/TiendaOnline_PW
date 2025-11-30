@@ -49,6 +49,23 @@
   padding: 20px;
 }
 
+.btn-status-toggle {
+    min-width: 105px; /* <--- CLAVE: Mide lo mismo diga "Activar" o "Desactivar" */
+    text-align: center;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 0;
+    
+    color: white;
+    font-family: 'Orbitron', sans-serif;
+    border-radius: 6px;
+    font-size: 0.85em;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
 .btn-ver-todos {
   font-family: 'Orbitron';
   text-align: center;
@@ -103,9 +120,7 @@
 .DashboardAdmin .user-table tbody tr:hover, .AllUsersPage .user-table tbody tr:hover {
   background-color: #f8f9fa;
 }
-.DashboardAdmin .user-table tbody tr.selected-row, .AllUsersPage .user-table tbody tr.selected-row {
-  /* Sin fondo */
-}
+
 .DashboardAdmin .user-table tbody tr:last-child td, .AllUsersPage .user-table tbody tr:last-child td {
   border-bottom: none;
 }
@@ -303,17 +318,63 @@
   font-weight: 600;
 }
 
+.status-col {
+    width: 130px; /* Suficiente para "INACTIVO" */
+    text-align: center;
+    white-space: nowrap;
+}
+
+.actions-col {
+    width: 220px; /* Ajusta según el tamaño de tus botones */
+    white-space: nowrap;
+}
+
+.status-badge {
+    padding: 6px 0;
+    width: 90px;    /* <--- CLAVE: Siempre mide 90px */
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    display: inline-block;
+    text-align: center;
+}
+
+.status-badge.inactive {
+    background-color: #fff5f5;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+/* 4. Contenedor de Botones de Acción (Fijo a la izquierda) */
+.action-buttons-wrapper {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    align-items: center;
+}
+
 /* Estados de órdenes */
 .status-entregado {
   color: #28a745;
   font-weight: 600;
 }
 
-.status-p-entregar {
-  color: #ffc107;
-  font-weight: 600;
+.status-p-entregar, .status-pendiente {
+  background-color: #fff9db; /* Fondo amarillo suave */
+    color: #f59f00;            /* Texto naranja/mostaza */
+    border: 1px solid #f59f00; /* Borde del mismo color */
+    
+    /* Aseguramos que herede la forma de píldora si no lo hace */
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    display: inline-block;
+    text-align: center;
+    min-width: 90px;
 }
-
 /* Pantalla de carga */
 .loading-screen {
   display: flex;

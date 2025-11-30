@@ -1,136 +1,259 @@
-.AllOrdersPage .main-content {
-    padding: 2em;
-    background-color: #f8f9fa;
+/* =========================================
+   1. LAYOUT GENERAL (Igual que DashboardAdmin)
+   ========================================= */
+.AllOrdersPage {
+  width: 100%;
+  min-height: 100vh;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
 }
 
+.AllOrdersPage .main-content {
+  padding: 30px;
+  flex: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Header de la página (Título y Buscador) */
 .page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .page-header h1 {
-    margin: 0;
-    color: #333;
+  margin: 0;
+  color: #333;
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
+/* Buscador */
 .search-bar {
-    display: flex;
-    gap: 10px;
+  display: flex;
+  gap: 10px;
 }
 
 .search-bar input {
-    width: 350px;
-    padding: 12px 15px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    font-size: 1rem;
+  width: 300px;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: border-color 0.3s;
 }
 
-.search-button {
-    border: none;
-    background-color: #28a745;
-    color: white;
-    padding: 0 25px;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s;
+.search-bar input:focus {
+  outline: none;
+  border-color: #2ea32b;
+  box-shadow: 0 0 0 3px rgba(46, 163, 43, 0.1);
 }
 
-.search-button:hover {
-    background-color: #218838;
+/* =========================================
+   2. TABLA (Hereda estilos de DashboardAdmin)
+   ========================================= */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-top: 20px;
 }
 
-.all-orders-table-container {
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    overflow: hidden;
+/* Estilos específicos si TableComponent usa clases genéricas, 
+   pero aquí forzamos estilos para asegurar consistencia */
+.AllOrdersPage table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.order-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed; 
+.AllOrdersPage th, 
+.AllOrdersPage td {
+  padding: 12px 15px;
+  vertical-align: middle !important;
+  text-align: left;
+  border-bottom: 1px solid #eee;
 }
 
-.order-table th,
-.order-table td {
-    padding: 16px 20px;
-    text-align: left;
-    border-bottom: 1px solid #eee;
-    vertical-align: middle;
+.AllOrdersPage thead {
+  background: #f8f9fa;
 }
 
-.order-table tbody tr:last-child td {
-    border-bottom: none;
+.AllOrdersPage thead th {
+  font-size: 0.9em;
+  color: #555;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.order-table thead th {
-    background-color: #f9f9f9;
+.AllOrdersPage tbody tr:hover {
+  background-color: #f8f9fa;
+  transition: background-color 0.2s;
+}
+
+/* =========================================
+   3. CELDAS ESPECIALES (Usuario, ID, etc.)
+   ========================================= */
+
+/* Celda de Usuario (Avatar + Nombre) */
+.user-col {
+  width: 30%; /* Ancho relativo */
+}
+
+.user-cell-content {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+.user-avatar-small {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  flex-shrink: 0 !important;
+  border: 1px solid #eee;
+}
+
+.user-info-text {
+  font-weight: 500;
+  color: #333;
+}
+
+/* Celda de Fecha */
+.date-col {
+  width: 15%;
+  color: #666;
+}
+
+/* =========================================
+   4. ESTADOS Y BOTONES (Estilo Fijo)
+   ========================================= */
+
+/* Columna Estado: Ancho Fijo */
+.status-col {
+    width: 130px; 
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Columna Acciones: Ancho Fijo */
+.actions-col {
+    width: 150px; 
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Badge (Píldora) de Estado */
+.status-badge {
+    padding: 6px 0;
+    width: 100px;    /* Ancho fijo para alineación perfecta */
+    border-radius: 20px;
+    font-size: 0.8rem;
     font-weight: 600;
-    color: #555;
-    text-transform: uppercase;
+    text-transform: capitalize;
+    display: inline-block;
+    text-align: center;
 }
 
-.order-table th:nth-child(1) { width: 10%; } /* #ORDEN */
-.order-table th:nth-child(2) { width: 25%; } /* Usuario */
-.order-table th:nth-child(3) { width: 20%; } /* Fecha */
-.order-table th:nth-child(4) { width: 15%; } /* Total */
-.order-table th:nth-child(5) { width: 15%; } /* Estado */
-.order-table th:nth-child(6) { width: 15%; } /* Acciones */
-
-.user-cell {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-.user-cell img {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    object-fit: cover;
+/* Variantes de Estado */
+.status-badge.active, 
+.status-entregado { 
+    background-color: #e6f8e7; 
+    color: #2ea32b; 
+    border: 1px solid #2ea32b; 
 }
 
-.order-id {
-    color: #28a745;
-    font-weight: bold;
-}
-
-/* ESTADOS Y BOTONES  */
-.status-entregado, .status-por-entregar {
-    font-weight: bold;
-}
-
-.status-entregado {
-    color: #28a745; 
-}
-
-.status-por-entregar {
+.status-badge.inactive, 
+.status-por-entregar { 
+    background-color: #fff5f5; 
     color: #dc3545; 
+    border: 1px solid #dc3545; 
 }
 
-.btn-ver-detalle-orden {
-    border: none;
-    background-color: #28a745;
+.status-badge.pending {
+    background-color: #fff8e1;
+    color: #fbc02d;
+    border: 1px solid #fbc02d;
+}
+
+/* Wrapper para los botones de acción */
+.action-buttons-wrapper {
+    display: flex;
+    justify-content: center; /* Centrado en órdenes */
+    align-items: center;
+}
+
+/* Botón Ver Detalle (Estilo Orbitron Azul) */
+.btn-view-profile, .btn-ver-detalle-orden {
+    background-color: #007bff;
     color: white;
-    padding: 8px 12px;
+    border: none;
+    padding: 8px 15px;
     border-radius: 6px;
-    font-weight: bold;
-    font-size: 0.85em;
     cursor: pointer;
-    transition: filter 0.2s;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.85em;
+    transition: background-color 0.2s;
+    text-decoration: none; /* Por si es un Link */
+    display: inline-block;
 }
 
-.btn-ver-detalle-orden:hover {
-    filter: brightness(0.9);
+.btn-view-profile:hover, .btn-ver-detalle-orden:hover {
+    background-color: #0069d9;
+}
+
+/* =========================================
+   5. PAGINACIÓN Y OTROS
+   ========================================= */
+.pagination {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pagination button:hover {
+  background: #f0f0f0;
+}
+
+.pagination button.active {
+  background: #2ea32b;
+  color: white;
+  border-color: #2ea32b;
 }
 
 .no-results {
-    text-align: center;
-    padding: 3em;
-    font-size: 1.2em;
-    color: #777;
+  text-align: center;
+  padding: 40px;
+  color: #777;
+  font-size: 1.1em;
+}
+
+.loading-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 1.2em;
+  color: #666;
 }

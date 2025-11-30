@@ -46,22 +46,34 @@ INSERT INTO "productos" ("nombre", "descripcion", "precio", "stock", "img", "cat
     ('Gears of War 3', 'Marcus y su equipo luchan por la supervivencia final...', 250.00, 10, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9Y8z3rbd7q5p2d6KFcVkt_HzsohXRMFz_Tw&s', 1, 3, true, NOW(), NOW());
 
 -- =============================================
--- 4. INSERTAR USUARIOS
+-- 4. INSERTAR USUARIOS (Con fechaRegistro variada)
 -- =============================================
 INSERT INTO "usuarios" 
-("correo", "username", "password", "nombre", "apellido", "rol", "estado", "direccion", "telefono", "distrito", "img", "createdAt", "updatedAt") 
+("correo", "username", "password", "nombre", "apellido", "rol", "estado", "direccion", "telefono", "distrito", "img", "fechaRegistro", "createdAt", "updatedAt") 
 VALUES
 (
     'admin@tienda.com', 'admin', 
     '$2b$10$DhQ2bHOttISXHS3dA8xgPuPQpwdZTVIthOE5KK1IpAi27aX9XthAq', -- Pass: 123456
     'Admin', 'Principal', 'ADMIN', 'ACTIVO', 'Av. Central 123', '999888777', 'Lima', 
-    'https://cdn-icons-png.flaticon.com/512/147/147142.png', NOW(), NOW()
+    'https://cdn-icons-png.flaticon.com/512/147/147142.png', 
+    '2023-01-15 08:00:00', -- El admin se registró hace tiempo
+    NOW(), NOW()
 ),
 (
     'user@tienda.com', 'usuario1', 
     '$2b$10$DhQ2bHOttISXHS3dA8xgPuPQpwdZTVIthOE5KK1IpAi27aX9XthAq', -- Pass: 123456
     'Juan', 'Perez', 'USER', 'ACTIVO', 'Jr. Los Olivos 456', '987654321', 'Miraflores', 
-    'https://cdn-icons-png.flaticon.com/512/147/147144.png', NOW(), NOW()
+    'https://cdn-icons-png.flaticon.com/512/147/147144.png', 
+    '2024-05-20 14:30:00', -- Juan se registró en mayo
+    NOW(), NOW()
+),
+(
+    'maria@tienda.com', 'maria123', 
+    '$2b$10$DhQ2bHOttISXHS3dA8xgPuPQpwdZTVIthOE5KK1IpAi27aX9XthAq', -- Pass: 123456
+    'Maria', 'Gomez', 'USER', 'INACTIVO', 'Av. Larco 789', '999111222', 'San Isidro', 
+    'https://cdn-icons-png.flaticon.com/512/147/147133.png', 
+    '2024-11-01 10:15:00', -- Maria se registró recientemente
+    NOW(), NOW()
 );
 
 -- =============================================

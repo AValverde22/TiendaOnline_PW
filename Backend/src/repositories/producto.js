@@ -4,14 +4,16 @@ import RepositoryBase from "./RepositoryBase.js";
 
 const repository = new RepositoryBase(model);
 
-// Función extra: Buscar productos filtrados por el NOMBRE de la categoría
+// Función personalizada para buscar por nombre de categoría
 repository.findAllByCategoryName = async (nombreCategoria) => {
     try {
         const productos = await model.findAll({
             include: [{
                 model: Categoria,
-                as: 'categoria', // Debe coincidir con 'as' en asociaciones.js
-                where: { nombre: nombreCategoria } // Filtro mágico
+                // Asegúrate de que en 'src/models/asociaciones.js' definiste: 
+                // Producto.belongsTo(Categoria, { as: 'categoria' ... })
+                as: 'categoria', 
+                where: { nombre: nombreCategoria }
             }]
         });
         return productos;

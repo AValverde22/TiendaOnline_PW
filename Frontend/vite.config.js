@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     host: true, // permite conexiones externas
     allowedHosts: [
-      'ariya-implicit-lilith.ngrok-free.dev' // 👈 dominio que te dio ngrok
+      'sheathy-arely-zesty.ngrok-free.dev' // 👈 dominio que te dio ngrok
     ]
   }
 })

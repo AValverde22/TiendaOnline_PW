@@ -10,46 +10,43 @@ const Producto = sequelize.define('producto', {
     nombre: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: {
-            notEmpty: true // Evita guardar nombres vacíos ""
-        }
+        validate: { notEmpty: true }
     },
+    // --- NUEVO CAMPO OBLIGATORIO SEGÚN TU IMAGEN ---
+    marca: {
+        type: DataTypes.STRING,
+        allowNull: false, // Asumo que es obligatorio
+        defaultValue: 'Genérico'
+    },
+    // -----------------------------------------------
     descripcion: {
         type: DataTypes.TEXT,
         allowNull: true
-    },
-    precio: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
-        validate: {
-            min: 0
-        }
     },
     stock: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
-        validate: {
-            min: 0 // No permitir stock negativo
-        }
+        validate: { min: 0 }
     },
+    precio: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+        validate: { min: 0 }
+    },
+    // Extras necesarios para la App Web
     img: {
-        type: DataTypes.STRING, // Guardarás la URL de la imagen
+        type: DataTypes.STRING,
         allowNull: true
     },
-    // Estado para "Borrado Lógico": Si dejas de venderlo, lo pones false en vez de borrar el registro
     activo: {
         type: DataTypes.BOOLEAN,
         defaultValue: true
     },
-    // === LLAVE FORÁNEA EXPLÍCITA ===
+    // Mantenemos la categoría porque tu select la usa
     categoriaId: {
         type: DataTypes.INTEGER,
-        allowNull: false // Todo producto DEBE tener una categoría
-    },
-    serieId: {
-        type: DataTypes.INTEGER,
-        allowNull: true // No todos los productos pertenecen a una serie
+        allowNull: true 
     }
 }, {
     tableName: 'productos',

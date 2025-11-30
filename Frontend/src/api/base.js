@@ -1,52 +1,85 @@
 const URI = 'http://localhost:3005/api/';
 
-const get = async (endpoint, token) => {
+const get = async (endpoint, token = null) => {
+    const headers = {};
+    if (token) {
+        headers['Authorization'] = 'Bearer ' + token;
+    }
+
     const objPayload = {
         method: 'GET',
-        headers: { 'Authorization': 'Bearer ' + token }
-    }
+        headers: headers
+    };
 
     return await fetch(URI + endpoint, objPayload)
         .then(response => response.json())
-        .then(data => { return data; })
+        .then(data => data);
 };
 
-const post = async (endpoint, payload) => {
+// CORRECCIÓN: Ahora acepta 'token' como 3er argumento
+const post = async (endpoint, payload, token = null) => {
+    const headers = { 'Content-Type': 'application/json' };
+    
+    // Si llega el token, lo metemos en la cabecera
+    if (token) {
+        headers['Authorization'] = 'Bearer ' + token;
+    }
+
     const objPayload = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload) // ✅ Correcto: payload viene en los argumentos
-    }
+        headers: headers, 
+        body: JSON.stringify(payload)
+    };
 
     return await fetch(URI + endpoint, objPayload)
-        .then(response => response.json())
-        .then(data => { return data; })
+        .then(response => {
+            if (response.status === 401) throw { status: 401, message: "No autorizado" };
+            return response.json();
+        })
+        .then(data => data);
 };
 
-const put = async (endpoint, payload) => {
+// CORRECCIÓN: Ahora acepta 'token' como 3er argumento
+const put = async (endpoint, payload, token = null) => {
+    const headers = { 'Content-Type': 'application/json' };
+    
+    if (token) {
+        headers['Authorization'] = 'Bearer ' + token;
+    }
+
     const objPayload = {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload) // ✅ Correcto: payload viene en los argumentos
-    }
+        headers: headers,
+        body: JSON.stringify(payload)
+    };
 
     return await fetch(URI + endpoint, objPayload)
-        .then(response => response.json())
-        .then(data => { return data; })
+        .then(response => {
+            if (response.status === 401) throw { status: 401, message: "No autorizado" };
+            return response.json();
+        })
+        .then(data => data);
 };
 
-// === AQUÍ ESTABA EL ERROR ===
-const remove = async (endpoint) => { // 1. Nota que aquí NO recibes payload
-    const objPayload = {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        // 2. BORRÉ LA LÍNEA DEL BODY. 
-        // DELETE no necesita cuerpo, el ID ya viaja pegado en 'endpoint'
+// CORRECCIÓN: Ahora acepta 'token' como 2do argumento
+const remove = async (endpoint, token = null) => { 
+    const headers = { 'Content-Type': 'application/json' };
+    
+    if (token) {
+        headers['Authorization'] = 'Bearer ' + token;
     }
 
+    const objPayload = {
+        method: 'DELETE',
+        headers: headers
+    };
+
     return await fetch(URI + endpoint, objPayload)
-        .then(response => response.json())
-        .then(data => { return data; })
+        .then(response => {
+            if (response.status === 401) throw { status: 401, message: "No autorizado" };
+            return response.json();
+        })
+        .then(data => data);
 };
 
 const base = { get, post, put, remove };

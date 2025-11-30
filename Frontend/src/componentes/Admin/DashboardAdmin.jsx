@@ -133,12 +133,13 @@ const DashboardAdmin = () => {
     const totalOrderPages = Math.ceil(allOrders.length / itemsPerPage);
 
     // --- COLUMNAS CORREGIDAS PARA CSS ---
+    // --- COLUMNAS CON ESTILOS FIJOS ---
     const userColumns = [
         {
             header: 'Nombre',
-            // NO usamos className aquí para evitar romper la tabla
+            // No necesitamos clase fija aquí, dejamos que ocupe el espacio restante
             render: (user) => (
-                <div className="user-cell"> {/* Wrapper DIV con Flexbox */}
+                <div className="user-cell">
                     <img src={user.img || `https://i.pravatar.cc/150?u=${user.id}`} alt="avatar" />
                     <span>{`${user.nombre} ${user.apellido}`}</span>
                 </div>
@@ -146,39 +147,52 @@ const DashboardAdmin = () => {
         },
         {
             header: 'Estado',
+            className: 'status-col', // <--- APLICAMOS CLASE FIJA
             render: (user) => {
-                const estadoClass = user.estado?.toLowerCase() === 'activo' ? 'estado-activo' : 'estado-inactivo';
-                return <span className={estadoClass}>{user.estado}</span>;
+                // Normalizamos mayúsculas/minúsculas
+                const isActive = user.estado?.toUpperCase() === 'ACTIVO';
+                return (
+                    <span className={`status-badge ${isActive ? 'active' : 'inactive'}`}>
+                        {user.estado}
+                    </span>
+                );
             }
         },
         {
             header: 'Acciones',
-            // NO usamos className aquí
-            render: (user) => (
-                <div className="action-buttons"> {/* Wrapper DIV con Flexbox */}
-                    <button
-                        className="btn-ver-detalle"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedUser(user);
-                        }}
-                    >
-                        Ver Detalle
-                    </button>
-                    <button
-                        className={`btn-action ${user.estado === 'ACTIVO' ? 'btn-deactivate' : 'btn-activate'}`}
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            handleToggleStatus(user);
-                        }}
-                    >
-                        {user.estado === 'ACTIVO' ? 'Desactivar' : 'Activar'}
-                    </button>
-                </div>
-            )
+            className: 'actions-col', // <--- APLICAMOS CLASE FIJA
+            // Nota: Aquí NO usamos div wrapper en la celda TD porque TableComponent
+            // ya nos da el TD. Usamos el wrapper interno para los botones.
+            render: (user) => {
+                const isActive = user.estado?.toUpperCase() === 'ACTIVO';
+                return (
+                    <div className="action-buttons-wrapper"> {/* Flexbox Wrapper */}
+                        <button
+                            className="btn-ver-detalle"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedUser(user);
+                            }}
+                        >
+                            Ver Detalle
+                        </button>
+                        
+                        <button
+                            // Usamos la nueva clase .btn-status-toggle que tiene min-width
+                            className={`btn-status-toggle ${isActive ? 'btn-deactivate' : 'btn-activate'}`}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleToggleStatus(user);
+                            }}
+                        >
+                            {isActive ? 'Desactivar' : 'Activar'}
+                        </button>
+                    </div>
+                );
+            }
         }
     ];
-
+    
     const orderColumns = [
         { header: '#ID', render: (order) => `#${order.id.toString().padStart(4, '0')}` },
         {
@@ -195,7 +209,7 @@ const DashboardAdmin = () => {
         {
             header: 'Estado',
             render: (order) => (
-                <span className={`status-action ${order.estado === 'entregado' ? 'status-entregado' : 'status-p-entregar'}`}>
+                <span className={`status-badge ${order.estado === 'entregado' ? 'status-entregado' : 'status-p-entregar'}`}>
                     {order.estado}
                 </span>
             )

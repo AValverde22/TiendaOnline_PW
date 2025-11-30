@@ -57,7 +57,7 @@ const router = createBrowserRouter([
         element: <AgregarCategoriaPage />
     },
     {
-        path: "/Categoria",
+        path: "/ListarCategorias",
         element: <ListarCategoriasPage />
     },
     {

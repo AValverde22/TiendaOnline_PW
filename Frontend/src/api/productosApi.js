@@ -1,27 +1,35 @@
 import base from './base.js';
 
-// El endpoint debe coincidir con tu Backend (app.js: app.use('/api/productos', ...))
 const endpoint = 'productos';
 
 const productosApi = {
-  // 1. Obtener todos (Reemplaza a tu antiguo .get())
+  // --- MÉTODOS PÚBLICOS (No necesitan token) ---
   findAll: async () => await base.get(endpoint),
 
-  // 2. Obtener por categoría (Nuevo requerimiento para tu filtro)
   findByCategoria: async (nombreCategoria) => {
-    // Encodeamos para que espacios o caracteres raros no rompan la URL
     const categoriaCodificada = encodeURIComponent(nombreCategoria);
     return await base.get(`${endpoint}/categoria/${categoriaCodificada}`);
   },
 
-  // 3. Obtener uno solo por ID (Para ver el detalle)
   findById: async (id) => await base.get(`${endpoint}/${id}`),
 
-  // 4. Crear (Solo para Admin)
-  insert: async (producto) => await base.post(endpoint, producto),
+  // --- MÉTODOS PRIVADOS (Aquí estaba el error) ---
+  
+  // 1. CREATE: Debe recibir (data, token) y pasar (endpoint, data, token)
+  create: async (data, token) => {
+      return await base.post(endpoint, data, token);
+  },
 
-  // 5. Actualizar (Solo para Admin)
-  update: async (id, producto) => await base.put(`${endpoint}/${id}`, producto)
+  // 2. UPDATE: Debe recibir (id, data, token) y pasar (endpoint/id, data, token)
+  update: async (id, data, token) => {
+      return await base.put(`${endpoint}/${id}`, data, token);
+  },
+
+  // 3. REMOVE: Debe recibir (id, token) y pasar (endpoint/id, token)
+  // OJO: base.remove solo acepta (endpoint, token) como definimos antes
+  remove: async (id, token) => {
+      return await base.remove(`${endpoint}/${id}`, token);
+  }
 };
 
 export default productosApi;

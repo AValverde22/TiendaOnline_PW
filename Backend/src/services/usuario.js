@@ -1,16 +1,14 @@
+// Backend/src/services/usuario.js
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import repository from '../repositories/usuario.js';
 
-const SECRET_KEY = process.env.JWT_SECRET || 'EstaEsUnaFraseSuperSecret aYLargaQueNadieAdivinara123!';
+const SECRET_KEY = "SUPER_CLAVE_123"; 
+// --------------------------------
 
 const generarToken = (usuario) => {
     return jwt.sign(
-        {
-            id: usuario.id,
-            username: usuario.username,
-            rol: usuario.rol
-        },
+        { id: usuario.id, username: usuario.username, rol: usuario.rol },
         SECRET_KEY,
         { expiresIn: '7d' }
     );
@@ -18,13 +16,10 @@ const generarToken = (usuario) => {
 
 const registrar = async (datosUsuario) => {
     try {
-        const { correo, username, password, nombre, apellido, direccion, telefono, distrito } = datosUsuario;
+        const { correo, username, password, nombre, apellido } = datosUsuario;
 
         if (!correo || !username || !password || !nombre || !apellido) {
-            return {
-                success: false,
-                message: 'Faltan campos obligatorios (correo, username, password, nombre, apellido).'
-            };
+            return { success: false, message: 'Faltan campos obligatorios.' };
         }
 
         const nuevoUsuario = {
@@ -47,9 +42,7 @@ const registrar = async (datosUsuario) => {
                 rol: usuarioCreado.rol
             }
         };
-
     } catch (error) {
-        console.error('Error en servicio registrar:', error);
         if (error.name === 'SequelizeUniqueConstraintError') {
             return { success: false, message: 'El correo o username ya están registrados.' };
         }
@@ -91,7 +84,6 @@ const login = async ({ correo, password }) => {
             }
         };
     } catch (error) {
-        console.error("Error en servicio login:", error);
         return { success: false, message: "Error interno del servidor" };
     }
 };
@@ -100,7 +92,6 @@ const findAll = async () => {
     try {
         return await repository.findAll();
     } catch (error) {
-        console.error("Error en servicio findAll:", error);
         throw error;
     }
 };
@@ -108,25 +99,10 @@ const findAll = async () => {
 const update = async (id, datos) => {
     try {
         const usuarioActualizado = await repository.update(id, datos);
-
-        if (!usuarioActualizado) {
-            return {
-                success: false,
-                message: "Usuario no encontrado."
-            };
-        }
-
-        return {
-            success: true,
-            message: "Usuario actualizado exitosamente.",
-            usuario: usuarioActualizado
-        };
+        if (!usuarioActualizado) return { success: false, message: "Usuario no encontrado." };
+        return { success: true, message: "Usuario actualizado.", usuario: usuarioActualizado };
     } catch (error) {
-        console.error("Error en servicio update:", error);
-        return {
-            success: false,
-            message: error.message || "Error al actualizar usuario."
-        };
+        return { success: false, message: error.message };
     }
 };
 
