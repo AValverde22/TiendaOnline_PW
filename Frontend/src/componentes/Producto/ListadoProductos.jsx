@@ -1,163 +1,170 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import productosApi from '../../api/productosApi'; // Asegúrate de que este archivo exista
+// Importamos el hook del contexto
+import { useUser } from '../../api/context/UserContext.jsx';
+import productosApi from '../../api/productosApi';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import ConfirmModal from './ConfirmModal';
+import TableComponent from '../Admin/TableComponent.jsx';
 import "./ListadoProductos.css";
 
 function ListadoProductos() {
-    const [productos, setProductos] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [productsPerPage] = useState(6); 
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [productToDelete, setProductToDelete] = useState(null);
-    
-    // --- 1. CORRECCIÓN DE LA CARGA DE DATOS ---
-    useEffect(() => {
-        const cargarProductos = async () => {
-            try {
-                // Usamos findAll y await
-                const respuesta = await productosApi.findAll();
-                
-                // Validación de seguridad (Array vs Objeto)
-                const lista = Array.isArray(respuesta) ? respuesta : (respuesta.data || []);
-                setProductos(lista);
-            } catch (error) {
-                console.error("Error al cargar productos:", error);
-            }
-        };
+  const [productos, setProductos] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
 
-        cargarProductos();
-    }, []);
+  // 1. CORRECCIÓN: Ejecutamos el hook con paréntesis ()
+  const { token } = useUser();
 
-    const handleOpenModal = (product) => {
-        setProductToDelete(product); 
-        setIsModalOpen(true);       
+  useEffect(() => {
+    const cargarProductos = async () => {
+      try {
+        const respuesta = await productosApi.findAll();
+        const lista = Array.isArray(respuesta) ? respuesta : (respuesta.data || []);
+        setProductos(lista);
+      } catch (error) {
+        console.error("Error al cargar productos:", error);
+      }
     };
+    cargarProductos();
+  }, []);
 
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-        setProductToDelete(null);
-    };
+  const handleOpenModal = (product) => {
+    setProductToDelete(product);
+    setIsModalOpen(true);
+  };
 
-    // --- 2. CORRECCIÓN DEL BORRADO (CONEXIÓN A BD) ---
-    const handleConfirmDelete = async () => {
-        if (productToDelete) {
-            try {
-                // Llamamos a la API para borrar en la Base de Datos
-                await productosApi.remove(productToDelete.id);
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setProductToDelete(null);
+  };
 
-                // Si la API responde bien, actualizamos la UI
-                const updatedProducts = productos.filter(p => p.id !== productToDelete.id);
-                setProductos(updatedProducts);
-            } catch (error) {
-                console.error("Error al eliminar producto:", error);
-                alert("No se pudo eliminar el producto.");
-            }
-        }
-        handleCloseModal();
-    };
+  // 2. CORRECCIÓN: Implementación completa de eliminar
+  const handleConfirmDelete = async () => {
+    if (!productToDelete) return;
 
-    const indexOfLastProduct = currentPage * productsPerPage;
-    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-    
-    // Validación por si productos es undefined al inicio
-    const safeProducts = Array.isArray(productos) ? productos : [];
-    const currentProducts = safeProducts.slice(indexOfFirstProduct, indexOfLastProduct);
-    const totalPages = Math.ceil(safeProducts.length / productsPerPage);
+    try {
+      // Pasamos el ID y el TOKEN (requerido por tu productosApi.js)
+      await productosApi.remove(productToDelete.id, token);
 
-    return (
-        <div className="product-list-container">
-            <Header />
-            <div className="list-header">
-                    <h1>Listado de productos</h1>
-                    <div className="filter-bar">
-                        <div className="search-box">
-                            <input type="text" placeholder="Buscar un producto..." />
-                            <button className="btn-search">Buscar</button>
-                        </div>
-                        <div className="action-buttons-group">
-                            <Link to="/ListarCategorias">
-                                <button className="btn-filter btn-primary">Categorías</button>
-                            </Link>
-                            <Link to="/AgregarProducto">
-                                <button className="btn-filter btn-primary">Agregar Producto</button>
-                            </Link>
-                        </div>
-                    </div>
-                </div>
+      // Actualizamos el estado visualmente (Optimistic update o post-delete)
+      setProductos(prevProductos => 
+        prevProductos.filter(p => p.id !== productToDelete.id)
+      );
+      
+    } catch (error) {
+      console.error("Error al eliminar producto:", error);
+      // Manejo de errores de permisos
+      if (error.status === 401 || error.status === 403) {
+        alert("No tienes autorización para eliminar productos.");
+      } else {
+        alert("No se pudo eliminar el producto. Intente nuevamente.");
+      }
+    } finally {
+      handleCloseModal();
+    }
+  };
 
-            <div className="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Id</th>
-                            <th>Imagen</th>
-                            <th>Presentación</th>
-                            <th>Descripción</th>
-                            <th>Stock</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {currentProducts.length > 0 ? (
-                            currentProducts.map((product) => (
-                                <tr key={product.id}>
-                                    <td className="product-id">#{product.id}</td>
-                                    <td>
-                                        <div className="product-name-cell">
-                                            <img 
-                                                src={product.img || 'https://via.placeholder.com/40'} 
-                                                alt={product.nombre} 
-                                                className="producto-imagen" 
-                                            />
-                                            <span>{product.nombre}</span>
-                                        </div>
-                                    </td>
-                                    <td>{product.presentacion}</td>
-                                    <td className="product-description">{product.descripcion}</td>
-                                    <td>{product.stock}</td>
-                                    <td>
-                                        <div className="product-actions">
-                                            <Link to={`/EditarProducto/${product.id}`} className="bton-editar">✏️</Link>
-                                            <button className="bton-borrar" onClick={() => handleOpenModal(product)}>🗑️</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="6" style={{textAlign: 'center', padding: '20px'}}>
-                                    No hay productos registrados.
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
-
-            <div className="pagination">
-                {Array.from({ length: totalPages }, (_, i) => (
-                    <button 
-                        key={`page-${i + 1}`} 
-                        onClick={() => setCurrentPage(i + 1)} 
-                        className={currentPage === i + 1 ? 'active' : ''}
-                    >
-                        {i + 1}
-                    </button>
-                ))}
-            </div>
-            
-            <ConfirmModal
-                isOpen={isModalOpen}
-                onClose={handleCloseModal}
-                onConfirm={handleConfirmDelete}
-                productName={productToDelete ? productToDelete.nombre : ''} // Cambié .titulo por .nombre (según tu DB)
-            />
-            <Footer />
+  // --- Definición de Columnas ---
+  const columns = [
+    {
+      header: "Img",
+      width: "8%",
+      render: p => (
+        <div className="product-cell">
+          <img 
+            src={p.img || 'https://via.placeholder.com/80'} 
+            alt={p.nombre} 
+            className="product-img-first" 
+          />
         </div>
-    );
+      )
+    },
+    {
+      header: "ID",
+      width: "8%",
+      accessor: "id",
+      render: p => <span className="id-badge">#{p.id.toString().padStart(4, "0")}</span>
+    },
+    {
+      header: "Nombre",
+      width: "20%",
+      accessor: "nombre",
+      render: p => <strong className="product-name">{p.nombre}</strong>
+    },
+    {
+      header: "Presentación",
+      width: "15%",
+      accessor: "presentacion"
+    },
+    {
+      header: "Categoría",
+      width: "15%",
+      render: p => (p.categoria?.nombre || p.categoria || '—')
+    },
+    {
+      header: "Stock",
+      width: "10%",
+      accessor: "stock",
+      render: p => (
+        <span className={`stock-badge ${p.stock < 10 ? 'low-stock' : 'ok-stock'}`}>
+          {p.stock}
+        </span>
+      )
+    },
+    {
+      header: "Acciones",
+      width: "15%",
+      render: p => (
+        <div className="product-actions">
+          <Link to={`/EditarProducto/${p.id}`} className="bton-editar" title="Editar">
+             ✏️
+          </Link>
+          <button 
+            className="bton-borrar" 
+            onClick={() => handleOpenModal(p)}
+            title="Eliminar"
+          >
+            🗑️
+          </button>
+        </div>
+      )
+    }
+  ];
+
+  return (
+    <div className="product-list-container">
+      <Header />
+
+      <div className="list-header">
+        <h1>Listado de productos</h1>
+        <div className="action-buttons-group">
+          <Link to="/AgregarProducto">
+            <button className="btn-filter btn-primary">Agregar Producto</button>
+          </Link>
+        </div>
+      </div>
+
+      <div className="table-wrapper-products">
+        <TableComponent
+            columns={columns}
+            data={productos}
+            emptyMessage="No hay productos registrados."
+            itemsPerPage={6} 
+        />
+      </div>
+
+      <ConfirmModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmDelete}
+        productName={productToDelete?.nombre || ''}
+      />
+
+      <Footer />
+    </div>
+  );
 }
 
 export default ListadoProductos;

@@ -3,32 +3,51 @@ import base from './base.js';
 const endpoint = 'usuarios';
 
 const usuariosApi = {
-  // POST /api/usuarios/login
-  login: async (creds) => await base.post(`${endpoint}/login`, creds),
 
-  // POST /api/usuarios/register (Si lo necesitas luego)
-  registrar: async (datos) => await base.post(`${endpoint}/register`, datos),
+  // --- Públicos ---
+  login: async (creds) =>
+    await base.post(`${endpoint}/login`, creds),
 
-  // GET /api/usuarios (Solo admin)
-  findAll: async () => {
-    const token = localStorage.getItem('token');
-    return await base.get(endpoint, token);
-  },
+  registrar: async (datos) =>
+    await base.post(`${endpoint}/register`, datos),
 
-  // PUT /api/usuarios/:id (Solo admin)
-  put: async (id, datos) => {
-    const token = localStorage.getItem('token');
-    const objPayload = {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify(datos)
-    };
-    return await fetch(`http://localhost:3005/api/${endpoint}/${id}`, objPayload)
-      .then(response => response.json())
-      .then(data => { return data; });
+  // --- Privados (requieren token) ---
+  findAll: async (token) =>
+    await base.get(endpoint, token),
+
+  findById: async (id, token) =>
+    await base.get(`${endpoint}/${id}`, token),
+
+  put: async (id, datos, token) =>
+    await base.put(`${endpoint}/${id}`, datos, token),
+
+  // --- Helpers / Utilidades ---
+
+  /**
+   * Calcula el total gastado por un usuario basándose en sus órdenes.
+   * Esta función es puramente lógica (no hace fetch), pero es útil tenerla aquí.
+   */
+  getTotalSpent: (usuario) => {
+    if (!usuario || !usuario.ordenes || !Array.isArray(usuario.ordenes)) {
+      return 0;
+    }
+
+    return usuario.ordenes.reduce((accGeneral, orden) => {
+      // 1. Si la orden tiene un campo 'total' directo, úsalo.
+      if (orden.total) {
+        return accGeneral + Number(orden.total);
+      }
+
+      // 2. Si no, intenta sumar los totales de los productos dentro de la orden.
+      if (orden.productos && Array.isArray(orden.productos)) {
+        const totalOrden = orden.productos.reduce((acc, prod) => {
+          return acc + (Number(prod.total) || 0);
+        }, 0);
+        return accGeneral + totalOrden;
+      }
+
+      return accGeneral;
+    }, 0);
   }
 };
 

@@ -1,51 +1,104 @@
-import repository from '../repositories/categoria.js'
+import repository from '../repositories/categoria.js';
 
 const findAll = async (req, res) => {
-    const respuesta = await repository.findAll();
+    try {
+        const respuesta = await repository.findAll();
+        // Devolvemos 200 y array vacío si no hay datos, es lo estándar
+        return res.status(200).json(respuesta || []);
+    } catch (error) {
+        console.error("Error en findAll categorías:", error);
+        return res.status(500).json({ message: "Error al recuperar categorías." });
+    }
+};
 
-    return sendResults(respuesta, res, "No se han encontrado registros.");
-}
+const findById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await repository.findById(id);
 
-const findOne = async (req, res) => {
-    const id = req.params.id;
-    const result = await repository.findById(id);
+        if (!result) {
+            return res.status(404).json({ message: "Categoría no encontrada." });
+        }
 
-    return sendResults(result, res, "No se han encontrado registros.");
-}
+        return res.status(200).json(result);
+    } catch (error) {
+        console.error("Error en findById categoría:", error);
+        return res.status(500).json({ message: "Error al buscar la categoría." });
+    }
+};
 
 const findByName = async (req, res) => {
-    const name = req.params.name;
-    const result = await repository.findByName(name);
+    try {
+        const { name } = req.params;
+        const result = await repository.findByName(name);
 
-    return sendResults(result, res, "No se han encontrado registros.");
-}
+        if (!result) {
+            return res.status(404).json({ message: "No existe una categoría con ese nombre." });
+        }
+
+        return res.status(200).json(result);
+    } catch (error) {
+        console.error("Error en findByName:", error);
+        return res.status(500).json({ message: "Error al buscar por nombre." });
+    }
+};
 
 const create = async (req, res) => {
-    const object = req.body;
-    const createObj = await repository.create(object);
+    try {
+        const object = req.body;
+        const createObj = await repository.create(object);
 
-    return sendResults(createObj, res, "Error al crear el objeto.");
-}
+        if (!createObj) {
+            return res.status(400).json({ message: "No se pudo crear la categoría." });
+        }
+
+        return res.status(201).json(createObj); // 201 Created
+    } catch (error) {
+        console.error("Error en create categoría:", error);
+        return res.status(500).json({ message: "Error interno al crear categoría." });
+    }
+};
 
 const update = async (req, res) => {
-    const id = req.params.id;
-    const object = req.body;
-    const updatedObj = await repository.update(id, object);
+    try {
+        const { id } = req.params;
+        const updatedObj = await repository.update(id, req.body);
 
-    return sendResults(updatedObj, res, "Error al actualizar el objeto.");
-}
+        if (!updatedObj) {
+            return res.status(404).json({ message: "Categoría no encontrada para actualizar." });
+        }
+
+        return res.status(200).json(updatedObj);
+    } catch (error) {
+        console.error("Error en update categoría:", error);
+        return res.status(500).json({ message: "Error al actualizar categoría." });
+    }
+};
 
 const remove = async (req, res) => {
-    const id = req.params.id;
-    const result = await repository.delete(id);
+    try {
+        const { id } = req.params;
+        // CORREGIDO: Usamos .remove() porque así se llama en tu RepositoryBase
+        const result = await repository.remove(id);
 
-    return sendResults(result, res, "Error al eliminar el objeto.");
-}
+        if (result) {
+            return res.status(200).json({ message: "Categoría eliminada correctamente." });
+        } else {
+            return res.status(404).json({ message: "Categoría no encontrada." });
+        }
+    } catch (error) {
+        console.error("Error en remove categoría:", error);
+        return res.status(500).json({ message: "Error al eliminar categoría." });
+    }
+};
 
-const sendResults = (result, res, message) => {
-    if (result) return res.status(200).json(result);
-    else return res.status(500).json({ message });
-}
+const controller = {
+    findAll,
+    findById, // Renombrado de findOne a findById para consistencia
+    findByName,
+    create,
+    update,
+    remove
+};
 
-const controller = { findAll, findOne, findByName, create, update, remove };
 export default controller;

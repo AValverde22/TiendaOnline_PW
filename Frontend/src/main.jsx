@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { UserProvider } from './api/context/UserContext.jsx'
+import { CartProvider } from './api/context/CartContext.jsx'
 
 import App from './App.jsx'
 import AgregarCategoriaPage from "./routes/AgregarCategoriaPage.jsx"
@@ -149,7 +150,7 @@ const router = createBrowserRouter([
         element: <DetalleOrdenPage />
     },
     {
-        path: "/admin/users/:userId",
+        path: "/admin/users/:id",
         element: <DetalleUsuarioPage />
     },
     {
@@ -174,7 +175,9 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')).render(
     <StrictMode>
         <UserProvider>
-            <RouterProvider router={router} />
+            <CartProvider>
+                <RouterProvider router={router} />
+            </CartProvider>
         </UserProvider>
     </StrictMode>
 )

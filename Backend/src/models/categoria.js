@@ -1,7 +1,7 @@
 import sequelize from '../config/database.js'
 import { DataTypes } from 'sequelize'
 
-const Categoria = sequelize.define('categorias', {
+const Categoria = sequelize.define('categoria', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -10,16 +10,20 @@ const Categoria = sequelize.define('categorias', {
     nombre: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
+        unique: true,
+        validate: {
+            notEmpty: true // Evita strings vacíos ""
+        }
     },
     descripcion: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: DataTypes.TEXT, // Cambio sugerido para descripciones largas
+        allowNull: false
     },
     img: {
         type: DataTypes.STRING,
-        allowNull: false
-    },
+        allowNull: false,
+        // defaultValue: 'https://via.placeholder.com/150' // Podrías poner una imagen por defecto
+    }
 }, {
     tableName: 'categorias',
     timestamps: true

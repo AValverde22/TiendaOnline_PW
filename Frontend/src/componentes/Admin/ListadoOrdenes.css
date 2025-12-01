@@ -1,259 +1,234 @@
-/* =========================================
-   1. LAYOUT GENERAL (Igual que DashboardAdmin)
-   ========================================= */
+/* --- LAYOUT GENERAL --- */
 .AllOrdersPage {
-  width: 100%;
-  min-height: 100vh;
-  background: #fff;
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f4f6f9;
 }
 
 .AllOrdersPage .main-content {
-  padding: 30px;
-  flex: 1;
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
+    padding: 30px;
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
 }
 
-/* Header de la página (Título y Buscador) */
+/* --- HEADER DE LA PÁGINA --- */
 .page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .page-header h1 {
-  margin: 0;
-  color: #333;
-  font-size: 1.5rem;
-  font-weight: 700;
-}
-
-/* Buscador */
-.search-bar {
-  display: flex;
-  gap: 10px;
+    margin: 0;
+    color: #333;
+    font-size: 1.5rem;
+    font-weight: 700;
 }
 
 .search-bar input {
-  width: 300px;
-  padding: 10px 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  transition: border-color 0.3s;
+    width: 300px;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: border-color 0.3s;
+    background-color: #fafafa;
 }
 
 .search-bar input:focus {
-  outline: none;
-  border-color: #2ea32b;
-  box-shadow: 0 0 0 3px rgba(46, 163, 43, 0.1);
+    outline: none;
+    border-color: #2ea32b;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(46, 163, 43, 0.1);
 }
 
-/* =========================================
-   2. TABLA (Hereda estilos de DashboardAdmin)
-   ========================================= */
+/* --- CONTENEDOR DE LA TABLA --- */
 .table-wrapper {
-  width: 100%;
-  overflow-x: auto;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  margin-top: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    padding: 20px;
 }
 
-/* Estilos específicos si TableComponent usa clases genéricas, 
-   pero aquí forzamos estilos para asegurar consistencia */
-.AllOrdersPage table {
-  width: 100%;
-  border-collapse: collapse;
+/* --- TABLA --- */
+.AllOrdersPage .user-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
 }
 
-.AllOrdersPage th, 
-.AllOrdersPage td {
-  padding: 12px 15px;
-  vertical-align: middle !important;
-  text-align: left;
-  border-bottom: 1px solid #eee;
+.AllOrdersPage .user-table th {
+    background-color: #f8f9fa;
+    color: #666;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 2px solid #eee;
 }
 
-.AllOrdersPage thead {
-  background: #f8f9fa;
+.AllOrdersPage .user-table td {
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+    color: #444;
 }
 
-.AllOrdersPage thead th {
-  font-size: 0.9em;
-  color: #555;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.AllOrdersPage .user-table tr:hover td {
+    background-color: #f9fbfd;
 }
 
-.AllOrdersPage tbody tr:hover {
-  background-color: #f8f9fa;
-  transition: background-color 0.2s;
+.AllOrdersPage .user-table tr:last-child td {
+    border-bottom: none;
 }
 
-/* =========================================
-   3. CELDAS ESPECIALES (Usuario, ID, etc.)
-   ========================================= */
-
-/* Celda de Usuario (Avatar + Nombre) */
+/* --- COLUMNA USUARIO --- */
 .user-col {
-  width: 30%; /* Ancho relativo */
+    width: 30%;
 }
 
 .user-cell-content {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
 .user-avatar-small {
-  width: 40px !important;
-  height: 40px !important;
-  border-radius: 50% !important;
-  object-fit: cover !important;
-  flex-shrink: 0 !important;
-  border: 1px solid #eee;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .user-info-text {
-  font-weight: 500;
-  color: #333;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Celda de Fecha */
-.date-col {
-  width: 15%;
-  color: #666;
+.user-name {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
 }
 
-/* =========================================
-   4. ESTADOS Y BOTONES (Estilo Fijo)
-   ========================================= */
-
-/* Columna Estado: Ancho Fijo */
+/* --- COLUMNA ESTADO --- */
 .status-col {
-    width: 130px; 
+    width: 120px;
     text-align: center;
     white-space: nowrap;
 }
 
-/* Columna Acciones: Ancho Fijo */
-.actions-col {
-    width: 150px; 
-    text-align: center;
-    white-space: nowrap;
-}
-
-/* Badge (Píldora) de Estado */
 .status-badge {
-    padding: 6px 0;
-    width: 100px;    /* Ancho fijo para alineación perfecta */
+    display: inline-flex;
+    /* Mejor control del contenido */
+    align-items: center;
+    /* Centrado vertical */
+    justify-content: center;
+    /* Centrado horizontal */
+    width: 90px;
+    /* Ancho fijo consistente */
+    height: 28px;
+    /* Altura uniforme */
     border-radius: 20px;
     font-size: 0.8rem;
     font-weight: 600;
     text-transform: capitalize;
-    display: inline-block;
-    text-align: center;
+    box-sizing: border-box;
 }
 
-/* Variantes de Estado */
-.status-badge.active, 
-.status-entregado { 
-    background-color: #e6f8e7; 
-    color: #2ea32b; 
-    border: 1px solid #2ea32b; 
+.status-badge.active {
+    background-color: #e6f8e7;
+    color: #2ea32b;
+    border: 1px solid #2ea32b;
 }
 
-.status-badge.inactive, 
-.status-por-entregar { 
-    background-color: #fff5f5; 
-    color: #dc3545; 
-    border: 1px solid #dc3545; 
+.status-badge.inactive {
+    background-color: #fff5f5;
+    color: #dc3545;
+    border: 1px solid #dc3545;
 }
 
 .status-badge.pending {
-    background-color: #fff8e1;
-    color: #fbc02d;
-    border: 1px solid #fbc02d;
+    background-color: #fff8e6;
+    color: #ffc107;
+    border: 1px solid #ffc107;
 }
 
-/* Wrapper para los botones de acción */
+/* --- COLUMNA ACCIONES --- */
+.actions-col {
+    width: 150px;
+    text-align: center;
+}
+
 .action-buttons-wrapper {
     display: flex;
-    justify-content: center; /* Centrado en órdenes */
+    justify-content: center;
+    gap: 10px;
     align-items: center;
 }
 
-/* Botón Ver Detalle (Estilo Orbitron Azul) */
-.btn-view-profile, .btn-ver-detalle-orden {
+.btn-view-profile {
     background-color: #007bff;
     color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 6px;
     cursor: pointer;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.85em;
-    transition: background-color 0.2s;
-    text-decoration: none; /* Por si es un Link */
-    display: inline-block;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
 }
 
-.btn-view-profile:hover, .btn-ver-detalle-orden:hover {
+.btn-view-profile:hover {
     background-color: #0069d9;
 }
 
-/* =========================================
-   5. PAGINACIÓN Y OTROS
-   ========================================= */
+/* --- PAGINACIÓN --- */
 .pagination {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 20px;
 }
 
 .pagination button {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  background: white;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.2s;
+    border: 1px solid #ddd;
+    background-color: white;
+    color: #333;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
+.pagination button.active,
 .pagination button:hover {
-  background: #f0f0f0;
-}
-
-.pagination button.active {
-  background: #2ea32b;
-  color: white;
-  border-color: #2ea32b;
-}
-
-.no-results {
-  text-align: center;
-  padding: 40px;
-  color: #777;
-  font-size: 1.1em;
+    background-color: #2ea32b;
+    color: white;
+    border-color: #2ea32b;
 }
 
 .loading-screen {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 400px;
-  font-size: 1.2em;
-  color: #666;
+    text-align: center;
+    color: #666;
+    font-size: 1rem;
+    padding: 50px 0;
+}
+
+.no-results {
+    text-align: center;
+    color: #666;
+    font-size: 0.95rem;
+    padding: 20px 0;
 }

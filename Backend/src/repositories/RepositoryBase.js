@@ -3,9 +3,9 @@ class RepositoryBase {
         this.model = model;
     }
 
-    async findAll() {
+    async findAll(options = {}) {
         try {
-            return await this.model.findAll();
+            return await this.model.findAll(options);
         } catch (error) {
             console.error('Error en findAll:', error);
             return null;
@@ -22,9 +22,9 @@ class RepositoryBase {
     }
 
     // CORREGIDO: Renombrado a findById para evitar conflicto
-    async findById(id) {
+    async findById(id, options = {}) {
         try {
-            return await this.model.findByPk(id); // findByPk es más eficiente en Sequelize
+            return await this.model.findByPk(id, options); // findByPk es más eficiente en Sequelize
         } catch (error) {
             console.error('Error en findById:', error);
             return null;
@@ -50,7 +50,7 @@ class RepositoryBase {
     }
 
     // CORREGIDO: Renombrado a delete (o remove)
-    async delete(id) {
+    async remove(id) {
         try {
             const result = await this.model.destroy({
                 where: { id: id }

@@ -1,51 +1,118 @@
-import repository from '../repositories/Carrito.js';
+import carritoRepository from "../repositories/Carrito.js";
+import itemRepository from "../repositories/itemCarrito.js"; // Necesitamos este para manejar los productos dentro
 
-const findAll = async (req, res) => {
-    const respuesta = await repository.findAll();
+// 1. Ver el carrito del usuario (GET)
+const verCarrito = async (req, res) => {
+    try {
+        // Obtenemos el ID del usuario (puede venir por URL o del token decodificado)
+        const { idUsuario } = req.params;
 
-    return sendResults(respuesta, res, "No se han encontrado registros.");
-}
+        if (!idUsuario) {
+            return res.status(400).json({ message: "Se requiere el ID del usuario." });
+        }
 
-const findOne = async (req, res) => {
-    const id = req.params.id;
-    const result = await repository.findById(id);
+        // Usamos el método especializado que creamos en el repositorio
+        let carrito = await carritoRepository.findByUserId(idUsuario);
 
-    return sendResults(result, res, "No se han encontrado registros.");
-}
+        // Si no tiene carrito, devolvemos un objeto con items vacío para que el front no falle
+        if (!carrito) {
+            return res.status(200).json({ items: [] });
+        }
 
-const findByName = async (req, res) => {
-    const name = req.params.name;
-    const result = await repository.findByName(name);
+        return res.status(200).json(carrito);
+    } catch (error) {
+        console.error("Error en verCarrito:", error);
+        return res.status(500).json({ message: "Error al cargar el carrito." });
+    }
+};
 
-    return sendResults(result, res, "No se han encontrado registros.");
-}
+// 2. Agregar un ítem al carrito (POST)
+const agregarItem = async (req, res) => {
+    try {
+        const { idUsuario, idProducto, cantidad } = req.body;
 
-const create = async (req, res) => {
-    const object = req.body;
-    const createObj = await repository.create(object);
+        if (!idUsuario || !idProducto) {
+            return res.status(400).json({ message: "Faltan datos (usuario o producto)." });
+        }
 
-    return sendResults(createObj, res, "Error al crear el objeto.");
-}
+        // A. Buscar si el usuario ya tiene un carrito
+        let carrito = await carritoRepository.findByUserId(idUsuario);
 
-const update = async (req, res) => {
-    const id = req.params.id;
-    const object = req.body;
-    const updatedObj = await repository.update(id, object);
+        // B. Si no tiene carrito, lo creamos
+        if (!carrito) {
+            carrito = await carritoRepository.create({ idUsuario });
+        }
 
-    return sendResults(updatedObj, res, "Error al actualizar el objeto.");
-}
+        // C. Verificar si el producto YA existe en ese carrito
+        // Nota: carrito.id es el ID de la tabla carritos
+        const itemExistente = await itemRepository.obtenerItem(carrito.id, idProducto);
 
-const remove = async (req, res) => {
-    const id = req.params.id;
-    const result = await repository.delete(id);
+        if (itemExistente) {
+            // CASO 1: Ya existe -> Actualizamos la cantidad (sumamos)
+            const nuevaCantidad = itemExistente.cantidad + (cantidad || 1);
+            await itemRepository.actualizarCantidad(itemExistente.id, nuevaCantidad);
+            return res.status(200).json({ message: "Cantidad actualizada correctamente." });
+        } else {
+            // CASO 2: No existe -> Creamos el ítem nuevo
+            await itemRepository.agregarProducto(carrito.id, idProducto, cantidad || 1);
+            return res.status(201).json({ message: "Producto agregado al carrito." });
+        }
 
-    return sendResults(result, res, "Error al eliminar el objeto.");
-}
+    } catch (error) {
+        console.error("Error en agregarItem:", error);
+        return res.status(500).json({ message: "Error al agregar producto al carrito." });
+    }
+};
 
-const sendResults = (result, res, message) => {
-    if (result) return res.status(200).json(result);
-    else return res.status(500).json({ message });
-}
+// 3. Eliminar un ítem específico del carrito (DELETE)
+const eliminarItem = async (req, res) => {
+    try {
+        // Aquí esperamos el ID de la tabla item_carrito (no del producto)
+        const { id } = req.params; 
 
-const controller = { findAll, findOne, findByName, create, update, remove };
+        const resultado = await itemRepository.remove(id);
+
+        if (resultado) {
+            return res.status(200).json({ message: "Ítem eliminado del carrito." });
+        } else {
+            return res.status(404).json({ message: "Ítem no encontrado." });
+        }
+    } catch (error) {
+        console.error("Error en eliminarItem:", error);
+        return res.status(500).json({ message: "Error al eliminar el ítem." });
+    }
+};
+
+// 4. Actualizar cantidad exacta de un ítem (PUT)
+// Útil cuando el usuario cambia el número en el input manualmente (ej: de 1 a 5)
+const updateCantidad = async (req, res) => {
+    try {
+        const { id, cantidad } = req.body; // id es el ID del ITEM (no producto), cantidad nueva
+
+        if (!id || !cantidad) {
+            return res.status(400).json({ message: "Faltan datos (id item o cantidad)." });
+        }
+
+        // Usamos el repositorio de items para actualizar directo
+        const itemActualizado = await itemRepository.actualizarCantidad(id, cantidad);
+
+        if (itemActualizado) {
+            return res.status(200).json({ message: "Cantidad actualizada.", item: itemActualizado });
+        } else {
+            return res.status(404).json({ message: "No se encontró el ítem." });
+        }
+    } catch (error) {
+        console.error("Error en updateCantidad:", error);
+        return res.status(500).json({ message: "Error al actualizar cantidad." });
+    }
+};
+
+// Exportamos las funciones específicas
+const controller = { 
+    verCarrito, 
+    agregarItem, 
+    eliminarItem,
+    updateCantidad
+};
+
 export default controller;

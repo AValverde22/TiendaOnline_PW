@@ -1,172 +1,222 @@
+/* MainPage.css */
+
+/* --- Layout Principal --- */
 .main-page {
     display: grid;
-    grid-template-columns: 1fr; 
-    grid-template-rows: auto 1fr auto; 
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
     min-height: 100vh;
-    background-color: #f5f5f5;
+    background-color: #f4f6f9;
+    /* Color de fondo un poco más moderno */
+    font-family: 'Orbitron', sans-serif;
 }
 
-
-.main-page > h1 {
+.main-page>h1 {
     max-width: 1200px;
     margin: 30px auto 20px auto;
     padding: 0 20px;
-    font-size: 28px;
+    font-size: 2rem;
     color: #333;
+    width: 100%;
+    box-sizing: border-box;
 }
 
+/* --- Contenedor de Contenido (Grid 2 columnas) --- */
 .content-container {
     display: grid;
-    grid-template-columns: 1fr 3fr; 
+    grid-template-columns: 1fr 3fr;
+    /* Panel izquierdo pequeño, derecho grande */
     gap: 30px;
     max-width: 1200px;
-    margin: 0 auto 50px auto; 
+    margin: 0 auto 50px auto;
     padding: 0 20px;
+    width: 100%;
+    box-sizing: border-box;
+    align-items: start;
+    /* Evita que el panel izquierdo se estire */
 }
 
-
+/* --- Panel Izquierdo (Usuario) --- */
 .left-panel {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-
-.Imagen-usuario {
+/* Tarjetas Generales */
+.Imagen-usuario,
+.Datos-usuario,
+.Direccion-de-envio {
     background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e9ecef;
+}
+
+/* --- Tarjeta de Perfil --- */
+.Imagen-usuario {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 15px;
-    order: 1; 
+    text-align: center;
 }
 
 .Imagen-usuario img {
-    width: 150px;
-    height: 150px;
+    width: 140px;
+    height: 140px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid #4CAF50; 
+    border: 4px solid #f8f9fa;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-
-.Datos-usuario,
-.Direccion-de-envio {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.Numero-Ordenes-montoAhorrado {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
 }
 
+.Numero-Ordenes-montoAhorrado p {
+    font-size: 0.95rem;
+    color: #555;
+    margin: 0;
+    font-weight: 600;
+}
+
+/* Botones del Perfil */
+.Boton1,
+.Boton2 {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.Boton1 {
+    background-color: #2ea32b;
+    color: white;
+    border: none;
+    margin-top: 10px;
+}
+
+.Boton1:hover {
+    background-color: #258e26;
+    box-shadow: 0 4px 6px rgba(46, 163, 43, 0.2);
+}
+
+.Boton2 {
+    background-color: white;
+    color: #555;
+    border: 1px solid #ddd;
+}
+
+.Boton2:hover {
+    background-color: #f1f3f5;
+    border-color: #ccc;
+    color: #333;
+}
+
+/* --- Tarjetas de Información --- */
 .Datos-usuario h2,
 .Direccion-de-envio h2,
 .Ordenes h2 {
-    font-size: 20px;
-    color: #4CAF50; 
+    font-size: 1.1rem;
+    color: #2ea32b;
     margin-top: 0;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 5px;
+    border-bottom: 2px solid #f1f1f1;
+    padding-bottom: 10px;
     margin-bottom: 15px;
 }
 
 .Datos-usuario p,
 .Direccion-de-envio p {
-    font-size: 14px;
-    color: #555;
-    margin: 5px 0;
+    font-size: 0.95rem;
+    color: #666;
+    margin: 8px 0;
+    line-height: 1.4;
+    word-break: break-word;
 }
 
-
-.Numero-Ordenes-montoAhorrado p {
-    font-size: 16px;
-    font-weight: 600;
-    color: #333;
-    margin: 5px 0;
-}
-
-
-
-
+/* --- Panel Derecho (Órdenes) --- */
 .Ordenes {
     background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    grid-column: 2 / 3; 
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e9ecef;
+    /* Importante para contener la tabla si desborda */
+    overflow: hidden;
 }
 
-.tabla-container {
-    overflow-x: auto;
-}
+/* NOTA: Aquí eliminamos los estilos de 'table', 'th', 'td'.
+   Dejamos que TableComponent.css se encargue de eso para
+   mantener la consistencia con el Admin.
+*/
 
-.Ordenes table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-}
-
-.Ordenes th,
-.Ordenes td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-    font-size: 14px;
-}
-
-.Ordenes th {
-    background-color: #f2f2f2;
-    color: #333;
-    font-weight: 700;
-}
-
-.Ordenes tr:hover {
-    background-color: #f9f9f9;
-}
-
-.Ordenes td button {
-    background-color: #4CAF50;
+/* Estilo para el botón "Ver Detalle" dentro de la tabla */
+.btn-ver-orden {
+    background-color: #007bff;
     color: white;
     border: none;
     padding: 6px 12px;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 13px;
-    transition: background-color 0.3s;
+    font-size: 0.85rem;
+    transition: background-color 0.2s;
+    font-family: inherit;
 }
 
-.Ordenes td button:hover {
-    background-color: #45a049;
+.btn-ver-orden:hover {
+    background-color: #0056b3;
 }
 
-
-.Ordenes .tabla-container > p {
-    text-align: center;
-    color: #777;
-    padding: 20px 0;
+/* Badges de estado dentro de la tabla (opcional si usas las clases de TableComponent) */
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
 }
 
-
-.Numero-Ordenes-montoAhorrado .Boton1 {
-    background-color: #4CAF50; 
-    color: white;
+.status-ok {
+    background-color: #d3f9d8;
+    color: #2b8a3e;
 }
 
-.Numero-Ordenes-montoAhorrado .Boton1:hover {
-    background-color: #45a049;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.status-pending {
+    background-color: #fff9db;
+    color: #f59f00;
 }
 
-.Numero-Ordenes-montoAhorrado .Boton2 {
-    background-color: white;
-    color: #4CAF50;
-    border: 1px solid #4CAF50;
-}
+/* --- Responsive Design (Móvil) --- */
+@media (max-width: 768px) {
+    .content-container {
+        grid-template-columns: 1fr;
+        /* Una sola columna */
+    }
 
-.Numero-Ordenes-montoAhorrado .Boton2:hover {
-    background-color: #e8f5e9;
-    color: #388e3c;
-}
+    .main-page>h1 {
+        text-align: center;
+        font-size: 1.5rem;
+    }
 
+    .left-panel {
+        order: 1;
+        /* El usuario arriba */
+    }
+
+    .Ordenes {
+        order: 2;
+        /* Las órdenes abajo */
+        padding: 15px;
+        /* Menos padding en móvil */
+    }
+}

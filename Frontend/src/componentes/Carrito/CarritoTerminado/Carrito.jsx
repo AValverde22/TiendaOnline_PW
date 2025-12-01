@@ -1,49 +1,88 @@
-import React, { useEffect, useState } from "react";
-import {useNavigate} from "react-router-dom"
-import CarritoApi from "../../../api/CarritoApi.js";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCart } from "../../../api/context/CartContext.jsx"; // 👈 Importamos el Contexto
 import CartItem from "../CartItem/CartItem.jsx";
 import Summary from "../Summary/Summary.jsx";
 import Header from "../../Header/Header.jsx";
 import "./Carrito.css";
 
 const Carrito = () => {
-  const [productos, setProductos] = useState([]);
+  // 1. Usar el hook useCart para obtener el estado y las funciones asíncronas
+  const {
+    items,
+    total,
+    loading,
+    cartError,
+    actualizarCantidad,
+    eliminarProducto,
+    vaciarCarrito, // Aunque es un placeholder, lo mantenemos
+    fetchCart // Necesario si queremos forzar una recarga inicial (aunque el useEffect del Context ya lo hace)
+  } = useCart();
+
   const navigate = useNavigate();
 
-  useEffect(() => {
-    setProductos(CarritoApi.obtenerCarrito());
-  }, []);
+  // El useEffect inicial ya NO es necesario, el CartContext se encarga de cargar
+  // automáticamente el carrito al detectar la autenticación del usuario.
 
-  const handleAumentar = (id) => {
-    const item = productos.find((p) => p.id === id);
-    CarritoApi.actualizarCantidad(id, item.cantidad + 1);
-    setProductos(CarritoApi.obtenerCarrito());
+  // --- Funciones de Manejo ---
+
+  // Las funciones ahora son ASÍNCRONAS y usan el ID del ITEM (Backend PK)
+  const handleAumentar = async (idItem) => {
+    // Buscar el item actual para obtener la cantidad antes de actualizar
+    const item = items.find((p) => p.id === idItem);
+    if (item) {
+      // Llamada asíncrona al Contexto (que llama al Backend)
+      await actualizarCantidad(idItem, item.cantidad + 1);
+    }
   };
 
-  const handleDisminuir = (id) => {
-    const item = productos.find((p) => p.id === id);
-    CarritoApi.actualizarCantidad(id, Math.max(1, item.cantidad - 1));
-    setProductos(CarritoApi.obtenerCarrito());
+  const handleDisminuir = async (idItem) => {
+    const item = items.find((p) => p.id === idItem);
+    if (item && item.cantidad > 1) {
+      // Llamada asíncrona al Contexto
+      await actualizarCantidad(idItem, item.cantidad - 1);
+    }
   };
 
-  const handleEliminar = (id) => {
-    CarritoApi.eliminarProducto(id);
-    setProductos(CarritoApi.obtenerCarrito());
+  const handleEliminar = async (idItem) => {
+    // Llamada asíncrona al Contexto
+    await eliminarProducto(idItem);
   };
 
   const handleVaciar = () => {
-    CarritoApi.vaciarCarrito();
-    setProductos([]);
+    // Llama a la función del Contexto
+    vaciarCarrito();
   };
-
-  const total = productos.reduce(
-    (acc, p) => acc + p.precio * p.cantidad,
-    0
-  );
 
   const handleContinuarCompra = () => {
-    navigate("/Checkout1"); 
+    navigate("/Checkout1");
   };
+
+  // Si está cargando, mostramos un loader
+  if (loading) {
+    return (
+      <div className="carrito-page">
+        <Header />
+        <p className="loading">Cargando carrito... 🔄</p>
+      </div>
+    );
+  }
+
+  // Si hay error, lo mostramos
+  if (cartError) {
+    // Usar el error exportado del contexto
+    return (
+      <div className="carrito-page">
+        <Header />
+        <div className="error-container">
+          <p className={`error-message ${cartError.type}`}>
+            ❌ {cartError.message}
+          </p>
+          <p>Por favor, inténtalo de nuevo o revisa tu sesión.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="carrito-page">
@@ -51,17 +90,19 @@ const Carrito = () => {
       <div className="carrito-container">
         <div className="carrito-left">
           <h2>Tu carrito</h2>
-          {productos.length === 0 ? (
+
+          {items.length === 0 ? (
             <p className="vacio">Tu carrito está vacío 🛍️</p>
           ) : (
             <>
-              {productos.map((p) => (
+              {items.map((item) => ( // 👈 Iteramos sobre 'items'
                 <CartItem
-                  key={p.id}
-                  producto={p}
-                  onAumentar={() => handleAumentar(p.id)}
-                  onDisminuir={() => handleDisminuir(p.id)}
-                  onEliminar={() => handleEliminar(p.id)}
+                  key={item.id} // 👈 Usamos el ID del ITEM (no del producto)
+                  // 👈 Pasamos el ITEM completo, que contiene el producto anidado
+                  item={item}
+                  onAumentar={() => handleAumentar(item.id)}
+                  onDisminuir={() => handleDisminuir(item.id)}
+                  onEliminar={() => handleEliminar(item.id)}
                 />
               ))}
               <button className="vaciar-btn" onClick={handleVaciar}>
@@ -72,10 +113,12 @@ const Carrito = () => {
         </div>
 
         <div className="carrito-right">
-          <Summary total={total} count={productos.length} />
+          {/* El total y el count vienen calculados del Context */}
+          <Summary total={total} count={items.length} />
           <button
             className="continuar-btn"
             onClick={handleContinuarCompra}
+            disabled={items.length === 0} // Deshabilitar si está vacío
           >
             Continuar Compra
           </button>

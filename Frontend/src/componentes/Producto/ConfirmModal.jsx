@@ -17,10 +17,12 @@ function ConfirmModal({ isOpen, onClose, onConfirm, productName }) {
         </div>
         <h2>Eliminar producto</h2>
         <p>¿Estás seguro que deseas eliminar el producto "{productName}"?</p>
+
         <div className="modal-actions">
           <button className="btn-confirm" onClick={onConfirm}>
             Sí, eliminar
           </button>
+
           <button className="btn-cancel" onClick={onClose}>
             No, cancelar
           </button>

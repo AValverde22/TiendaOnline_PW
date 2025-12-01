@@ -34,7 +34,7 @@ const Usuario = sequelize.define('usuario', {
     rol: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: 'USER'
+        defaultValue: 'USER' // O 'ADMIN'
     },
     estado: {
         type: DataTypes.STRING,
@@ -55,13 +55,17 @@ const Usuario = sequelize.define('usuario', {
     },
     img: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        defaultValue: 'default_avatar.png' // Sugerencia: poner una imagen por defecto
     },
     fechaRegistro: {
         type: DataTypes.DATE,
         allowNull: false,
-        defaultValue: DataTypes.NOW 
+        defaultValue: DataTypes.NOW
     }
+}, {
+    tableName: 'usuarios', // Importante para consistencia en la BD
+    timestamps: true // Se crearán createdAt y updatedAt automáticamente
 });
 
 export default Usuario;

@@ -1,131 +1,215 @@
+/* --- LAYOUT GENERAL --- */
+.UserProfilePage {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f4f6f9;
+}
 
 .UserProfilePage .main-content {
-    padding: 2em;
-    background-color: #f8f9fa;
+    padding: 30px;
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
 }
 
-.UserProfilePage .profile-header {
-    margin-bottom: 2em;
+/* --- HEADER DE LA PÁGINA --- */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.UserProfilePage .profile-header h1 {
+.page-header h1 {
     margin: 0;
+    color: #333;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.back-link {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* --- LAYOUT DEL PERFIL --- */
+.profile-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+@media(min-width: 992px) {
+    .profile-layout {
+        flex-direction: row;
+        gap: 30px;
+    }
+}
+
+/* --- TARJETA DE PERFIL --- */
+.profile-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    flex: 1;
+}
+
+.profile-card-header {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.profile-name h2 {
+    margin: 0;
+    font-size: 1.2rem;
     color: #333;
 }
 
-.UserProfilePage .back-link {
+.profile-name p {
+    margin: 2px 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.estado-activo,
+.estado-inactivo {
     display: inline-block;
-    margin-bottom: 1em;
-    color: #007bff;
-    text-decoration: none;
-    font-weight: bold;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    margin-top: 6px;
 }
 
-.UserProfilePage .profile-layout {
-    display: flex;
-    gap: 2em;
-    align-items: flex-start;
+.estado-activo {
+    background-color: #e6f8e7;
+    color: #2ea32b;
+    border: 1px solid #2ea32b;
 }
 
-
-.UserProfilePage .profile-card {
-    flex: 1;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    overflow: hidden;
+.estado-inactivo {
+    background-color: #fff5f5;
+    color: #dc3545;
+    border: 1px solid #dc3545;
 }
 
-.UserProfilePage .profile-card-header {
-    text-align: center;
-    padding: 2em;
-    border-bottom: 1px solid #eee;
+.profile-card-body h3 {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 1rem;
 }
 
-.UserProfilePage .profile-avatar {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 1em;
-    border: 4px solid #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.profile-card-body p {
+    margin: 3px 0;
+    font-size: 0.9rem;
+    color: #555;
 }
 
-.UserProfilePage .profile-name h2 {
-    margin: 0;
-}
-
-.UserProfilePage .profile-name p {
-    margin: 0.2em 0 1em 0;
-    color: #777;
-}
-
-.UserProfilePage .profile-card-body {
-    padding: 2em;
-}
-
-.UserProfilePage .profile-card-body h3 {
-    margin-top: 0;
-    margin-bottom: 1em;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 0.5em;
-}
-
-.UserProfilePage .profile-card-body p {
-    margin: 0.5em 0;
-    line-height: 1.6;
-}
-
-
-.UserProfilePage .order-history-container {
+/* --- HISTORIAL DE ÓRDENES --- */
+.order-history-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    padding: 20px;
     flex: 2;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    padding: 2em;
 }
 
-.UserProfilePage .order-history-container h3 {
-    margin-top: 0;
-    margin-bottom: 1.5em;
+.order-history-container h3 {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: #333;
 }
 
-.UserProfilePage .order-history-table {
+/* --- TABLA DE ÓRDENES (Reutiliza clases de TableComponent) --- */
+.UserProfilePage .user-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
 }
 
-.UserProfilePage .order-history-table th,
-.UserProfilePage .order-history-table td {
-    padding: 12px 15px;
-    border-bottom: 1px solid #eee;
+.UserProfilePage .user-table th {
+    background-color: #f8f9fa;
+    color: #666;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 2px solid #eee;
+}
+
+.UserProfilePage .user-table td {
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f0f0;
     vertical-align: middle;
+    color: #444;
 }
 
-.UserProfilePage .order-history-table tbody tr:last-child td {
+.UserProfilePage .user-table tr:hover td {
+    background-color: #f9fbfd;
+}
+
+.UserProfilePage .user-table tr:last-child td {
     border-bottom: none;
 }
 
-.UserProfilePage .order-history-table thead th {
-    background-color: #f9f9f9;
+/* --- ESTADOS DE ÓRDENES --- */
+.status-entregado {
+    background-color: #e6f8e7;
+    color: #2ea32b;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
     font-weight: 600;
-    color: #555;
-    text-align: left;
+    text-transform: capitalize;
+    display: inline-block;
 }
 
-
-.UserProfilePage .estado-activo, 
-.UserProfilePage .estado-inactivo, 
-.UserProfilePage .status-entregado, 
-.UserProfilePage .status-por-entregar { 
-    font-weight: bold; 
-    text-transform: capitalize; 
+.status-por-entregar {
+    background-color: #fff5f5;
+    color: #dc3545;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    display: inline-block;
 }
 
-.UserProfilePage .estado-activo { color: #28a745; }
-.UserProfilePage .estado-inactivo { color: #dc3545; }
-.UserProfilePage .status-entregado { color: #28a745; }
-.UserProfilePage .status-por-entregar { color: #dc3545; }
-.UserProfilePage .order-id { font-weight: bold; color: #007bff; }
-
+/* --- BOTONES (Reutilizados de ListadoUsuarios) --- */
+.UserProfilePage button {
+    font-family: 'Orbitron', sans-serif;
+    cursor: pointer;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+    font-weight: 500;
+}

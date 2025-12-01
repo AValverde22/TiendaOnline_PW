@@ -1,12 +1,13 @@
 import { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { useUser } from '../../api/context/UserContext.jsx';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import usuariosApi from '../../api/usuariosApi';
 import TableComponent from './TableComponent';
 import "./DashboardAdmin.css";
 
-// 1. Componente de Detalle (Sub-componente)
+// 1. Sub-componente: Detalle de Usuario
 const UserDetail = ({ user }) => {
     if (!user) {
         return <p className="user-detail-placeholder">Selecciona un usuario para ver sus detalles.</p>;
@@ -14,6 +15,7 @@ const UserDetail = ({ user }) => {
 
     const estadoClass = user.estado?.toLowerCase() === 'activo' ? 'estado-activo' : 'estado-inactivo';
 
+    // Columnas para la tabla interna del detalle
     const orderHistoryColumns = [
         { header: '#ID', render: (orden) => `#${orden.id.toString().padStart(4, '0')}` },
         { header: 'Fecha', render: (orden) => new Date(orden.fecha).toLocaleDateString() },
@@ -42,6 +44,7 @@ const UserDetail = ({ user }) => {
                     columns={orderHistoryColumns}
                     data={user.ordenes}
                     emptyMessage="Este usuario no tiene órdenes."
+                    itemsPerPage={3} // Muestra menos items en el detalle
                 />
             </div>
         </div>
@@ -52,29 +55,39 @@ const UserDetail = ({ user }) => {
 const DashboardAdmin = () => {
     const [usuarios, setUsuarios] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
-    const [userCurrentPage, setUserCurrentPage] = useState(1);
-    const [orderCurrentPage, setOrderCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
     const [loading, setLoading] = useState(true);
 
+    const { token } = useUser();
+
+    // --- CARGA DE DATOS ---
     useEffect(() => {
         const fetchUsuarios = async () => {
+            if (!token) {
+                setLoading(false);
+                return;
+            }
+
             try {
-                const todosLosUsuarios = await usuariosApi.findAll();
+                // Pasamos el token a la API
+                const todosLosUsuarios = await usuariosApi.findAll(token);
 
                 if (!Array.isArray(todosLosUsuarios)) {
-                    console.error("Respuesta inesperada al obtener usuarios:", todosLosUsuarios);
+                    console.error("Respuesta inválida:", todosLosUsuarios);
                     setUsuarios([]);
                     return;
                 }
 
-                // Filtramos admins para no auto-eliminarnos
+                // Excluir admins
                 const usuariosFiltrados = todosLosUsuarios.filter(user => user.rol !== 'ADMIN');
-
                 setUsuarios(usuariosFiltrados);
 
+                // Seleccionar primer usuario por defecto si no hay selección
                 if (usuariosFiltrados.length > 0) {
-                    setSelectedUser(usuariosFiltrados[0]);
+                    if (!selectedUser || !usuariosFiltrados.find(u => u.id === selectedUser.id)) {
+                        setSelectedUser(usuariosFiltrados[0]);
+                    }
+                } else {
+                    setSelectedUser(null);
                 }
             } catch (error) {
                 console.error("Error cargando usuarios:", error);
@@ -84,11 +97,14 @@ const DashboardAdmin = () => {
         };
 
         fetchUsuarios();
-    }, []);
+    }, [token]);
 
+    // --- MANEJO DE ESTADO (ACTIVAR/DESACTIVAR) ---
     const handleToggleStatus = async (user) => {
         const nuevoEstado = user.estado === 'ACTIVO' ? 'INACTIVO' : 'ACTIVO';
+        const estadoAnterior = user.estado;
 
+        // 1. Optimistic Update
         const usuariosActualizados = usuarios.map(u =>
             u.id === user.id ? { ...u, estado: nuevoEstado } : u
         );
@@ -98,19 +114,29 @@ const DashboardAdmin = () => {
             setSelectedUser({ ...selectedUser, estado: nuevoEstado });
         }
 
+        // 2. Llamada API
         try {
-            await usuariosApi.put(user.id, { estado: nuevoEstado });
+            await usuariosApi.put(user.id, { estado: nuevoEstado }, token);
         } catch (error) {
-            console.error("Error al actualizar en servidor:", error);
+            console.error("Error al actualizar:", error);
             alert("Error al guardar cambios. Reversando...");
-            // Aquí podrías revertir el estado si falla
+
+            // 3. Rollback en caso de error
+            const usuariosRevertidos = usuarios.map(u =>
+                u.id === user.id ? { ...u, estado: estadoAnterior } : u
+            );
+            setUsuarios(usuariosRevertidos);
+
+            if (selectedUser && selectedUser.id === user.id) {
+                setSelectedUser({ ...selectedUser, estado: estadoAnterior });
+            }
         }
     };
 
+    // --- DATOS CALCULADOS ---
     const allOrders = useMemo(() => {
         return usuarios.flatMap(user => {
             if (!user.ordenes) return [];
-
             return user.ordenes.map(orden => ({
                 ...orden,
                 userId: user.id,
@@ -121,98 +147,80 @@ const DashboardAdmin = () => {
         });
     }, [usuarios]);
 
-    // Paginación
-    const indexOfLastUser = userCurrentPage * itemsPerPage;
-    const indexOfFirstUser = indexOfLastUser - itemsPerPage;
-    const currentUsers = usuarios.slice(indexOfFirstUser, indexOfLastUser);
-    const totalUserPages = Math.ceil(usuarios.length / itemsPerPage);
+    const totalIngresos = useMemo(() => {
+        return allOrders.reduce((acc, curr) => acc + (curr.total || 0), 0).toFixed(2);
+    }, [allOrders]);
 
-    const indexOfLastOrder = orderCurrentPage * itemsPerPage;
-    const indexOfFirstOrder = indexOfLastOrder - itemsPerPage;
-    const currentOrders = allOrders.slice(indexOfFirstOrder, indexOfLastOrder);
-    const totalOrderPages = Math.ceil(allOrders.length / itemsPerPage);
-
-    // --- COLUMNAS CORREGIDAS PARA CSS ---
-    // --- COLUMNAS CON ESTILOS FIJOS ---
+    // --- DEFINICIÓN DE COLUMNAS ---
     const userColumns = [
         {
             header: 'Nombre',
-            // No necesitamos clase fija aquí, dejamos que ocupe el espacio restante
             render: (user) => (
                 <div className="user-cell">
                     <img src={user.img || `https://i.pravatar.cc/150?u=${user.id}`} alt="avatar" />
                     <span>{`${user.nombre} ${user.apellido}`}</span>
                 </div>
-            )
+            ),
+            width: '40%' // Ancho explícito para ayudar al ajuste
         },
         {
             header: 'Estado',
-            className: 'status-col', // <--- APLICAMOS CLASE FIJA
             render: (user) => {
-                // Normalizamos mayúsculas/minúsculas
-                const isActive = user.estado?.toUpperCase() === 'ACTIVO';
-                return (
-                    <span className={`status-badge ${isActive ? 'active' : 'inactive'}`}>
-                        {user.estado}
-                    </span>
-                );
-            }
+                const estadoClass = user.estado?.toLowerCase() === 'activo' ? 'estado-activo' : 'estado-inactivo';
+                return <span className={estadoClass}>{user.estado}</span>;
+            },
+            width: '20%'
         },
         {
             header: 'Acciones',
-            className: 'actions-col', // <--- APLICAMOS CLASE FIJA
-            // Nota: Aquí NO usamos div wrapper en la celda TD porque TableComponent
-            // ya nos da el TD. Usamos el wrapper interno para los botones.
-            render: (user) => {
-                const isActive = user.estado?.toUpperCase() === 'ACTIVO';
-                return (
-                    <div className="action-buttons-wrapper"> {/* Flexbox Wrapper */}
-                        <button
-                            className="btn-ver-detalle"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedUser(user);
-                            }}
-                        >
-                            Ver Detalle
-                        </button>
-                        
-                        <button
-                            // Usamos la nueva clase .btn-status-toggle que tiene min-width
-                            className={`btn-status-toggle ${isActive ? 'btn-deactivate' : 'btn-activate'}`}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleToggleStatus(user);
-                            }}
-                        >
-                            {isActive ? 'Desactivar' : 'Activar'}
-                        </button>
-                    </div>
-                );
-            }
+            render: (user) => (
+                <div className="action-buttons">
+                    <button
+                        className="btn-ver-detalle"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedUser(user);
+                        }}
+                    >
+                        Ver Detalle
+                    </button>
+                    <button
+                        className={`btn-action ${user.estado === 'ACTIVO' ? 'btn-deactivate' : 'btn-activate'}`}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleToggleStatus(user);
+                        }}
+                    >
+                        {user.estado === 'ACTIVO' ? 'Desactivar' : 'Activar'}
+                    </button>
+                </div>
+            ),
+            width: '40%' // Espacio suficiente para los botones
         }
     ];
-    
+
     const orderColumns = [
-        { header: '#ID', render: (order) => `#${order.id.toString().padStart(4, '0')}` },
+        { header: '#ID', render: (order) => `#${order.id.toString().padStart(4, '0')}`, width: '15%' },
         {
             header: 'Usuario',
             render: (order) => (
-                <div className="user-cell"> {/* Wrapper DIV con Flexbox */}
+                <div className="user-cell">
                     <img src={order.userImg || `https://i.pravatar.cc/150?u=${order.userId}`} alt="avatar" />
                     <span>{order.username}</span>
                 </div>
-            )
+            ),
+            width: '30%'
         },
-        { header: 'Fecha', render: (order) => new Date(order.fecha).toLocaleDateString() },
-        { header: 'Total', render: (order) => `S/ ${(Number(order.total) || 0).toFixed(2)}` },
+        { header: 'Fecha', render: (order) => new Date(order.fecha).toLocaleDateString(), width: '20%' },
+        { header: 'Total', render: (order) => `S/ ${order.total.toFixed(2)}`, width: '15%' },
         {
             header: 'Estado',
             render: (order) => (
-                <span className={`status-badge ${order.estado === 'entregado' ? 'status-entregado' : 'status-p-entregar'}`}>
+                <span className={`status-action ${order.estado === 'entregado' ? 'status-entregado' : 'status-p-entregar'}`}>
                     {order.estado}
                 </span>
-            )
+            ),
+            width: '20%'
         }
     ];
 
@@ -224,18 +232,17 @@ const DashboardAdmin = () => {
             <main className='main-content'>
                 <h1>Dashboard Admin</h1>
 
+                {/* Tarjetas de Resumen */}
                 <section className='cards'>
                     <ul>
                         <li>Usuarios Registrados: <span>{usuarios.length}</span></li>
                         <li>Órdenes Totales: <span>{allOrders.length}</span></li>
-                        <li>Ingresos Totales:
-                            {/* Corrección del reduce para evitar error .toFixed */}
-                            <span> S/ {allOrders.reduce((acc, curr) => acc + (Number(curr.total) || 0), 0).toFixed(2)}</span>
-                        </li>
+                        <li>Ingresos Totales: <span> S/ {totalIngresos}</span></li>
                     </ul>
                 </section>
 
                 <div className="dashboard-layout">
+                    {/* FILA SUPERIOR: Tabla Usuarios (Izquierda) + Detalle (Derecha) */}
                     <div className="top-row">
                         <div className="column-left">
                             <div className="column-header">
@@ -245,23 +252,15 @@ const DashboardAdmin = () => {
                                 </Link>
                             </div>
 
-                            <TableComponent
-                                columns={userColumns}
-                                data={currentUsers}
-                                onRowClick={setSelectedUser}
-                                rowClassName={(user) => selectedUser?.id === user.id ? 'selected-row' : ''}
-                            />
-
-                            <div className="pagination">
-                                {Array.from({ length: totalUserPages }, (_, i) => (
-                                    <button
-                                        key={i}
-                                        onClick={() => setUserCurrentPage(i + 1)}
-                                        className={userCurrentPage === i + 1 ? 'active' : ''}
-                                    >
-                                        {i + 1}
-                                    </button>
-                                ))}
+                            {/* SOLUCIÓN: Wrapper para controlar el ancho de la tabla en Flexbox */}
+                            <div className="user-table-wrapper">
+                                <TableComponent
+                                    columns={userColumns}
+                                    data={usuarios}
+                                    onRowClick={setSelectedUser}
+                                    rowClassName={(user) => selectedUser?.id === user.id ? 'selected-row' : ''}
+                                    itemsPerPage={5}
+                                />
                             </div>
                         </div>
 
@@ -273,6 +272,7 @@ const DashboardAdmin = () => {
                         </div>
                     </div>
 
+                    {/* FILA INFERIOR: Tabla Órdenes (Ancho completo) */}
                     <div className="bottom-row">
                         <div className="column-header">
                             <h2>Últimas Órdenes</h2>
@@ -288,21 +288,10 @@ const DashboardAdmin = () => {
 
                         <TableComponent
                             columns={orderColumns}
-                            data={currentOrders}
+                            data={allOrders}
                             emptyMessage="No hay órdenes para mostrar."
+                            itemsPerPage={5}
                         />
-
-                        <div className="pagination" id='abajo'>
-                            {Array.from({ length: totalOrderPages }, (_, i) => (
-                                    <button
-                                        key={i}
-                                        onClick={() => setOrderCurrentPage(i + 1)}
-                                        className={orderCurrentPage === i + 1 ? 'active' : ''}
-                                    >
-                                        {i + 1}
-                                    </button>
-                                ))}
-                        </div>
                     </div>
                 </div>
             </main>

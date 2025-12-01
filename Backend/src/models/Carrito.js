@@ -1,5 +1,6 @@
-import sequelize from '../config/database.js'
-import { DataTypes } from 'sequelize'
+import sequelize from '../config/database.js';
+import { DataTypes } from 'sequelize';
+import Usuario from './usuario.js'
 
 const Carrito = sequelize.define('carrito', {
     id: {
@@ -7,7 +8,6 @@ const Carrito = sequelize.define('carrito', {
         primaryKey: true,
         autoIncrement: true
     },
-    
-})
+});
 
 export default Carrito;

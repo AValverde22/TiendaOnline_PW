@@ -1,55 +1,39 @@
-import model from '../models/usuario.js';
+import {
+    Usuario,
+    Orden,
+    ItemDeLaOrden, // OJO: Antes era DetalleOrden 
+    Producto,
+    Categoria
+} from '../models/asociaciones.js';
 import RepositoryBase from './RepositoryBase.js';
-import sequelize from '../config/database.js';
-import Usuario from '../models/usuario.js';
-import { Orden, DetalleOrden, Producto } from '../models/asociaciones.js';
 
-const repository = new RepositoryBase(model);
+const repository = new RepositoryBase(Usuario);
 
-repository.findByUsername = async function (username) {
-    try {
-        return await model.findOne({ where: { username: username } });
-    } catch (error) {
-        console.error('Error en findByUsername:', error);
-        return null;
-    }
-};
-
+// Buscar usuario por email (Vital para el Login)
 repository.findByEmail = async function (email) {
     try {
-        return await model.findOne({ where: { correo: email } });
+        return await Usuario.findOne({ where: { correo: email } });
     } catch (error) {
         console.error('Error en findByEmail:', error);
-        return null;
+        return null; // Retornamos null para que el controller maneje el 404/401
     }
 };
 
-repository.getTotalSpent = async function (idUsuario) {
-    try {
-        return 0;
-    } catch (error) {
-        console.error('Error en getTotalSpent:', error);
-        return 0;
-    }
-};
-
+// Obtener todos los usuarios (Para el Admin)
 repository.findAll = async function () {
     try {
-        const usuarios = await Usuario.findAll({
-            attributes: { exclude: ['password'] },
+        return await Usuario.findAll({
+            attributes: { exclude: ['password'] }, // Nunca devolver passwords
             include: [
                 {
                     model: Orden,
                     as: 'ordenes',
                     include: [
                         {
-                            model: DetalleOrden,
+                            model: ItemDeLaOrden,
                             as: 'detalles',
                             include: [
-                                {
-                                    model: Producto,
-                                    as: 'producto'
-                                }
+                                { model: Producto, as: 'producto' }
                             ]
                         }
                     ]
@@ -57,31 +41,43 @@ repository.findAll = async function () {
             ],
             order: [['id', 'ASC']]
         });
-
-        return usuarios;
     } catch (error) {
-        throw error;
+        console.error('Error en findAll usuarios:', error);
+        return null;
     }
 };
 
-repository.update = async function (id, datos) {
+// Obtener un usuario por ID (Para ver perfil y detalle de órdenes)
+repository.findById = async function (id) {
     try {
-        const usuario = await Usuario.findByPk(id);
-
-        if (!usuario) {
-            return null;
-        }
-
-        await usuario.update(datos);
-
-        const usuarioActualizado = await Usuario.findByPk(id, {
-            attributes: { exclude: ['password'] }
+        return await Usuario.findByPk(id, {
+            attributes: { exclude: ['password'] },
+            include: [
+                {
+                    model: Orden,
+                    as: 'ordenes',
+                    include: [
+                        {
+                            model: ItemDeLaOrden,
+                            as: 'detalles',
+                            include: [
+                                {
+                                    model: Producto,
+                                    as: 'producto',
+                                    include: [
+                                        // Esto es lo que permite mostrar la categoría en el historial
+                                        { model: Categoria, as: 'categoria' }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
         });
-
-        return usuarioActualizado;
     } catch (error) {
-        console.error('Error en update:', error);
-        throw error;
+        console.error('Error en findById usuario:', error);
+        return null;
     }
 };
 

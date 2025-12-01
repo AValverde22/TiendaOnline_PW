@@ -58,18 +58,17 @@
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     overflow: hidden;
-    /* Para bordes redondeados */
     padding: 20px;
 }
 
 /* --- ESTILOS DE LA TABLA (Heredados de TableComponent) --- */
-.user-table {
+.AllUsersPage .user-table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
 }
 
-.user-table th {
+.AllUsersPage .user-table th {
     background-color: #f8f9fa;
     color: #666;
     font-weight: 600;
@@ -81,19 +80,18 @@
     border-bottom: 2px solid #eee;
 }
 
-.user-table td {
+.AllUsersPage .user-table td {
     padding: 15px 20px;
     border-bottom: 1px solid #f0f0f0;
     vertical-align: middle;
     color: #444;
 }
 
-.user-table tr:hover td {
+.AllUsersPage .user-table tr:hover td {
     background-color: #f9fbfd;
-    /* Highlight al pasar mouse */
 }
 
-.user-table tr:last-child td {
+.AllUsersPage .user-table tr:last-child td {
     border-bottom: none;
 }
 
@@ -134,61 +132,27 @@
 }
 
 /* --- COLUMNA: ESTADO --- */
-/* --- FIJAR ANCHO DE COLUMNAS PARA EVITAR MOVIMIENTOS --- */
-
-/* 1. Columna de Estado: Ancho fijo y centrado */
 .status-col {
     width: 120px;
-    /* Espacio suficiente para la palabra más larga */
     text-align: center;
     white-space: nowrap;
-    /* Evita que se rompa en dos líneas */
 }
 
-/* 2. Columna de Acciones: Ancho fijo para los botones */
 .actions-col {
     width: 200px;
-    /* Ajusta según el tamaño de tus botones */
     text-align: right;
-    /* O center, según prefieras */
     white-space: nowrap;
 }
 
-/* 3. El Badge (Píldora): Truco para que mida lo mismo sea ACTIVO o INACTIVO */
 .status-badge {
     padding: 6px 0;
-    /* Quitamos padding lateral y usamos width */
     width: 90px;
-    /* ANCHO FIJO: La píldora siempre medirá 90px */
     border-radius: 20px;
     font-size: 0.8rem;
     font-weight: 600;
     text-transform: capitalize;
     display: inline-block;
-    /* Necesario para que el width funcione */
     text-align: center;
-    /* Centramos el texto dentro de la píldora */
-}
-
-.status-badge.active {
-    background-color: #e6f8e7;
-    color: #2ea32b;
-    border: 1px solid #2ea32b;
-}
-
-.status-badge.inactive {
-    background-color: #fff5f5;
-    color: #dc3545;
-    border: 1px solid #dc3545;
-}
-
-.status-badge {
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: capitalize;
-    display: inline-block;
 }
 
 .status-badge.active {
@@ -208,13 +172,11 @@
     display: flex;
     gap: 10px;
     justify-content: flex-start;
-    /* Alineados a la izquierda dentro de su celda */
     align-items: center;
 }
 
-button {
+.AllUsersPage button {
     font-family: 'Orbitron', sans-serif;
-    /* Tu fuente personalizada */
     cursor: pointer;
     border: none;
     padding: 8px 14px;
@@ -231,7 +193,6 @@ button {
 
 .btn-deactivate {
     background-color: #dc3545;
-    /* Rojo */
 }
 
 .btn-deactivate:hover {
@@ -240,7 +201,6 @@ button {
 
 .btn-activate {
     background-color: #28a745;
-    /* Verde */
 }
 
 .btn-activate:hover {
@@ -249,7 +209,6 @@ button {
 
 .btn-view-profile {
     background-color: #007bff;
-    /* Azul */
     color: white;
 }
 

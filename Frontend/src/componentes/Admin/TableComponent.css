@@ -1,0 +1,165 @@
+/* --- Contenedor Principal --- */
+.table-wrapper {
+  width: 100%;       /* Ocupa todo el ancho del padre (ej. column-left) */
+  display: block;    /* Asegura bloque */
+  overflow-x: auto;  /* Si la pantalla es muy pequeña (móvil), permite scroll horizontal interno */
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  
+  /* Evita que el scrollbar aparezca si no es estrictamente necesario */
+  scrollbar-width: thin; 
+}
+
+/* --- Tabla Base --- */
+.user-table {
+  width: 100%;            /* Fuerza a la tabla a llenar el wrapper */
+  border-collapse: collapse;
+  
+  /* CRÍTICO: 'fixed' obliga al navegador a respetar los anchos % definidos en tu JSX 
+     y evita que el contenido largo ensanche la tabla automáticamente. */
+  table-layout: fixed;    
+  
+  /* Opcional: Define un ancho mínimo total para asegurar legibilidad en móviles.
+     Si el contenedor es menor a 500px, aparecerá el scroll del .table-wrapper */
+  min-width: 500px; 
+}
+
+/* --- Celdas (Header y Body) --- */
+.user-table th,
+.user-table td {
+  padding: 12px 10px;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid #eee;
+
+  /* Manejo de texto:
+     'hidden' + 'ellipsis' corta el texto con "..." si es muy largo para su columna.
+     Esto es vital para que table-layout: fixed funcione bien visualmente. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; 
+}
+
+/* --- Header --- */
+.user-table thead {
+  background-color: #f8f9fa;
+  position: sticky; /* Opcional: mantiene el header visible si hay mucho scroll vertical */
+  top: 0;
+  z-index: 10;
+}
+
+.user-table th {
+  font-family: 'Orbitron', sans-serif; /* Tu fuente personalizada */
+  font-size: 0.8em;
+  color: #555;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* --- Filas del Cuerpo --- */
+.user-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.user-table tbody tr:hover {
+  background-color: #f1f3f5;
+}
+
+/* Estilo para fila seleccionada (si usas rowClassName) */
+.user-table tbody tr.selected-row {
+  background-color: #e0f7e0;
+  border-left: 4px solid #2ea32b;
+}
+
+/* --- Componentes Internos de Celda --- */
+
+/* Celda de Usuario (Imagen + Texto) */
+.user-table .user-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  /* Asegura que el flex container no se desborde */
+  min-width: 0; 
+}
+
+.user-table .user-cell span {
+  /* Asegura que el nombre se corte con "..." si es necesario */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-table .user-cell img {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0; /* Evita que la imagen se aplaste */
+  border: 1px solid #ddd;
+}
+
+/* Contenedor de Botones (Acciones) */
+.user-table .action-buttons {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  /* Importante: permite que los botones se vean bien */
+  justify-content: flex-start; 
+}
+
+/* Botones dentro de la tabla */
+.user-table button {
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.75em;
+  line-height: 1;
+  white-space: nowrap; /* Evita que el texto del botón se parta */
+  transition: filter 0.2s, transform 0.1s;
+}
+
+.user-table button:active {
+  transform: scale(0.98);
+}
+
+/* --- Paginación --- */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  padding: 15px;
+  border-top: 1px solid #eee;
+  background-color: white;
+}
+
+.pagination button {
+  min-width: 32px;
+  height: 32px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9em;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  font-family: 'Orbitron';
+}
+
+.pagination button:hover {
+  background-color: #f8f9fa;
+  border-color: #ccc;
+}
+
+.pagination button.active {
+  background-color: #2ea32b;
+  color: white;
+  border-color: #2ea32b;
+  font-weight: bold;
+}

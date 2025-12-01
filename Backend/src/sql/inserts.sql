@@ -1,4 +1,9 @@
 -- =============================================
+-- SCRIPT DE POBLADO DE DATOS (INSERTS)
+-- Adaptado para la nueva arquitectura Sequelize
+-- =============================================
+
+-- =============================================
 -- 1. INSERTAR CATEGORÍAS
 -- =============================================
 INSERT INTO "categorias" ("nombre", "descripcion", "img", "createdAt", "updatedAt") VALUES
@@ -20,21 +25,22 @@ INSERT INTO "series" ("nombre", "descripcion", "img", "createdAt", "updatedAt") 
 
 -- =============================================
 -- 3. INSERTAR PRODUCTOS
+-- CAMBIO: categoriaId -> idCategoria, serieId -> idSerie
 -- =============================================
-INSERT INTO "productos" ("nombre", "descripcion", "precio", "stock", "img", "categoriaId", "serieId", "activo", "createdAt", "updatedAt") VALUES
+INSERT INTO "productos" ("nombre", "descripcion", "precio", "stock", "img", "idCategoria", "idSerie", "activo", "createdAt", "updatedAt") VALUES
     -- Consolas (ID 1 y 2)
-    ('Playstation 5', 'Consola de videojuegos - Presentación: fisico', 2500.00, 10, 'https://plazavea.vteximg.com.br/arquivos/ids/29033795-1000-1000/20404194.jpg', 2, NULL, true, NOW(), NOW()),
-    ('Nintendo Switch 2', 'Consola de videojuegos - Presentación: fisico', 2900.00, 10, 'https://rimage.ripley.com.pe/home.ripley/Attachment/MKP/2534/PMP20000870001/full_image-1.jpeg', 2, NULL, true, NOW(), NOW()),
+    ('Playstation 5', 'Consola de videojuegos ', 2500.00, 10, 'https://plazavea.vteximg.com.br/arquivos/ids/29033795-1000-1000/20404194.jpg', 2, NULL, true, NOW(), NOW()),
+    ('Nintendo Switch 2', 'Consola de videojuegos ', 2900.00, 10, 'https://rimage.ripley.com.pe/home.ripley/Attachment/MKP/2534/PMP20000870001/full_image-1.jpeg', 2, NULL, true, NOW(), NOW()),
 
     -- Videojuegos Sueltos (ID 3 y 4)
-    ('Ghost of Yotei Collector''s Edition', 'Edición de colección de Ghost of Yotei - Presentación: fisico', 1000.00, 10, 'https://press-start.com.au/wp-content/uploads/2025/04/Ghost-of-YOtei-CE-1.jpg', 1, NULL, true, NOW(), NOW()),
+    ('Ghost of Yotei Collector''s Edition', 'Edición de colección de Ghost of Yotei ', 1000.00, 10, 'https://press-start.com.au/wp-content/uploads/2025/04/Ghost-of-YOtei-CE-1.jpg', 1, NULL, true, NOW(), NOW()),
     ('EAFC26 Ultimate edition', 'Edición Ultima de EAFC 26 - Presentación: digital', 300.00, 10, 'https://gamescenter.pe/wp-content/uploads/2025/07/FC-26-Ultimate-Edition-PS5.webp', 1, NULL, true, NOW(), NOW()),
 
     -- Juguetes (ID 5)
-    ('Rick Grimes''s Funko Pop', 'Figura coleccionable de vinilo del protagonista de la serie The Walking Dead - Presentación: fisico', 150.00, 10, 'https://i0.wp.com/www.planetafunk.com.pe/wp-content/uploads/2024/10/FUNKO-POP-RICK-GRIMES-306-1.jpg?fit=800%2C800&ssl=1', 4, NULL, true, NOW(), NOW()),
+    ('Rick Grimes''s Funko Pop', 'Figura coleccionable de vinilo del protagonista de la serie The Walking Dead ', 150.00, 10, 'https://i0.wp.com/www.planetafunk.com.pe/wp-content/uploads/2024/10/FUNKO-POP-RICK-GRIMES-306-1.jpg?fit=800%2C800&ssl=1', 4, NULL, true, NOW(), NOW()),
 
     -- Periféricos (ID 6)
-    ('Audífonos Bluetooth Haylou S30 PRO', 'Audífonos con -43dB para cancelar de ruido profundo e inalámbricos con 80 horas de batería - Presentación: fisico', 150.00, 10, 'https://media.falabella.com/falabellaPE/138655627_01/w=1500,h=1500,fit=pad', 3, NULL, true, NOW(), NOW()),
+    ('Audífonos Bluetooth Haylou S30 PRO', 'Audífonos con -43dB para cancelar de ruido profundo e inalámbricos con 80 horas de batería ', 150.00, 10, 'https://media.falabella.com/falabellaPE/138655627_01/w=1500,h=1500,fit=pad', 3, NULL, true, NOW(), NOW()),
 
     -- Juegos de Series (ID 7 al 13)
     ('The Last of Us Part I', 'Joel debe escoltar a Ellie, una joven inmune al virus...', 250.00, 10, 'https://image.api.playstation.com/vulcan/ap/rnd/202206/0720/0kRqUeSBIbQzz7cen3c989c6.jpg', 1, 1, true, NOW(), NOW()),
@@ -46,17 +52,17 @@ INSERT INTO "productos" ("nombre", "descripcion", "precio", "stock", "img", "cat
     ('Gears of War 3', 'Marcus y su equipo luchan por la supervivencia final...', 250.00, 10, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9Y8z3rbd7q5p2d6KFcVkt_HzsohXRMFz_Tw&s', 1, 3, true, NOW(), NOW());
 
 -- =============================================
--- 4. INSERTAR USUARIOS (Con fechaRegistro variada)
+-- 4. INSERTAR USUARIOS
 -- =============================================
 INSERT INTO "usuarios" 
 ("correo", "username", "password", "nombre", "apellido", "rol", "estado", "direccion", "telefono", "distrito", "img", "fechaRegistro", "createdAt", "updatedAt") 
 VALUES
 (
     'admin@tienda.com', 'admin', 
-    '$2b$10$DhQ2bHOttISXHS3dA8xgPuPQpwdZTVIthOE5KK1IpAi27aX9XthAq', -- Pass: 123456
+    '$2b$10$DhQ2bHOttISXHS3dA8xgPuPQpwdZTVIthOE5KK1IpAi27aX9XthAq', -- Pass: 123456 (Hash bcrypt válido)
     'Admin', 'Principal', 'ADMIN', 'ACTIVO', 'Av. Central 123', '999888777', 'Lima', 
     'https://cdn-icons-png.flaticon.com/512/147/147142.png', 
-    '2023-01-15 08:00:00', -- El admin se registró hace tiempo
+    '2023-01-15 08:00:00', 
     NOW(), NOW()
 ),
 (
@@ -64,7 +70,7 @@ VALUES
     '$2b$10$DhQ2bHOttISXHS3dA8xgPuPQpwdZTVIthOE5KK1IpAi27aX9XthAq', -- Pass: 123456
     'Juan', 'Perez', 'USER', 'ACTIVO', 'Jr. Los Olivos 456', '987654321', 'Miraflores', 
     'https://cdn-icons-png.flaticon.com/512/147/147144.png', 
-    '2024-05-20 14:30:00', -- Juan se registró en mayo
+    '2024-05-20 14:30:00', 
     NOW(), NOW()
 ),
 (
@@ -72,34 +78,31 @@ VALUES
     '$2b$10$DhQ2bHOttISXHS3dA8xgPuPQpwdZTVIthOE5KK1IpAi27aX9XthAq', -- Pass: 123456
     'Maria', 'Gomez', 'USER', 'INACTIVO', 'Av. Larco 789', '999111222', 'San Isidro', 
     'https://cdn-icons-png.flaticon.com/512/147/147133.png', 
-    '2024-11-01 10:15:00', -- Maria se registró recientemente
+    '2024-11-01 10:15:00', 
     NOW(), NOW()
 );
 
 -- =============================================
 -- 5. INSERTAR ÓRDENES (COMPRAS)
+-- CAMBIO: usuarioId -> idUsuario
 -- =============================================
--- NOTA IMPORTANTE: 
--- ID 1 = Admin
--- ID 2 = user@tienda.com (Juan Perez)
-
--- Orden 1: Juan compró una PS5 hace 5 días (Ya entregada)
-INSERT INTO "ordenes" ("fecha", "estado", "total", "direccion_envio", "usuarioId", "createdAt", "updatedAt") VALUES
+INSERT INTO "ordenes" ("fecha", "estado", "total", "direccion_envio", "idUsuario", "createdAt", "updatedAt") VALUES
 (NOW() - INTERVAL '5 days', 'entregado', 2500.00, 'Jr. Los Olivos 456, Miraflores', 2, NOW(), NOW());
 
--- Orden 2: Juan compró un juego y un funko hoy (Pendiente)
-INSERT INTO "ordenes" ("fecha", "estado", "total", "direccion_envio", "usuarioId", "createdAt", "updatedAt") VALUES
+INSERT INTO "ordenes" ("fecha", "estado", "total", "direccion_envio", "idUsuario", "createdAt", "updatedAt") VALUES
 (NOW(), 'pendiente', 450.00, 'Jr. Los Olivos 456, Miraflores', 2, NOW(), NOW());
 
 -- =============================================
 -- 6. INSERTAR DETALLES DE LAS ÓRDENES
+-- CAMBIO: Tabla detalle_orden -> items_de_la_orden
+-- CAMBIO: ordenId -> idOrden, productoId -> idProducto
 -- =============================================
 
 -- Detalles de la Orden 1 (ID 1) -> Producto ID 1 (PS5)
-INSERT INTO "detalle_orden" ("cantidad", "precio_unitario", "subtotal", "ordenId", "productoId") VALUES
+INSERT INTO "items_de_la_orden" ("cantidad", "precio_unitario", "subtotal", "idOrden", "idProducto") VALUES
 (1, 2500.00, 2500.00, 1, 1);
 
 -- Detalles de la Orden 2 (ID 2) -> Producto ID 4 (EAFC26) + ID 5 (Funko)
-INSERT INTO "detalle_orden" ("cantidad", "precio_unitario", "subtotal", "ordenId", "productoId") VALUES
+INSERT INTO "items_de_la_orden" ("cantidad", "precio_unitario", "subtotal", "idOrden", "idProducto") VALUES
 (1, 300.00, 300.00, 2, 4),
 (1, 150.00, 150.00, 2, 5);

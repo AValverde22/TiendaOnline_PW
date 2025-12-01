@@ -1,15 +1,24 @@
-import base from './base.js'
+import base from './base.js';
 
 const endpoint = 'categorias';
 
-const findAll = async () => await base.get(endpoint);
-const create = async (payload) => await base.post(endpoint, payload);
-const update = async (id, payload) => await base.put(`${endpoint}/${id}`, payload);
-const remove = async (id) => await base.remove(`${endpoint}/${id}`);
-const findOne = async (id) => await base.get(`${endpoint}/${id}`);
-const findByName = async (name) => await base.get(`${endpoint}/buscar/${name}`);
+const categoriasApi = {
+  findAll: async () => await base.get(endpoint),
 
-const categoriasApi = { findAll, create, update, remove, findOne, findByName };
+  create: async (payload, token) =>
+    await base.post(endpoint, payload, token),
+
+  update: async (id, payload, token) =>
+    await base.put(`${endpoint}/${id}`, payload, token),
+
+  remove: async (id, token) =>
+    await base.remove(`${endpoint}/${id}`, token),
+
+  findOne: async (id) =>
+    await base.get(`${endpoint}/${id}`),
+
+  findByName: async (name) =>
+    await base.get(`${endpoint}/buscar/${encodeURIComponent(name)}`)
+};
 
 export default categoriasApi;
-

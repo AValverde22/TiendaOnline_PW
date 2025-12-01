@@ -1,87 +1,63 @@
 const URI = 'http://localhost:3005/api/';
 
-const get = async (endpoint, token = null) => {
+// Genera headers en un solo lugar
+const buildHeaders = (token, isJSON = true) => {
     const headers = {};
-    if (token) {
-        headers['Authorization'] = 'Bearer ' + token;
-    }
-
-    const objPayload = {
-        method: 'GET',
-        headers: headers
-    };
-
-    return await fetch(URI + endpoint, objPayload)
-        .then(response => response.json())
-        .then(data => data);
+    if (isJSON) headers['Content-Type'] = 'application/json';
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+    return headers;
 };
 
-// CORRECCIÓN: Ahora acepta 'token' como 3er argumento
-const post = async (endpoint, payload, token = null) => {
-    const headers = { 'Content-Type': 'application/json' };
-    
-    // Si llega el token, lo metemos en la cabecera
-    if (token) {
-        headers['Authorization'] = 'Bearer ' + token;
-    }
+// Manejo centralizado de fetch
+const request = async (method, endpoint, payload = null, token = null) => {
+    // Para DELETE, generalmente no enviamos Content-Type a menos que haya body
+    const isJSON = method !== 'GET' && method !== 'DELETE';
 
-    const objPayload = {
-        method: 'POST',
-        headers: headers, 
-        body: JSON.stringify(payload)
+    const config = {
+        method,
+        headers: buildHeaders(token, isJSON),
     };
 
-    return await fetch(URI + endpoint, objPayload)
-        .then(response => {
-            if (response.status === 401) throw { status: 401, message: "No autorizado" };
-            return response.json();
-        })
-        .then(data => data);
-};
-
-// CORRECCIÓN: Ahora acepta 'token' como 3er argumento
-const put = async (endpoint, payload, token = null) => {
-    const headers = { 'Content-Type': 'application/json' };
-    
-    if (token) {
-        headers['Authorization'] = 'Bearer ' + token;
+    if (payload) {
+        config.body = JSON.stringify(payload);
+        // Si hay payload en un DELETE, sí necesitamos content-type
+        if (method === 'DELETE') config.headers['Content-Type'] = 'application/json';
     }
 
-    const objPayload = {
-        method: 'PUT',
-        headers: headers,
-        body: JSON.stringify(payload)
-    };
+    try {
+        const response = await fetch(URI + endpoint, config);
 
-    return await fetch(URI + endpoint, objPayload)
-        .then(response => {
-            if (response.status === 401) throw { status: 401, message: "No autorizado" };
-            return response.json();
-        })
-        .then(data => data);
-};
+        // 1. Leemos el texto pase lo que pase (para poder ver el error si falla)
+        const text = await response.text();
+        let data;
 
-// CORRECCIÓN: Ahora acepta 'token' como 2do argumento
-const remove = async (endpoint, token = null) => { 
-    const headers = { 'Content-Type': 'application/json' };
-    
-    if (token) {
-        headers['Authorization'] = 'Bearer ' + token;
+        try {
+            data = text ? JSON.parse(text) : {};
+        } catch (err) {
+            data = {};
+        }
+
+        // 2. CRÍTICO: Si la respuesta no es OK (200-299), lanzamos error
+        if (!response.ok) {
+            throw {
+                status: response.status,
+                message: data.message || "Ocurrió un error en la petición",
+                // Incluimos la info de debug que pusimos en el backend
+                debug_info: data.debug_info || null
+            };
+        }
+
+        return data;
+
+    } catch (error) {
+        // Re-lanzamos el error para que lo maneje el componente
+        throw error;
     }
-
-    const objPayload = {
-        method: 'DELETE',
-        headers: headers
-    };
-
-    return await fetch(URI + endpoint, objPayload)
-        .then(response => {
-            if (response.status === 401) throw { status: 401, message: "No autorizado" };
-            return response.json();
-        })
-        .then(data => data);
 };
 
-const base = { get, post, put, remove };
+const get = (endpoint, token = null) => request('GET', endpoint, null, token);
+const post = (endpoint, payload, token = null) => request('POST', endpoint, payload, token);
+const put = (endpoint, payload, token = null) => request('PUT', endpoint, payload, token);
+const remove = (endpoint, token = null) => request('DELETE', endpoint, null, token);
 
-export default base;
+export default { get, post, put, remove };

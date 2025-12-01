@@ -1,180 +1,184 @@
+/* ListadoProductos.css */
+
+/* --- 1. Layout Principal de la Página --- */
 .product-list-container {
-  background-color: #f8f9fa; 
-  font-family: 'Orbitron';
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Orbitron', sans-serif;
 }
 
-.product-list-container h1 {
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
-  color: #333;
-}
-
-.filter-bar {
+/* --- 2. Cabecera (Título y Botón Agregar) --- */
+.list-header {
+  padding: 20px 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-  gap: 1rem;
+  background-color: white;
+  border-bottom: 1px solid #e9ecef;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
-.search-box {
-  display: flex;
-  flex-grow: 1; 
-  max-width: 500px;
-}
-
-.search-box input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 8px 0 0 8px;
-  outline: none;
-}
-
-.btn-search {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  background-color: #555;
-  color: white;
-  border-radius: 0 8px 8px 0;
-  cursor: pointer;
+.list-header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  color: #333;
+  font-weight: 600;
 }
 
 .action-buttons-group {
   display: flex;
-  gap: 0.75rem;
+  gap: 10px;
 }
 
-.btn-filter, .btn-primary {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.btn-filter {
-  background-color: #e9ecef;
-  color: #333;
-}
-
+/* Botón "Agregar Producto" */
 .btn-primary {
-  background-color: #28a745; 
+  background-color: #2ea32b;
   color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: 'Orbitron', sans-serif;
+  transition: background-color 0.2s, transform 0.1s;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  text-decoration: none; /* Por si usas Link alrededor */
 }
 
 .btn-primary:hover {
-  background-color: #218838;
+  background-color: #258e26;
+  transform: translateY(-1px);
 }
 
-
-.table-wrapper {
-  background-color: #fff;
-  border-radius: 8px;
-  overflow-x: auto; 
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+/* --- 3. Contenedor para la Tabla --- */
+.table-wrapper-products {
+  padding: 30px;
+  flex: 1; /* Hace que ocupe el resto de la altura */
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
+/* --- 4. Estilos Específicos de las Celdas (Renderers) --- */
 
-th, td {
-  padding: 1rem;
-  text-align: left;
-  border-bottom: 1px solid #dee2e6;
-  vertical-align: middle;
-}
-
-thead th {
-  font-size: 0.8rem;
-  font-weight: bold;
-  color: #6c757d;
-  text-transform: uppercase;
-}
-
-.product-id {
-  font-weight: bold;
-  color: #28a745;
-}
-
-.product-name-cell {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.producto-imagen {
-  width: 60px;
-  height: 60px;
-  object-fit: contain;
-}
-
-.product-description {
-  font-size: 0.9rem;
-  color: #6c757d;
-  max-width: 300px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-
-.product-actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.action-icon {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.2rem;
-  color: #6c757d;
-  padding: 5px;
-  border-radius: 4px;
-}
-
-.action-icon:hover {
-  background-color: #f1f3f5;
-  color: #333;
-}
-
-
-.pagination {
+/* Columna Imagen */
+.product-cell {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 1.5rem;
-  gap: 8px;
 }
 
-.pagination button {
-  border: 1px solid #e2e8f0;
-  background-color: white;
-  border-radius: 8px;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
+.product-img-first {
+  width: 50px;
+  height: 50px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid #dee2e6;
+  background-color: #fff;
+  display: block;
+}
+
+/* Columna ID */
+.id-badge {
+  color: #868e96;
+  font-family: 'Courier New', monospace;
   font-weight: bold;
-  color: #4a5568;
+  font-size: 0.9em;
 }
 
-.pagination button.active {
-  background-color: #28a745;
-  color: white;
-  border-color: #28a745;
+/* Columna Nombre */
+.product-name {
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 0.95rem;
 }
 
-.pagination button:hover:not(.active) {
-  background-color: #f7fafc;
+/* Columna Stock (Badges) */
+.stock-badge {
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: inline-block;
+  min-width: 45px;
+  text-align: center;
+  letter-spacing: 0.5px;
 }
 
-.pagination span {
-    color: #a0aec0;
-    padding: 0 5px;
-    margin-bottom: 2rem;
+.ok-stock {
+  background-color: #d3f9d8;
+  color: #2b8a3e;
+  border: 1px solid #b2f2bb;
+}
+
+.low-stock {
+  background-color: #ffe3e3;
+  color: #c92a2a;
+  border: 1px solid #ffc9c9;
+}
+
+/* --- 5. Botones de Acción (Editar / Borrar) --- */
+.product-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.bton-editar,
+.bton-borrar {
+  border: 1px solid transparent;
+  background: white;
+  font-size: 1.1rem; /* Tamaño del emoji/icono */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  text-decoration: none;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+/* Editar (Azul) */
+.bton-editar {
+  border-color: #d0ebff;
+  background-color: #f8f9fa;
+}
+
+.bton-editar:hover {
+  background-color: #e7f5ff;
+  border-color: #74c0fc;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(34, 139, 230, 0.15);
+}
+
+/* Borrar (Rojo) */
+.bton-borrar {
+  border-color: #ffc9c9;
+  background-color: #f8f9fa;
+}
+
+.bton-borrar:hover {
+  background-color: #ffe3e3;
+  border-color: #ffa8a8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(250, 82, 82, 0.15);
+}
+
+/* Responsivo básico */
+@media (max-width: 768px) {
+  .list-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+  
+  .table-wrapper-products {
+    padding: 15px;
+  }
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { useUser } from '../../api/context/UserContext.jsx';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import usuariosApi from '../../api/usuariosApi';
@@ -12,12 +13,13 @@ const ListadoOrdenes = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
     const [loading, setLoading] = useState(true);
+    const { token } = useUser();
 
     useEffect(() => {
         const fetchOrders = async () => {
             try {
                 // 1. CORRECCIÓN: Llamada asíncrona correcta
-                const respuesta = await usuariosApi.findAll();
+                const respuesta = await usuariosApi.findAll(token);
                 const usuarios = Array.isArray(respuesta) ? respuesta : (respuesta.data || []);
 
                 // 2. Lógica para extraer las órdenes de los usuarios

@@ -3,82 +3,87 @@ import { Link } from 'react-router-dom';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import usuariosApi from '../../api/usuariosApi';
+import { useUser } from "../../api/context/UserContext"; // <-- ESTE ES EL CORRECTO
 import TableComponent from './TableComponent';
 import './ListadoUsuarios.css';
 
 const ListadoUsuarios = () => {
-    const [allUsers, setAllUsers] = useState([]); // Guardamos TODOS los usuarios aquí
+    const { token } = useUser(); // <-- TOKEN DEL CONTEXTO
+    const [allUsers, setAllUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
 
-    // 1. Carga Inicial (Traemos todo de una vez)
+    // 1. Cargar usuarios
     useEffect(() => {
         const cargarUsuarios = async () => {
             try {
-                const respuesta = await usuariosApi.findAll();
-                const listaUsuarios = Array.isArray(respuesta) ? respuesta : (respuesta.data || []);
+                const respuesta = await usuariosApi.findAll(token);
 
-                const usuariosProcesados = listaUsuarios
-                    .filter(user => user.rol !== 'ADMIN' && user.rol !== 'admin')
-                    .map(user => ({
-                        ...user,
-                        // Usamos la fecha real de la BD o createdAt
-                        fechaRegistro: new Date(user.fechaRegistro || user.createdAt).toLocaleDateString('es-ES', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                        })
+                const lista = Array.isArray(respuesta)
+                    ? respuesta
+                    : (respuesta.data || []);
+
+                const procesados = lista
+                    .filter(u => u.rol !== "ADMIN" && u.rol !== "admin")
+                    .map(u => ({
+                        ...u,
+                        fechaRegistro: new Date(
+                            u.fechaRegistro || u.createdAt
+                        ).toLocaleDateString("es-ES", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                        }),
                     }));
 
-                setAllUsers(usuariosProcesados);
+                setAllUsers(procesados);
             } catch (error) {
-                console.error("Error al cargar listado:", error);
+                console.error("Error cargando usuarios:", error);
             }
         };
-        cargarUsuarios();
-    }, []);
 
-    // 2. Función de Cambio de Estado
+        if (token) cargarUsuarios();
+    }, [token]);
+
+    // 2. Cambiar estado (optimista)
     const handleToggleStatus = async (user) => {
-        const isActive = user.estado?.toUpperCase() === 'ACTIVO';
-        const nuevoEstado = isActive ? 'INACTIVO' : 'ACTIVO';
+        const isActive = user.estado?.toUpperCase() === "ACTIVO";
+        const nuevoEstado = isActive ? "INACTIVO" : "ACTIVO";
 
-        // Copia de seguridad
-        const usuariosOriginales = [...allUsers];
+        const backup = [...allUsers];
 
-        // Actualización Optimista (UI Inmediata)
-        const usuariosActualizados = allUsers.map(u =>
+        const actualizados = allUsers.map(u =>
             u.id === user.id ? { ...u, estado: nuevoEstado } : u
         );
-        setAllUsers(usuariosActualizados);
+
+        setAllUsers(actualizados);
 
         try {
-            await usuariosApi.put(user.id, { estado: nuevoEstado });
-            // Éxito silencioso
+            await usuariosApi.put(user.id, { estado: nuevoEstado }, token);
         } catch (error) {
             console.error("Error al actualizar:", error);
-            setAllUsers(usuariosOriginales); // Revertimos si falla
-            alert("Error de conexión. No se pudo cambiar el estado.");
+            setAllUsers(backup);
+            alert("No se pudo cambiar el estado.");
         }
     };
 
-    // 3. Filtrado en Memoria (Rápido y estable)
+    // 3. Filtro en memoria
     const filteredUsers = useMemo(() => {
         if (!searchTerm) return allUsers;
         const term = searchTerm.toLowerCase();
 
         return allUsers.filter(user =>
-            (user.nombre || '').toLowerCase().includes(term) ||
-            (user.apellido || '').toLowerCase().includes(term) ||
-            (user.correo || '').toLowerCase().includes(term) ||
-            (user.username || '').toLowerCase().includes(term)
+            (user.nombre || "").toLowerCase().includes(term) ||
+            (user.apellido || "").toLowerCase().includes(term) ||
+            (user.correo || "").toLowerCase().includes(term) ||
+            (user.username || "").toLowerCase().includes(term)
         );
     }, [searchTerm, allUsers]);
 
-    // 4. Columnas (Con las clases CSS para el ancho fijo)
+    // 4. Columnas
     const columns = [
         {
-            header: 'Usuario',
-            className: 'user-col', // Definida en CSS
+            header: "Usuario",
+            className: "user-col",
             render: (user) => (
                 <div className="user-cell-content">
                     <img
@@ -91,52 +96,54 @@ const ListadoUsuarios = () => {
                         <small className="user-email">{user.correo}</small>
                     </div>
                 </div>
-            )
+            ),
         },
         {
-            header: 'Fecha Registro',
-            accessor: 'fechaRegistro',
-            className: 'date-col'
+            header: "Fecha Registro",
+            accessor: "fechaRegistro",
+            className: "date-col",
         },
         {
-            header: 'Estado',
-            className: 'status-col', // <--- AQUÍ APLICAMOS EL ANCHO FIJO
+            header: "Estado",
+            className: "status-col",
             render: (user) => {
-                const isActive = user.estado?.toUpperCase() === 'ACTIVO';
+                const isActive = user.estado?.toUpperCase() === "ACTIVO";
                 return (
-                    <span className={`status-badge ${isActive ? 'active' : 'inactive'}`}>
+                    <span className={`status-badge ${isActive ? "active" : "inactive"}`}>
                         {user.estado}
                     </span>
                 );
-            }
+            },
         },
         {
-            header: 'Acciones',
-            className: 'actions-col', // <--- AQUÍ APLICAMOS EL ANCHO FIJO
+            header: "Acciones",
+            className: "actions-col",
             render: (user) => {
-                const isActive = user.estado?.toUpperCase() === 'ACTIVO';
+                const isActive = user.estado?.toUpperCase() === "ACTIVO";
                 return (
                     <div className="action-buttons-wrapper">
                         <button
-                            className={`btn-status-toggle ${isActive ? 'btn-deactivate' : 'btn-activate'}`}
+                            className={`btn-status-toggle ${
+                                isActive ? "btn-deactivate" : "btn-activate"
+                            }`}
                             onClick={() => handleToggleStatus(user)}
                         >
-                            {isActive ? 'Desactivar' : 'Activar'}
+                            {isActive ? "Desactivar" : "Activar"}
                         </button>
 
                         <Link to={`/admin/users/${user.id}`}>
                             <button className="btn-view-profile">Ver Perfil</button>
                         </Link>
                     </div>
-                )
-            }
-        }
+                );
+            },
+        },
     ];
 
     return (
-        <div className='AllUsersPage'>
+        <div className="AllUsersPage">
             <Header />
-            <main className='main-content'>
+            <main className="main-content">
                 <div className="page-header">
                     <h1>Gestión de Usuarios</h1>
                     <div className="search-bar">

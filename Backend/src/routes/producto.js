@@ -7,11 +7,11 @@ const router = express.Router();
 // Rutas Públicas
 router.get('/', controller.findAll);
 // Busca todos los productos
-router.get('/:id', controller.findById);
+
 // Busca un producto por ID
 router.get('/categoria/:nombreCategoria', controller.findByCategoria);
 // Busca productos por categoría
-
+router.get('/:id', controller.findById);
 // Rutas Privadas (Admin)
 router.post('/', authMiddleware, verifyAdmin, controller.create);
 // Crea un nuevo producto

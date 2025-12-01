@@ -1,16 +1,19 @@
-import model from '../models/serie.js';
-import Producto from '../models/producto.js';
+// 1. IMPORTANTE: Importamos desde asociaciones.js para tener las relaciones vinculadas
+import { Serie, Producto } from '../models/asociaciones.js';
 import RepositoryBase from './RepositoryBase.js';
 
-const repository = new RepositoryBase(model);
+// Usamos el modelo real 'Serie' en lugar de 'model'
+const repository = new RepositoryBase(Serie);
 
-// Sobrescribimos findById para que traiga los productos asociados
+// Sobrescribimos findById para traer los productos de esa saga/serie
 repository.findById = async (id) => {
     try {
-        return await model.findByPk(id, {
+        return await Serie.findByPk(id, {
             include: [{
                 model: Producto,
-                as: 'productos' // Debe coincidir con asociaciones.js
+                as: 'productos', // Coincide con asociaciones.js: Serie.hasMany(..., as: 'productos')
+                // Opcional: Si quieres solo los productos activos
+                // where: { activo: true } 
             }]
         });
     } catch (error) {

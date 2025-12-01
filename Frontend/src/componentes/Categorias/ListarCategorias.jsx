@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import categoriasApi from "../../api/categoriasApi";
-import { useUser } from '../../api/context/UserContext'; // Importación corregida
+import { useUser } from '../../api/context/UserContext';
 
 import './ListarCategorias.css';
 import Header from '../Header/Header';
@@ -9,51 +9,61 @@ import Footer from '../Footer/Footer';
 
 const ListarCategorias = () => {
     // 1. Usamos el Contexto (Fuente única de verdad)
-    const { user, isAuthenticated, loading } = useUser();
-    
+    // ⚠️ Se añade 'token' a la desestructuración
+    const { user, token, isAuthenticated, loading } = useUser();
+
     const [categoriasOriginales, setCategoriasOriginales] = useState([]);
     const [categorias, setCategorias] = useState([]);
     const [textoBusqueda, setTextoBusqueda] = useState("");
-    
+
     const navigate = useNavigate();
+
+    // Verificación de administrador (simplificada)
+    const isAdmin = isAuthenticated && user && (user.rol === "ADMIN" || user.rol === "admin");
 
     // 2. Efecto de Carga y Seguridad
     useEffect(() => {
         // Si el contexto aún está cargando (verificando token), esperamos
         if (loading) return;
 
-        // Validación de Seguridad: Si no está logueado o no es admin
-        if (!isAuthenticated || !user || (user.rol !== "ADMIN" && user.rol !== "admin")) {
-            // alert("Acceso denegado. Se requiere ser Administrador."); // Opcional
-            navigate("/"); // Redirigir al login o home
+        // Validación de Seguridad: Si no es admin (ya cargado)
+        if (!isAdmin) {
+            console.warn("Acceso denegado: Usuario no es administrador.");
+            navigate("/"); // Redirigir al home
             return;
         }
 
         // Si pasó la seguridad, cargamos los datos
         const cargarDatos = async () => {
             try {
+                // El findAll no requiere token si es una ruta pública, pero lo enviamos
+                // por si el backend se vuelve más estricto. (En este caso, no es necesario, pero es seguro).
                 const respuesta = await categoriasApi.findAll();
+                // Aseguramos que 'respuesta' es un array o un array dentro de 'data'
                 const data = Array.isArray(respuesta) ? respuesta : (respuesta.data || []);
+
                 setCategoriasOriginales(data);
                 setCategorias(data);
             } catch (error) {
                 console.error("Error al cargar categorías:", error);
+                // Aquí podrías añadir una alerta de que la carga falló
             }
         };
 
         cargarDatos();
 
-    }, [user, isAuthenticated, loading, navigate]); // Se ejecuta cuando el estado del usuario cambia
+    }, [isAdmin, loading, navigate]); // Se ejecuta cuando el estado de autenticación/rol cambia
 
-    // 3. Efecto de Búsqueda (Filtrado en memoria)
+    // 3. Efecto de Búsqueda (Filtrado en memoria) - Sin cambios, es eficiente para un listado admin
     useEffect(() => {
         if (textoBusqueda === "") {
             setCategorias(categoriasOriginales);
         } else {
-            const filtrados = categoriasOriginales.filter((item) => 
-                item.id.toString().includes(textoBusqueda) || 
-                item.nombre.toLowerCase().includes(textoBusqueda.toLowerCase()) ||
-                (item.descripcion && item.descripcion.toLowerCase().includes(textoBusqueda.toLowerCase()))
+            const lowerCaseSearch = textoBusqueda.toLowerCase();
+            const filtrados = categoriasOriginales.filter((item) =>
+                item.id.toString().includes(lowerCaseSearch) ||
+                item.nombre.toLowerCase().includes(lowerCaseSearch) ||
+                (item.descripcion && item.descripcion.toLowerCase().includes(lowerCaseSearch))
             );
             setCategorias(filtrados);
         }
@@ -63,28 +73,36 @@ const ListarCategorias = () => {
     const DirigirseAgregarCategoria = () => navigate("/Categoria/Agregar");
     const DirigirseDetalleCategoria = (id) => navigate(`/Categoria/${id}`);
 
+    // ⚠️ CORRECCIÓN CLAVE: Pasamos el token a categoriasApi.remove()
     const EliminarCategoria = async (id) => {
         if (!window.confirm("¿Estás seguro de que deseas eliminar esta categoría?")) return;
 
+        if (!token) {
+            alert("Error de autenticación. Intente iniciar sesión nuevamente.");
+            return;
+        }
+
         try {
-            await categoriasApi.remove(id);
+            await categoriasApi.remove(id, token); // 👈 Pasando el token
             alert('Categoría Eliminada.');
+
+            // Actualizar estados locales sin recargar todo el listado
             const nuevasCats = categoriasOriginales.filter(c => c.id !== id);
             setCategoriasOriginales(nuevasCats);
             setCategorias(nuevasCats);
         } catch (error) {
-            console.error(error);
-            alert("Error al eliminar.");
+            console.error("Error al eliminar categoría:", error);
+            alert(`Error al eliminar: ${error.message || 'Error de comunicación con el servidor.'}`);
         }
     };
 
-    // 5. Renderizado Condicional (Mientras carga sesión)
+    // 5. Renderizado Condicional
     if (loading) {
         return <div className="loading-screen">Verificando permisos...</div>;
     }
 
-    // Si no hay usuario (y aún no redirige), no mostramos nada para proteger la vista
-    if (!user) return null;
+    // Si no es administrador, el useEffect ya redirigió. 
+    // Si llegamos aquí y no hay datos, es un error de carga o está vacío.
 
     return (
         <div className="page-container">
@@ -94,10 +112,10 @@ const ListarCategorias = () => {
 
                 <div className="grid-container-ListarCategoria">
                     <div className="search-box">
-                        <input 
-                            type="text" 
-                            placeholder='Buscar categoría...' 
-                            value={textoBusqueda} 
+                        <input
+                            type="text"
+                            placeholder='Buscar categoría...'
+                            value={textoBusqueda}
                             onChange={(event) => setTextoBusqueda(event.target.value)}
                         />
                     </div>
@@ -106,14 +124,15 @@ const ListarCategorias = () => {
                     </button>
                 </div>
 
+                {/* Tabla de Listado */}
                 <div className="table-wrapper">
                     <table>
                         <thead>
                             <tr>
                                 <th className="LCId">ID</th>
                                 <th>Nombre</th>
-                                <th>Descripción</th>   
-                                <th className="LCAcciones">Acciones</th> 
+                                <th>Descripción</th>
+                                <th className="LCAcciones">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -132,11 +151,11 @@ const ListarCategorias = () => {
                                     </tr>
                                 ))
                             ) : (
-                                <tr><td colSpan="4" style={{textAlign:'center'}}>No se encontraron categorías.</td></tr>
+                                <tr><td colSpan="4" style={{ textAlign: 'center' }}>No se encontraron categorías.</td></tr>
                             )}
                         </tbody>
                     </table>
-                </div>      
+                </div>
             </div>
             <Footer />
         </div>

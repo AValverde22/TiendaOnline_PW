@@ -1,6 +1,8 @@
 import sequelize from '../config/database.js';
 import { DataTypes } from 'sequelize';
 
+// Nota: No importamos Categoria ni Serie aquí. (Modelo Puro)
+
 const Producto = sequelize.define('producto', {
     id: {
         type: DataTypes.INTEGER,
@@ -9,44 +11,42 @@ const Producto = sequelize.define('producto', {
     },
     nombre: {
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: { notEmpty: true }
+        allowNull: false
     },
-    // --- NUEVO CAMPO OBLIGATORIO SEGÚN TU IMAGEN ---
     marca: {
         type: DataTypes.STRING,
-        allowNull: false, // Asumo que es obligatorio
+        allowNull: false,
         defaultValue: 'Genérico'
     },
-    // -----------------------------------------------
     descripcion: {
-        type: DataTypes.TEXT,
-        allowNull: true
+        type: DataTypes.TEXT // Perfecto para descripciones largas
     },
     stock: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 0,
-        validate: { min: 0 }
+        defaultValue: 0
     },
     precio: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
-        validate: { min: 0 }
+        type: DataTypes.DECIMAL(10, 2), // Perfecto para moneda
+        allowNull: false
     },
-    // Extras necesarios para la App Web
     img: {
-        type: DataTypes.STRING,
-        allowNull: true
+        type: DataTypes.STRING
     },
     activo: {
         type: DataTypes.BOOLEAN,
         defaultValue: true
     },
-    // Mantenemos la categoría porque tu select la usa
-    categoriaId: {
+    // CAMBIO SUGERIDO: Estandarización de nombres (idEntidad)
+    idCategoria: {
         type: DataTypes.INTEGER,
-        allowNull: true 
+        allowNull: true,
+        field: 'idCategoria' // Nombre de la columna física en la BD
+    },
+    idSerie: { // Asumiendo que usarás Series
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        field: 'idSerie'
     }
 }, {
     tableName: 'productos',

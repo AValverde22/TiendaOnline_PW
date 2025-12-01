@@ -1,25 +1,46 @@
 import repository from '../repositories/series.js';
 
 const findAll = async (req, res) => {
-    const data = await repository.findAll();
-    return sendResults(data, res, "No se encontraron series.");
+    try {
+        const series = await repository.findAll();
+        // Si no hay series, devolvemos un array vacío [], que es un 200 OK válido
+        return res.status(200).json(series || []);
+    } catch (error) {
+        console.error("Error en findAll series:", error);
+        return res.status(500).json({ message: "Error al obtener las series." });
+    }
 };
 
 const findById = async (req, res) => {
-    const { id } = req.params;
-    const data = await repository.findById(id);
-    return sendResults(data, res, "Serie no encontrada.");
+    try {
+        const { id } = req.params;
+        const serie = await repository.findById(id);
+
+        if (!serie) {
+            return res.status(404).json({ message: "Serie no encontrada." });
+        }
+
+        return res.status(200).json(serie);
+    } catch (error) {
+        console.error("Error en findById serie:", error);
+        return res.status(500).json({ message: "Error al obtener la serie." });
+    }
 };
 
 const create = async (req, res) => {
-    const data = await repository.create(req.body);
-    return sendResults(data, res, "Error al crear la serie.");
-};
+    try {
+        const nuevaSerie = await repository.create(req.body);
 
-// Helper para responder
-const sendResults = (result, res, errorMsg) => {
-    if (result) return res.status(200).json(result);
-    else return res.status(404).json({ message: errorMsg });
+        if (!nuevaSerie) {
+            return res.status(400).json({ message: "No se pudo crear la serie. Verifique los datos." });
+        }
+
+        // 201 Created es el estándar correcto para creación
+        return res.status(201).json(nuevaSerie);
+    } catch (error) {
+        console.error("Error en create serie:", error);
+        return res.status(500).json({ message: "Error interno al crear la serie." });
+    }
 };
 
 const controller = { findAll, findById, create };

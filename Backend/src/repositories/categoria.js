@@ -1,16 +1,19 @@
-import model from '../models/categoria.js'
-import RepositoryBase from './RepositoryBase.js'
+// 1. Importamos desde la central de asociaciones para mantener la consistencia
+import { Categoria } from '../models/asociaciones.js';
+import RepositoryBase from './RepositoryBase.js';
 
-const repository = new RepositoryBase(model);
+const repository = new RepositoryBase(Categoria);
 
+// Buscar categoría por nombre (Útil para validaciones o búsqueda)
 repository.findByName = async function (name) {
     try {
-        return await model.findOne({where: {nombre: name}})
+        return await Categoria.findOne({
+            where: { nombre: name }
+        });
     } catch (error) {
-        console.log('Error en findByName');
-        console.log(error);
+        console.error('Error en findByName (Categoria):', error);
         return null;
     }
-}
+};
 
 export default repository;

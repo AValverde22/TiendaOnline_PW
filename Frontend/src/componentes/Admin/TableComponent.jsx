@@ -1,50 +1,63 @@
-import React from 'react';
-import './DashboardAdmin.css'; // Reutilizamos los estilos existentes
+import React, { useState, useMemo, useEffect } from 'react';
+import './TableComponent.css';
 
-/**
- * Componente de Tabla Reutilizable
- * @param {Array} columns - Definición de columnas [{ header, accessor, render, className }]
- * @param {Array} data - Datos a mostrar
- * @param {Function} onRowClick - (Opcional) Función al hacer click en una fila
- * @param {Function} rowClassName - (Opcional) Función para determinar clase de la fila
- * @param {String} emptyMessage - Mensaje cuando no hay datos
- */
-const TableComponent = ({ columns, data, onRowClick, rowClassName, emptyMessage = "No hay datos para mostrar." }) => {
+const TableComponent = ({
+    columns,
+    data,
+    onRowClick,
+    rowClassName,
+    emptyMessage = "No hay datos para mostrar.",
+    itemsPerPage = 5,
+    enablePagination = true
+}) => {
+    const [currentPage, setCurrentPage] = useState(1);
+
+    // Reinicia a la página 1 si los datos cambian (filtro aplicado externamente, etc.)
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [data]);
+
+    const totalPages = useMemo(() => Math.ceil((data?.length || 0) / itemsPerPage), [data, itemsPerPage]);
+
+    const paginatedData = useMemo(() => {
+        if (!enablePagination) return data;
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        return data ? data.slice(start, end) : [];
+    }, [data, currentPage, itemsPerPage, enablePagination]);
+
     if (!data || data.length === 0) {
-        return (
-            <div className="tabla-container">
-                <p>{emptyMessage}</p>
-            </div>
-        );
+        return <div className="table-wrapper"><p style={{padding: '20px', textAlign: 'center', color: '#666'}}>{emptyMessage}</p></div>;
     }
 
     return (
-        <div className="tabla-container">
+        <div className="table-wrapper">
             <table className="user-table">
                 <thead>
                     <tr>
                         {columns.map((col, index) => (
-                            <th key={index} className={col.className || ''}>
+                            <th key={index} className={col.className || ''} style={col.width ? { width: col.width } : {}}>
                                 {col.header}
                             </th>
                         ))}
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((row, rowIndex) => {
+                    {paginatedData.map((row) => {
                         const rowClass = rowClassName ? rowClassName(row) : '';
                         const isClickable = !!onRowClick;
-
                         return (
                             <tr
-                                key={row.id || rowIndex}
+                                key={row.id}
                                 className={rowClass}
-                                onClick={onRowClick ? (e) => onRowClick(row, e) : undefined}
+                                onClick={onRowClick ? (e) => {
+                                    if (e.target.tagName !== "BUTTON" && !e.target.closest("button")) onRowClick(row, e);
+                                } : undefined}
                                 style={isClickable ? { cursor: 'pointer' } : {}}
                             >
                                 {columns.map((col, colIndex) => (
-                                    <td key={`${rowIndex}-${colIndex}`} className={col.className || ''}>
-                                        {col.render ? col.render(row) : (col.accessor ? row[col.accessor] : '')}
+                                    <td key={`${row.id}-${colIndex}`} className={col.className || ''}>
+                                        {col.render ? col.render(row) : col.accessor ? row[col.accessor] : ''}
                                     </td>
                                 ))}
                             </tr>
@@ -52,6 +65,21 @@ const TableComponent = ({ columns, data, onRowClick, rowClassName, emptyMessage 
                     })}
                 </tbody>
             </table>
+
+            {/* CAMBIO AQUÍ: Eliminamos la condición "totalPages > 1" */}
+            {enablePagination && (
+                <div className="pagination">
+                    {Array.from({ length: totalPages }, (_, i) => (
+                        <button
+                            key={i}
+                            onClick={() => setCurrentPage(i + 1)}
+                            className={currentPage === i + 1 ? 'active' : ''}
+                        >
+                            {i + 1}
+                        </button>
+                    ))}
+                </div>
+            )}
         </div>
     );
 };
