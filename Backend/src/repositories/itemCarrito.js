@@ -10,7 +10,7 @@ const repository = new RepositoryBase(ItemCarrito);
 // Obtener todos los ítems de un carrito específico
 repository.obtenerItems = async function (idCarrito) {
     try {
-        return await ItemCarrito.findAll({
+        return await ItemCarrito.findAll({ 
             where: { idCarrito: idCarrito } // CORREGIDO: carritoId -> idCarrito
         });
     } catch (error) {
@@ -23,7 +23,7 @@ repository.obtenerItems = async function (idCarrito) {
 repository.obtenerItem = async function (idCarrito, idProducto) {
     try {
         return await ItemCarrito.findOne({
-            where: {
+            where: { 
                 idCarrito: idCarrito,   // CORREGIDO: carritoId -> idCarrito
                 idProducto: idProducto  // CORREGIDO: productoId -> idProducto
             }
@@ -37,10 +37,10 @@ repository.obtenerItem = async function (idCarrito, idProducto) {
 // Agregar un ítem nuevo
 repository.agregarProducto = async function (idCarrito, idProducto, cantidad = 1) {
     try {
-        return await ItemCarrito.create({
-            idCarrito: idCarrito,
-            idProducto: idProducto,
-            cantidad: cantidad
+        return await ItemCarrito.create({ 
+            idCarrito: idCarrito, 
+            idProducto: idProducto, 
+            cantidad: cantidad 
         });
     } catch (error) {
         console.error("Error en agregarProducto:", error);
