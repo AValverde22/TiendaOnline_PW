@@ -59,4 +59,6 @@ repository.actualizarCantidad = async function (id, cantidad) {
     }
 };
 
+
+
 export default repository;

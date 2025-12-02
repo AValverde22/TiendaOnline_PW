@@ -1,63 +1,47 @@
 import Usuario from './usuario.js';
-import Carrito from './Carrito.js';
-import ItemCarrito from './itemCarrito.js';      // Variable con 'I' mayúscula
-import ItemDeLaOrden from './itemDeLaOrden.js';  // Variable con 'I' mayúscula
-import Orden from './Orden.js';
+import Carrito from './carrito.js';
+import ItemCarrito from './itemCarrito.js';
+import ItemDeLaOrden from './itemDeLaOrden.js';
+import Orden from './orden.js';
 import Producto from './producto.js';
 import Categoria from './categoria.js';
-import Serie from './Serie.js';
+import Serie from './serie.js'; // nombre exacto del archivo
 
 console.log("Cargando asociaciones...");
 
 // -----------------------------------------------------------------------------
 // 1. Relaciones de USUARIO
 // -----------------------------------------------------------------------------
-
-// 1 Usuario <-> 1 Carrito
 Usuario.hasOne(Carrito, { foreignKey: 'idUsuario', as: 'carrito' });
 Carrito.belongsTo(Usuario, { foreignKey: 'idUsuario', as: 'usuario' });
 
-// 1 Usuario <-> N Órdenes
 Usuario.hasMany(Orden, { foreignKey: 'idUsuario', as: 'ordenes' });
-Orden.belongsTo(Usuario, { foreignKey: 'idUsuario', as: 'usuario' });
+Orden.belongsTo(Usuario, { foreignKey: 'idUsuario', as: 'usuarioOrden' }); // alias único
 
 // -----------------------------------------------------------------------------
 // 2. Relaciones de CARRITO
 // -----------------------------------------------------------------------------
-
-// 1 Carrito <-> N Items
-// CORREGIDO: itemCarrito -> ItemCarrito
 Carrito.hasMany(ItemCarrito, { foreignKey: 'idCarrito', as: 'items' });
-ItemCarrito.belongsTo(Carrito, { foreignKey: 'idCarrito', as: 'carrito' });
+ItemCarrito.belongsTo(Carrito, { foreignKey: 'idCarrito', as: 'carritoPadre' });
 
 // -----------------------------------------------------------------------------
 // 3. Relaciones de ORDEN
 // -----------------------------------------------------------------------------
-
-// 1 Orden <-> N Detalles (Items)
-// CORREGIDO: itemDeLaOrden -> ItemDeLaOrden
 Orden.hasMany(ItemDeLaOrden, { foreignKey: 'idOrden', as: 'detalles' });
-ItemDeLaOrden.belongsTo(Orden, { foreignKey: 'idOrden', as: 'orden' });
+ItemDeLaOrden.belongsTo(Orden, { foreignKey: 'idOrden', as: 'ordenPadre' });
 
 // -----------------------------------------------------------------------------
 // 4. Relaciones de PRODUCTO
 // -----------------------------------------------------------------------------
-
-// Categoría <-> Producto
 Categoria.hasMany(Producto, { foreignKey: 'idCategoria', as: 'productos' });
-Producto.belongsTo(Categoria, { foreignKey: 'idCategoria', as: 'categoria' });
+Producto.belongsTo(Categoria, { foreignKey: 'idCategoria', as: 'categoriaProducto' });
 
-// Serie <-> Producto
-Serie.hasMany(Producto, { foreignKey: 'idSerie', as: 'productos' });
-Producto.belongsTo(Serie, { foreignKey: 'idSerie', as: 'serie' });
+Serie.hasMany(Producto, { foreignKey: 'idSerie', as: 'productosSerie' });
+Producto.belongsTo(Serie, { foreignKey: 'idSerie', as: 'serieProducto' });
 
-// Producto <-> Items del Carrito
-// CORREGIDO: itemCarrito -> ItemCarrito
 Producto.hasMany(ItemCarrito, { foreignKey: 'idProducto', as: 'itemsEnCarritos' });
-ItemCarrito.belongsTo(Producto, { foreignKey: 'idProducto', as: 'producto' });
+ItemCarrito.belongsTo(Producto, { foreignKey: 'idProducto', as: 'productoCarrito' });
 
-// Producto <-> Items de la Orden
-// CORREGIDO: itemDeLaOrden -> ItemDeLaOrden
 Producto.hasMany(ItemDeLaOrden, { foreignKey: 'idProducto', as: 'itemsVendidos' });
 ItemDeLaOrden.belongsTo(Producto, { foreignKey: 'idProducto', as: 'producto' });
 
@@ -67,9 +51,9 @@ ItemDeLaOrden.belongsTo(Producto, { foreignKey: 'idProducto', as: 'producto' });
 export {
     Usuario,
     Carrito,
-    ItemCarrito,     // CORREGIDO (Mayúscula)
+    ItemCarrito,
     Orden,
-    ItemDeLaOrden,   // CORREGIDO (Mayúscula)
+    ItemDeLaOrden,
     Producto,
     Categoria,
     Serie

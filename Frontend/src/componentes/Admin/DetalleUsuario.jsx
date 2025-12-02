@@ -34,7 +34,6 @@ const DetalleUsuario = () => {
     // Preparar los datos de órdenes para la tabla
     const ordersData = (usuario.ordenes || []).map((orden) => ({
         ...orden,
-        totalCalculado: orden.detalles?.reduce((sum, d) => sum + (d.total || 0), 0) || 0
     }));
 
     // Columnas para la tabla
@@ -57,7 +56,7 @@ const DetalleUsuario = () => {
         },
         {
             header: "Total",
-            render: (order) => <span>S/ {Number(order.totalCalculado).toFixed(2)}</span>
+            render: (order) => <span>S/ {order.total}</span>
         }
     ];
 

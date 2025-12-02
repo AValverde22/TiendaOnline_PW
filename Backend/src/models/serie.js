@@ -1,7 +1,7 @@
 import sequelize from '../config/database.js';
 import { DataTypes } from 'sequelize';
 
-const Serie = sequelize.define('serie', {
+const Serie = sequelize.define('series', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,

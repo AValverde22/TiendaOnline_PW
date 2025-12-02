@@ -12,12 +12,12 @@ repository.findAll = async function () {
             include: [
                 {
                     model: Categoria,
-                    as: 'categoria', // Coincide con asociaciones.js
+                    as: 'categoriaProducto', // Coincide con asociaciones.js
                     attributes: ['id', 'nombre'] // Traemos solo lo necesario
                 },
                 {
                     model: Serie,
-                    as: 'serie',
+                    as: 'serieProducto',
                     attributes: ['id', 'nombre']
                 }
             ],
@@ -36,12 +36,12 @@ repository.findById = async function (id) {
             include: [
                 {
                     model: Categoria,
-                    as: 'categoria',
+                    as: 'categoriaProducto',
                     attributes: ['id', 'nombre']
                 },
                 {
                     model: Serie,
-                    as: 'serie',
+                    as: 'serieProducto',
                     attributes: ['id', 'nombre']
                 }
             ]
@@ -52,21 +52,26 @@ repository.findById = async function (id) {
     }
 };
 
-// 4. Método personalizado (Mantenemos tu lógica, actualizamos el origen de los modelos)
 repository.findAllByCategoryName = async function (nombreCategoria) {
     try {
         return await Producto.findAll({
-            include: [{
-                model: Categoria,
-                as: 'categoria',
-                where: { nombre: nombreCategoria } // Filtro SQL inteligente
-            }],
-            include: [{ model: Serie, as: 'serie' }] // También traemos la serie si quieres
+            include: [
+                { 
+                    model: Categoria,
+                    as: 'categoriaProducto',
+                    where: { nombre: nombreCategoria }
+                },
+                {
+                    model: Serie,
+                    as: 'serieProducto'
+                }
+            ]
         });
     } catch (error) {
         console.error('Error buscar por categoría:', error);
         return null;
     }
 };
+
 
 export default repository;

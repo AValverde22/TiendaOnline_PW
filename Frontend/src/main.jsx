@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { UserProvider } from './api/context/UserContext.jsx'
 import { CartProvider } from './api/context/CartContext.jsx'
+import { CheckoutProvider } from './api/context/CheckoutContext.jsx';
 
 import App from './App.jsx'
 import AgregarCategoriaPage from "./routes/AgregarCategoriaPage.jsx"
@@ -176,7 +177,9 @@ createRoot(document.getElementById('root')).render(
     <StrictMode>
         <UserProvider>
             <CartProvider>
-                <RouterProvider router={router} />
+                <CheckoutProvider>
+                    <RouterProvider router={router} />
+                </CheckoutProvider>
             </CartProvider>
         </UserProvider>
     </StrictMode>

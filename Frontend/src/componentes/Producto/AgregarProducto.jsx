@@ -4,7 +4,7 @@ import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import productosApi from '../../api/productosApi';
 import categoriasApi from '../../api/categoriasApi';
-import { useUser } from '../../api/context/UserContext'; 
+import { useUser } from '../../api/context/UserContext.jsx'; 
 import "./AgregarProducto.css";
 
 // Estado inicial (Sin presentación)
@@ -23,8 +23,7 @@ function AgregarProducto() {
     const navigate = useNavigate();
     const esEdicion = Boolean(id);
 
-    const { user } = useUser();              // <-- AÑADIDO
-    const token = localStorage.getItem("token"); // <-- AÑADIDO
+    const { token } = useUser();              // <-- AÑADIDO
 
     const [producto, setProducto] = useState(inicial);
     const [listaCategorias, setListaCategorias] = useState([]);
@@ -45,7 +44,7 @@ function AgregarProducto() {
                     if (dataProducto) {
                         setProducto({
                             ...dataProducto,
-                            categoriaId: dataProducto.categoriaId || '',
+                            idCategoria: dataProducto.categoriaProducto?.id || '', // actualizar el idCategoria
                             stock: Number(dataProducto.stock),
                             precio: Number(dataProducto.precio)
                         });
@@ -62,11 +61,17 @@ function AgregarProducto() {
         cargarDatos();
     }, [id, esEdicion, navigate]);
 
+
     // 2. Manejo de Inputs
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setProducto({ ...producto, [name]: value });
+        setProducto({
+            ...producto,
+            [name]: ['idCategoria', 'stock', 'precio'].includes(name) ? Number(value) : value
+        });
     };
+
+
 
     // 3. Guardar
     const handleSubmit = async (e) => {
@@ -80,7 +85,7 @@ function AgregarProducto() {
             img: producto.img,
             stock: Number(producto.stock),
             precio: Number(producto.precio),
-            categoriaId: Number(producto.categoriaId),
+            idCategoria: Number(producto.idCategoria),
         };
 
         try {
@@ -139,19 +144,20 @@ function AgregarProducto() {
 
                             <div className="form-group">
                                 <label>Categoría</label>
-                                <select 
-                                    name="categoriaId" 
-                                    value={producto.categoriaId} 
+                                    <select
+                                    name="idCategoria"
+                                    value={producto.idCategoria || producto.categoriaProducto?.id || ''}
                                     onChange={handleInputChange}
                                     required
-                                >
+                                    >
                                     <option value="">Seleccione una categoría</option>
-                                    {listaCategorias.map((cat) => (
+                                    {listaCategorias.map(cat => (
                                         <option key={cat.id} value={cat.id}>
                                             {cat.nombre}
                                         </option>
                                     ))}
-                                </select>
+                                    </select>
+
                             </div>
                             
                             <div className="form-group">

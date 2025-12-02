@@ -1,8 +1,7 @@
 import sequelize from '../config/database.js';
 import { DataTypes } from 'sequelize';
 
-// Cambiamos el nombre de la constante y del modelo a 'itemDeLaOrden'
-const ItemDeLaOrden = sequelize.define('itemDeLaOrden', {
+const ItemDeLaOrden = sequelize.define('items_de_la_orden', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,

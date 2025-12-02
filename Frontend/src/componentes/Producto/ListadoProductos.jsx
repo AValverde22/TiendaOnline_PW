@@ -94,14 +94,9 @@ function ListadoProductos() {
       render: p => <strong className="product-name">{p.nombre}</strong>
     },
     {
-      header: "Presentación",
-      width: "15%",
-      accessor: "presentacion"
-    },
-    {
       header: "Categoría",
       width: "15%",
-      render: p => (p.categoria?.nombre || p.categoria || '—')
+      render: p => (p.categoriaProducto?.nombre || p.categoria || '—')
     },
     {
       header: "Stock",

@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import usuariosApi from '../../api/usuariosApi';
-import { useUser } from "../../api/context/UserContext"; // <-- ESTE ES EL CORRECTO
+import { useUser } from "../../api/context/UserContext"; 
 import TableComponent from './TableComponent';
 import './ListadoUsuarios.css';
 
 const ListadoUsuarios = () => {
-    const { token } = useUser(); // <-- TOKEN DEL CONTEXTO
+    const { token } = useUser(); 
     const [allUsers, setAllUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -26,13 +26,8 @@ const ListadoUsuarios = () => {
                     .filter(u => u.rol !== "ADMIN" && u.rol !== "admin")
                     .map(u => ({
                         ...u,
-                        fechaRegistro: new Date(
-                            u.fechaRegistro || u.createdAt
-                        ).toLocaleDateString("es-ES", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                        }),
+                        // Mantenemos la fecha cruda, no formateada
+                        fechaRegistro: u.fechaRegistro || u.createdAt,
                     }));
 
                 setAllUsers(procesados);
@@ -84,6 +79,7 @@ const ListadoUsuarios = () => {
         {
             header: "Usuario",
             className: "user-col",
+            width: "30%",
             render: (user) => (
                 <div className="user-cell-content">
                     <img
@@ -102,10 +98,20 @@ const ListadoUsuarios = () => {
             header: "Fecha Registro",
             accessor: "fechaRegistro",
             className: "date-col",
+            width: "27%",
+            render: (user) => {
+                if (!user.fechaRegistro) return "—";
+                return new Date(user.fechaRegistro).toLocaleDateString("es-ES", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                });
+            }
         },
         {
             header: "Estado",
             className: "status-col",
+            width: "15%",
             render: (user) => {
                 const isActive = user.estado?.toUpperCase() === "ACTIVO";
                 return (
@@ -123,9 +129,7 @@ const ListadoUsuarios = () => {
                 return (
                     <div className="action-buttons-wrapper">
                         <button
-                            className={`btn-status-toggle ${
-                                isActive ? "btn-deactivate" : "btn-activate"
-                            }`}
+                            className={`btn-status-toggle ${isActive ? "btn-deactivate" : "btn-activate"}`}
                             onClick={() => handleToggleStatus(user)}
                         >
                             {isActive ? "Desactivar" : "Activar"}

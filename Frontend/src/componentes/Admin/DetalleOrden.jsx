@@ -5,7 +5,7 @@ import usuariosApi from "../../api/usuariosApi";
 
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
-import TableComponent from "./TableComponent.jsx"; // Asegúrate de la ruta correcta
+import TableComponent from "./TableComponent.jsx"; 
 import "./DetalleOrden.css";
 
 const DetalleOrden = () => {
@@ -20,7 +20,6 @@ const DetalleOrden = () => {
       try {
         if (!token) return;
 
-        // Traer usuario con sus órdenes y detalles
         const response = await usuariosApi.findById(userId, token);
         const user = response.data;
 
@@ -30,7 +29,6 @@ const DetalleOrden = () => {
           return;
         }
 
-        // Buscar orden específica
         const order = user.ordenes.find(o => Number(o.id) === Number(orderId));
 
         if (!order) {
@@ -39,11 +37,10 @@ const DetalleOrden = () => {
           return;
         }
 
-        // Transformar detalles a productos
         const productos = (order.detalles || []).map(d => ({
           id: d.producto.id,
           nombre: d.producto.nombre,
-          categoria: d.producto.categoria?.nombre || "Sin categoría", // Trae nombre desde BD
+          categoria: d.producto.categoriaProducto?.nombre || "Sin categoría",
           cantidad: d.cantidad,
           total: Number(d.subtotal),
           img: d.producto.img
@@ -79,8 +76,9 @@ const DetalleOrden = () => {
     return (
       <div className="OrderDetailPage">
         <Header />
-        <main className="main-content">
-          <p>Cargando detalles de la orden...</p>
+        <main className="main-content loading-container">
+          <div className="spinner"></div>
+          <p>Cargando detalles...</p>
         </main>
         <Footer />
       </div>
@@ -91,10 +89,10 @@ const DetalleOrden = () => {
     return (
       <div className="OrderDetailPage">
         <Header />
-        <main className="main-content">
+        <main className="main-content error-container">
           <p>{errorMsg}</p>
           <Link to="/ListadoOrdenesAdmin" className="back-link">
-            &larr; Volver al Listado de Órdenes
+            &larr; Volver
           </Link>
         </main>
         <Footer />
@@ -102,68 +100,89 @@ const DetalleOrden = () => {
     );
   }
 
+  // Definición de columnas ajustada al diseño visual
   const columns = [
     {
       header: "Id",
-      render: (p) => <span>#{p.id.toString().padStart(4, "0")}</span>
+      width: "10%",
+      render: (p) => <span className="id-cell">#{p.id.toString().padStart(4, "0")}</span>
     },
     {
       header: "Nombre",
+      width: "40%",
       render: (p) => (
         <div className="product-cell">
           <img src={p.img} alt={p.nombre} className="product-img-small" />
-          <span>{p.nombre}</span>
+          <span className="product-name">{p.nombre}</span>
         </div>
       )
     },
     {
-      header: "Categoría",
-      accessor: "categoria"
+      header: "Categoria", // Sin tilde para matchear estilo visual simple
+      width: "20%",
+      accessor: "categoria",
+      render: (p) => <span className="category-text">{p.categoria}</span>
     },
     {
       header: "Cantidad",
-      accessor: "cantidad"
+      accessor: "cantidad",
+      render: (p) => <span className="qty-text">{p.cantidad}</span>
     },
     {
       header: "Total",
-      render: (p) => <span>S/ {Number(p.total).toFixed(2)}</span>
+      render: (p) => <span className="total-text">S/{Number(p.total).toFixed(2)}</span>
     }
   ];
+
+  const isEntregado = orderData.estado?.toLowerCase() === "entregado";
 
   return (
     <div className="OrderDetailPage">
       <Header />
-      <main className="main-content">
-        <Link to="/ListadoOrdenesAdmin" className="back-link">
-          &larr; Volver al Listado de Órdenes
-        </Link>
+      
+      <main className="main-content2">
+        {/* Breadcrumb / Link de retorno */}
+        <div className="top-nav">
+             {/* Puedes agregar breadcrumbs aquí si deseas */}
+        </div>
 
-        <div className="order-detail-header">
-          <h1>Orden #{orderData.id.toString().padStart(4, "0")}</h1>
-          <div className="order-summary">
-            <p>
-              <strong>Estado:</strong>{" "}
-              <span className={orderData.estado?.toLowerCase() === "entregado"
-                ? "status-entregado"
-                : "status-por-entregar"}>
+        {/* TARJETA DE CABECERA DE LA ORDEN */}
+        <div className="order-header-card">
+          <div className="order-title-section">
+            <h1>Orden #{orderData.id.toString().padStart(4, "0")}</h1>
+            <Link to="/ListadoOrdenesAdmin" className="back-link-modern">
+               Volver al listado
+            </Link>
+          </div>
+
+          <div className="order-meta-section">
+            <div className="meta-item">
+              <span className="meta-label">Estado:</span>
+              <span className={`status-pill ${isEntregado ? "entregado" : "pendiente"}`}>
                 {orderData.estado}
               </span>
-            </p>
-            <p>
-              <strong>Monto total:</strong> S/ {totalAmount.toFixed(2)}
-            </p>
+            </div>
+            <div className="meta-item">
+              <span className="meta-label">Monto total:</span>
+              <span className="total-amount-display">S/{totalAmount.toFixed(2)}</span>
+            </div>
           </div>
         </div>
 
-        <div className="product-list-container">
-          <h2>Productos ordenados ({orderData.productos.length})</h2>
-          <TableComponent
-            columns={columns}
-            data={orderData.productos}
-            emptyMessage="No hay productos en esta orden."
-          />
+        {/* SECCIÓN DE PRODUCTOS */}
+        <div className="products-section">
+          <h2 className="section-title">Productos ordenados</h2>
+          
+          <div className="table-card">
+            <TableComponent
+              columns={columns}
+              data={orderData.productos}
+              emptyMessage="No hay productos en esta orden."
+            />
+          </div>
         </div>
       </main>
+
       <Footer />
     </div>
   );

@@ -7,7 +7,6 @@ const Orden = sequelize.define('orden', {
         primaryKey: true,
         autoIncrement: true
     },
-    // IMPORTANTE: FK para saber de quién es la orden
     idUsuario: {
         type: DataTypes.INTEGER,
         allowNull: false,

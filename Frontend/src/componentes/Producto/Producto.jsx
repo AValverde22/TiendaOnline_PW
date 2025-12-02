@@ -126,7 +126,7 @@ function Producto() {
 
                   <p className="categoria">
                     {/* Buscamos el nombre de la categoría usando el ID */}
-                    {categorias.find((c) => c.id === item.categoriaId)?.nombre || "General"}
+                    {item.categoriaProducto?.nombre || "General"}
                   </p>
 
                   <p className="precio">S/ {item.precio}</p>

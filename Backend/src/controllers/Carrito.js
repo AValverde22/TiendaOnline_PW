@@ -1,4 +1,4 @@
-import carritoRepository from "../repositories/Carrito.js";
+import carritoRepository from "../repositories/carrito.js";
 import itemRepository from "../repositories/itemCarrito.js"; // Necesitamos este para manejar los productos dentro
 
 // 1. Ver el carrito del usuario (GET)
@@ -7,7 +7,7 @@ const verCarrito = async (req, res) => {
         // Obtenemos el ID del usuario (puede venir por URL o del token decodificado)
         const { idUsuario } = req.params;
 
-        if (!idUsuario) {
+        if (!idUsuario) {   
             return res.status(400).json({ message: "Se requiere el ID del usuario." });
         }
 

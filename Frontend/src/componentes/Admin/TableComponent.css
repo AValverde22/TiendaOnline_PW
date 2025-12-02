@@ -29,7 +29,7 @@
 .user-table th,
 .user-table td {
   padding: 12px 10px;
-  text-align: left;
+  text-align: center;
   vertical-align: middle;
   border-bottom: 1px solid #eee;
 
@@ -56,6 +56,8 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  text-align: center;
+
 }
 
 /* --- Filas del Cuerpo --- */
@@ -79,9 +81,10 @@
 .user-table .user-cell {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   /* Asegura que el flex container no se desborde */
-  min-width: 0; 
+  min-width: 0;
 }
 
 .user-table .user-cell span {
@@ -105,8 +108,8 @@
   display: flex;
   gap: 5px;
   align-items: center;
+  justify-content: center;
   /* Importante: permite que los botones se vean bien */
-  justify-content: flex-start; 
 }
 
 /* Botones dentro de la tabla */

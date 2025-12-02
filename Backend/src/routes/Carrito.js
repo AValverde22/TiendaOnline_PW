@@ -1,13 +1,11 @@
 import express from 'express';
-import controller from '../controllers/Carrito.js';
+import controller from '../controllers/carrito.js';
 import authMiddleware from '../middleware/auth.js';
 
 const router = express.Router();
 
 // Un usuario autenticado ve sus propios carritos
 router.get("/:idUsuario", authMiddleware, controller.verCarrito);
-
-router.get('/:id', authMiddleware, controller.findOne);
 
 router.post("/item", authMiddleware, controller.agregarItem);
 

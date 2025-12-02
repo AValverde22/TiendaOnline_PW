@@ -1,110 +1,221 @@
-.OrderDetailPage .main-content {
-    padding: 4em;
-    background-color: #f8f9fa;
+/* --- LAYOUT GENERAL --- */
+.OrderDetailPage {
     display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f8f9fa; /* Fondo gris muy claro */
+    color: #333;
 }
 
-
-
-.OrderDetailPage .back-link {
-    display: inline-block;
-    margin-bottom: 1em;
-    color: #007bff;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 1.1em;
+.main-content2 {
+    flex: 1;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px;
 }
 
-.OrderDetailPage .order-detail-header {
+/* --- TARJETA CABECERA (Order Header) --- */
+.order-header-card {
+    font-family: 'Orbitron';
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 30px 40px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 2em;
+    margin-bottom: 40px;
+    border: 1px solid #eaeaea;
 }
 
-.OrderDetailPage .order-detail-header h1 {
-    margin: 0;
-    color: #333;
+.order-title-section h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0 0 5px 0;
+    color: #000;
 }
 
-.OrderDetailPage .order-summary p {
-    margin: 0 0 0.5em 0;
+.back-link-modern {
+    font-size: 0.9rem;
+    color: #666;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.back-link-modern:hover {
+    color: #16a34a; /* Verde acento */
+    text-decoration: underline;
+}
+
+.order-meta-section {
     text-align: right;
-    color: #555;
-    font-size: 1.1em;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-.OrderDetailPage .order-summary p span {
-    font-weight: bold;
-    text-transform: capitalize;
+.meta-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    font-size: 0.95rem;
 }
 
-
-.OrderDetailPage .product-list-container {
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    padding: 2em;
+.meta-label {
+    font-weight: 700;
+    color: #000;
 }
 
-.OrderDetailPage .product-list-container h2 {
-    margin-top: 0;
-    margin-bottom: 1.5em;
+.total-amount-display {
+    font-weight: 500;
     color: #333;
 }
 
-.OrderDetailPage .product-table {
+/* --- PILDORAS DE ESTADO (Status Pill) --- */
+.status-pill {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.status-pill.entregado {
+    color: #15803d; /* Texto verde oscuro */
+    background-color: #ffffff; /* Fondo blanco */
+    /* Simula el estilo de texto verde limpio */
+}
+
+.status-pill.pendiente {
+    color: #b45309;
+    background-color: #fffbeb;
+}
+
+/* --- SECCIÓN PRODUCTOS --- */
+.section-title {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+    color: #111;
+    padding-left: 5px;
+}
+
+/* --- TARJETA DE TABLA --- */
+.table-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    border: 1px solid #eaeaea;
+    overflow: hidden; /* Para bordes redondeados en la tabla */
+    padding: 10px;
+}
+
+/* --- ESTILOS ESPECÍFICOS DE LA TABLA --- */
+/* Asumiendo que TableComponent renderiza una <table> estándar */
+
+.table-card table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.OrderDetailPage .product-table th,
-.OrderDetailPage .product-table td {
-    padding: 16px 20px;
-    text-align: left;
-    border-bottom: 1px solid #eee;
-    vertical-align: middle;
+.table-card thead th {
+    text-align: center;
+    padding: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #000; /* Encabezados negros como en la imagen */
+    border-bottom: 1px solid #f0f0f0;
 }
 
-.OrderDetailPage .product-table tbody tr:last-child td {
+.table-card tbody td {
+    padding: 20px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f5f5f5;
+    color: #444;
+}
+
+.table-card tbody tr:last-child td {
     border-bottom: none;
 }
 
-.OrderDetailPage .product-table thead th {
-    background-color: #f9f9f9;
-    font-weight: 600;
-    color: #555;
-    text-transform: uppercase;
+/* --- CELDAS ESPECÍFICAS --- */
+
+/* ID: Estilo tipo código/hash verde o coloreado */
+.id-cell {
+    font-weight: 700;
+    color: #16a34a; /* Verde como en la imagen referencia */
+    font-family: monospace;
+    font-size: 1rem;
 }
 
-.OrderDetailPage .product-cell {
+/* Producto: Imagen + Texto */
+.product-cell {
     display: flex;
     align-items: center;
     gap: 15px;
 }
-.OrderDetailPage .product-cell img {
-    width: 60px;
-    height: 60px;
-    border-radius: 8px;
+
+.product-img-small {
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
     object-fit: cover;
+    background-color: #f3f4f6;
 }
 
-.OrderDetailPage .product-id {
-    color: #28a745;
-    font-weight: bold;
+.product-name {
+    font-weight: 500;
+    color: #111;
+    font-size: 0.95rem;
 }
 
-
-.OrderDetailPage .status-entregado, 
-.OrderDetailPage .status-por-entregar { 
-    font-weight: bold; 
-    text-transform: capitalize; 
+/* Categoría */
+.category-text {
+    font-weight: 600;
+    color: #111;
 }
 
-.OrderDetailPage .status-entregado { 
-    color: #28a745; 
+/* Cantidad y Total */
+.qty-text, .total-text {
+    font-size: 0.95rem;
+    color: #333;
 }
 
-.OrderDetailPage .status-por-entregar { 
-    color: #dc3545; 
+/* --- ESTADOS DE CARGA / ERROR --- */
+.loading-container, .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    color: #666;
+}
+
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #16a34a;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsividad básica */
+@media (max-width: 768px) {
+    .order-header-card {
+        flex-direction: column;
+        gap: 20px;
+    }
+    .order-meta-section {
+        text-align: left;
+        align-items: flex-start;
+    }
 }

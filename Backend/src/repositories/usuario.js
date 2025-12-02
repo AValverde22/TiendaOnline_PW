@@ -1,7 +1,7 @@
 import {
     Usuario,
     Orden,
-    ItemDeLaOrden, // OJO: Antes era DetalleOrden 
+    ItemDeLaOrden,
     Producto,
     Categoria
 } from '../models/asociaciones.js';
@@ -66,7 +66,7 @@ repository.findById = async function (id) {
                                     as: 'producto',
                                     include: [
                                         // Esto es lo que permite mostrar la categoría en el historial
-                                        { model: Categoria, as: 'categoria' }
+                                        { model: Categoria, as: 'categoriaProducto' }
                                     ]
                                 }
                             ]

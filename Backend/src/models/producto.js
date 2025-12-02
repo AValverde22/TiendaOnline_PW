@@ -3,7 +3,7 @@ import { DataTypes } from 'sequelize';
 
 // Nota: No importamos Categoria ni Serie aquí. (Modelo Puro)
 
-const Producto = sequelize.define('producto', {
+const Producto = sequelize.define('productos', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
