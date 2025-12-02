@@ -45,7 +45,13 @@ const CarritoApi = {
     return response;
   },
 
-  vaciarCarrito: async () => true
+  vaciarCarrito: async (userId, token) => {
+    if (!token || !userId) throw new Error("Datos de sesión inválidos.");
+    
+    // Llama a DELETE /api/carrito/:idUsuario
+    const response = await base.remove(`carrito/${userId}`, token);
+    return response;
+  }
 };
 
 export default CarritoApi;

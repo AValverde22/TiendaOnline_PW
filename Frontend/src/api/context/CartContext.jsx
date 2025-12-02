@@ -1,95 +1,103 @@
-import { createContext, useState, useContext, useEffect, useCallback } from 'react';
-import CarritoApi from '../CarritoApi.js';
-import { useUser } from './UserContext.jsx';
-// ELIMINADO: import { toast } from 'react-toastify'; 
+import { createContext, useState, useContext, useEffect, useCallback, useMemo } from 'react';
+import CarritoApi from '../carritoApi.js'; // Ajusta la ruta si es necesario
+import { useUser } from './UserContext';
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-    // Estado donde guardamos los items del carrito (estructura del Backend)
+    // Estado del carrito
     const [items, setItems] = useState([]);
-    const [loading, setLoading] = useState(true);
-    // Estado para guardar mensajes de error de la última operación
+    const [loading, setLoading] = useState(false);
     const [cartError, setCartError] = useState(null);
 
+    // Datos del Usuario
     const { user, token, isAuthenticated, logout } = useUser();
 
-    // Función de notificacion simple (reemplazo de toast)
-    const notify = (message, type = 'error') => {
+    // --- Notificaciones Internas ---
+    const notify = useCallback((message, type = 'error') => {
         setCartError({ message, type });
-        console.warn(`[Carrito Notificación ${type.toUpperCase()}]: ${message}`);
-        // Opcional: Podrías usar 'alert(message)' aquí si quieres una ventana emergente.
-    };
+        if (type === 'error') console.error(`[Carrito Error]: ${message}`);
+    }, []);
 
-    // Función para recargar el carrito desde el Backend
+    // --- Lógica de Carga (Fetch) ---
     const fetchCart = useCallback(async () => {
-        setCartError(null); // Limpiar errores antes de intentar
-        if (!isAuthenticated) {
+        if (!isAuthenticated || !user?.id) {
             setItems([]);
-            setLoading(false);
             return;
         }
 
+        setLoading(true);
+        setCartError(null);
+
         try {
-            setLoading(true);
             const data = await CarritoApi.obtenerCarrito(user.id, token);
-            setItems(data);
+            setItems(data || []); 
         } catch (error) {
-            // Manejo de error si el token expiró o hay problema de conexión
-            console.error("Error al cargar el carrito:", error);
-            if (error.status === 401) {
-                notify("Tu sesión ha expirado. Por favor, vuelve a iniciar sesión.", 'info');
+            console.error("Error fetchCart:", error);
+            if (error.response && error.response.status === 401) {
+                notify("Tu sesión ha expirado.", 'info');
                 logout();
             } else {
-                notify(error.message || "Error de conexión al cargar el carrito.", 'error');
+                console.warn("No se pudo sincronizar el carrito.");
             }
         } finally {
             setLoading(false);
         }
-    }, [isAuthenticated, user, token, logout]);
+    }, [isAuthenticated, user, token, logout, notify]);
 
-    // 1. Efecto: Cargar carrito al iniciar o cuando el usuario cambie/autentique
+    // --- EFECTO DE SINCRONIZACIÓN Y LIMPIEZA ---
+    // Este efecto maneja el Ciclo de Vida: Login -> Carga, Logout -> Limpieza
     useEffect(() => {
-        if (user || !isAuthenticated) {
+        if (isAuthenticated && user) {
             fetchCart();
+        } else {
+            // AL CERRAR SESIÓN: Limpieza inmediata de datos sensibles
+            setItems([]);   
+            setCartError(null);
         }
-    }, [user, isAuthenticated, fetchCart]);
+    }, [isAuthenticated, user, fetchCart]);
 
-    // 2. Operaciones CRUD (conectadas al API)
-
-    // Función central que realiza la acción y luego recarga la data
-    const executeActionAndFetch = async (actionPromise) => {
-        setCartError(null); // Limpiar errores antes de la acción
+    // --- Helper para Operaciones CRUD ---
+    const executeActionAndFetch = async (actionPromise, successMsg = null) => {
+        setCartError(null);
         try {
-            // La promesa se ejecuta y espera
-            await actionPromise;
-
-            // Recargamos la lista completa para reflejar los cambios
-            await fetchCart();
+            setLoading(true);
+            await actionPromise; 
+            await fetchCart(); // Single Source of Truth: Recargamos de BD
+            
+            if (successMsg) notify(successMsg, 'success');
             return true;
         } catch (error) {
-            console.error("Error en operación del carrito:", error);
-            const msg = error.message || "Ocurrió un error en el servidor.";
+            const msg = error.response?.data?.message || error.message || "Error al procesar la solicitud.";
             notify(msg, 'error');
             return false;
+        } finally {
+            setLoading(false);
         }
     };
 
+    // --- Acciones Públicas ---
+    
     const agregarProducto = async (producto, cantidad = 1) => {
         if (!isAuthenticated) {
-            notify("Debes iniciar sesión para agregar productos al carrito.", 'info');
+            notify("Inicia sesión para comprar.", 'info');
             return;
         }
-        const action = CarritoApi.agregarProducto(user.id, token, producto, cantidad);
-        const success = await executeActionAndFetch(action);
-        if (success) {
-            // Notificación de éxito simple
-            notify(`${producto.nombre} agregado con éxito.`, 'success');
+        // Validación optimista de stock (opcional)
+        if (producto.stock < cantidad) {
+            notify(`Solo quedan ${producto.stock} unidades.`, 'error');
+            return;
         }
+
+        const action = CarritoApi.agregarProducto(user.id, token, producto, cantidad);
+        await executeActionAndFetch(action, `Agregado: ${producto.nombre}`);
     };
 
     const actualizarCantidad = async (idItem, cantidad) => {
         if (!isAuthenticated) return;
+        if (cantidad < 1) return; 
+
+        // Aquí se llama al endpoint PUT
         const action = CarritoApi.actualizarCantidad(token, idItem, cantidad);
         await executeActionAndFetch(action);
     };
@@ -97,29 +105,57 @@ export const CartProvider = ({ children }) => {
     const eliminarProducto = async (idItem) => {
         if (!isAuthenticated) return;
         const action = CarritoApi.eliminarProducto(token, idItem);
-        await executeActionAndFetch(action);
+        await executeActionAndFetch(action, "Producto eliminado.");
     };
 
-    const vaciarCarrito = async () => {
-        // En este flujo, se vacía al completar la compra. 
-        setItems([]);
+    // Función para vaciar BD y Frontend
+    const vaciarCarritoCompleto = async () => {
+        if (!user || !token) return;
+
+        try {
+            setLoading(true);
+            // 1. Backend: Borra en PostgreSQL
+            await CarritoApi.vaciarCarrito(user.id, token);
+            
+            // 2. Frontend: Limpia estado visual inmediatamente
+            setItems([]); 
+            notify("Tu carrito ha sido vaciado.", "success");
+        } catch (error) {
+            console.error(error);
+            notify("Error al vaciar el carrito.", "error");
+        } finally {
+            setLoading(false);
+        }
     };
 
-    // 3. Cálculos derivados
-    const total = CarritoApi.calcularTotal(items);
-    const count = items.reduce((sum, item) => sum + item.cantidad, 0);
+    // --- Cálculos Derivados (Math Safe) ---
+    const cartTotals = useMemo(() => {
+        if (!items || items.length === 0) return { total: 0, count: 0 };
+        
+        const totalCalculado = items.reduce((acc, item) => {
+            // Protección contra datos nulos y conversión de string a número
+            const precio = Number(item.producto?.precio) || 0;
+            const cantidad = item.cantidad || 1;
+            return acc + (precio * cantidad);
+        }, 0);
+
+        const countCalculado = items.reduce((acc, item) => acc + (item.cantidad || 1), 0);
+        
+        return { total: totalCalculado, count: countCalculado };
+    }, [items]);
 
     return (
         <CartContext.Provider value={{
             items,
-            total,
-            count,
             loading,
-            cartError, // Exportamos el error para que los componentes lo puedan mostrar
+            cartError,
+            total: cartTotals.total,
+            count: cartTotals.count,
             agregarProducto,
             actualizarCantidad,
             eliminarProducto,
-            vaciarCarrito
+            vaciarCarritoCompleto, // Nombre exportado consistente
+            recargarCarrito: fetchCart
         }}>
             {children}
         </CartContext.Provider>

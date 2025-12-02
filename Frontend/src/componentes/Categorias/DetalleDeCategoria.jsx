@@ -20,170 +20,220 @@ const Detalle = () => {
 
     const [categoria, setCategoria] = useState(null);
     const [productosFiltrados, setProductosFiltrados] = useState([]);
-    const [dataLoading, setDataLoading] = useState(true); // Nuevo estado de carga
+    const [dataLoading, setDataLoading] = useState(true);
 
     // El rol de administrador se determina directamente del Context
-    const isAdmin = isAuthenticated && user && user.rol === "admin";
+    const isAdmin = isAuthenticated && user && (user.rol === "admin" || user.rol === "ADMIN");
 
-    // 3. Función de Carga Consolidada (usando token y APIs)
+    // 3. Función de Carga (CORREGIDA: Ahora usa Token)
     const handleOnLoad = useCallback(async () => {
+        // Si no hay token aún, no intentamos cargar para evitar 401
+        if (!token) return;
+
         setDataLoading(true);
         try {
             // 3.1 Cargar el detalle de la categoría
-            const cat = await categoriasApi.findOne(id);
+            // ⚠️ IMPORTANTE: Pasamos el token como segundo parámetro
+            const cat = await categoriasApi.findOne(id, token);
             setCategoria(cat);
 
             // 3.2 Cargar los productos relacionados
-            // ⚠️ Usamos el endpoint del Backend: findByCategoria
-            // Si el backend no tiene un endpoint por ID, se usa el nombre:
-            // const prods = await productosApi.findByCategoria(cat.nombre);
-
-            // Supondremos que la tabla `productos` del backend devuelve el ID_Categoria
+            // Nota: Esto es costoso (traer todos). Idealmente tu backend debería tener:
+            // productosApi.findByCategory(id)
             const allProducts = await productosApi.findAll();
+            
+            // Filtramos asegurando que la comparación de tipos sea correcta (String vs Number)
             const productosPorCategoria = allProducts.filter((item) => item.ID_Categoria == id);
-
             setProductosFiltrados(productosPorCategoria);
 
         } catch (error) {
-            console.error("Error al cargar detalles de categoría:", error);
-            // Mostrar un error en la UI o navegar a 404
+            console.error("Error al cargar detalles:", error);
+            // Opcional: Si es 404 o 401, redirigir
+            if(error.response && error.response.status === 404) navigate('/Categoria');
         } finally {
             setDataLoading(false);
         }
-    }, [id]);
+    }, [id, token, navigate]); // 👈 'token' agregado a dependencias
 
-    // 4. Efecto de Carga y Redirección
+    // 4. Efecto de Carga y Seguridad
     useEffect(() => {
-        // Esperar a que el Context de Usuario termine de cargar
-        if (!userLoading) {
-            if (!isAdmin) {
-                alert("¡No es administrador! Acceso denegado.");
-                navigate("/");
-            } else {
-                handleOnLoad(); // Cargar datos solo si es Admin
-            }
+        // Esperamos a que userContext termine de verificar sesión
+        if (userLoading) return;
+
+        if (!isAdmin) {
+            console.warn("Acceso denegado en Detalle Categoría");
+            navigate("/"); // Redirigir al home si no es admin
+            return;
         }
-    }, [userLoading, isAdmin, navigate, handleOnLoad]);
+
+        // Si es admin y tenemos token, cargamos los datos
+        if (token) {
+            handleOnLoad();
+        }
+    }, [userLoading, isAdmin, token, navigate, handleOnLoad]);
 
     // 5. Funciones de Administración
 
     const EliminarCategoria = async () => {
-        // Aseguramos que haya token
-        if (!token) return alert("Error de autenticación. Intente loguearse de nuevo.");
+        if (!token) return alert("Sesión inválida.");
 
-        if (window.confirm(`¿Estás seguro de que quieres eliminar la categoría "${categoria.nombre}"?`)) {
+        if (window.confirm(`¿Estás seguro de eliminar la categoría "${categoria.nombre}"?`)) {
             try {
-                // Envío del token
                 await categoriasApi.remove(id, token);
-                alert("Categoría Eliminada");
-                navigate("/Categoria");
+                alert("Categoría Eliminada correctamente.");
+                navigate("/ListarCategorias"); // Volver al listado
             } catch (error) {
-                alert(`Error al eliminar: ${error.message || 'Error de comunicación con el servidor.'}`);
+                console.error(error);
+                alert("Error al eliminar. Verifica que no tenga productos asociados.");
             }
         }
     }
 
     const GuardarCambios = async () => {
-        // Aseguramos que haya token y categoría para actualizar
-        if (!token || !categoria || !categoria.id) return alert("Error: Datos incompletos o sesión expirada.");
+        if (!token || !categoria) return;
 
         try {
-            // Pasamos el ID, el objeto de la categoría (con los cambios en el estado) y el token
+            // Pasamos ID, Payload y Token
             await categoriasApi.update(categoria.id, categoria, token);
-            alert("Categoría modificada con éxito.");
-            navigate("/Categoria");
+            alert("Categoría actualizada con éxito.");
+            // Opcional: No navegar, solo avisar para seguir editando
+            // navigate("/Categoria"); 
         } catch (error) {
-            alert(`Error al guardar cambios: ${error.message || 'Error de comunicación con el servidor.'}`);
+            console.error(error);
+            alert("Error al guardar cambios.");
         }
     }
 
-    const DirigirseListarCategoria = () => navigate("/Categoria");
+    const DirigirseListarCategoria = () => navigate("/ListarCategorias");
 
     // --- Renderizado Condicional ---
 
     if (userLoading || dataLoading) {
         return (
-            <>
+            <div className="page-container">
                 <Header />
-                <h1 style={{ textAlign: 'center', margin: '50px' }}>Cargando detalles de categoría... 🔄</h1>
+                <div className="loading-container" style={{ textAlign: 'center', padding: '50px' }}>
+                    <h2>Cargando información... 🔄</h2>
+                </div>
                 <Footer />
-            </>
+            </div>
         );
     }
 
-    // Si la carga terminó y no es admin, ya fue redirigido en el useEffect
-
     if (!categoria) {
         return (
-            <>
+            <div className="page-container">
                 <Header />
-                <h1 style={{ textAlign: 'center', margin: '50px' }}>⚠️ Categoría no encontrada.</h1>
+                <div className="error-container" style={{ textAlign: 'center', padding: '50px' }}>
+                    <h1>⚠️ Categoría no encontrada</h1>
+                    <button className="btn-primary" onClick={DirigirseListarCategoria}>Volver</button>
+                </div>
                 <Footer />
-            </>
+            </div>
         );
     }
 
     return (
-        <>
+        <div className="page-container">
             <Header />
-            <>
-                <div className="grid-container-DDC">
-                    <button className="BotonExterno" onClick={DirigirseListarCategoria}>Listado de Categorías</button>
-                    <div></div>
+            <div className="main-content detail-layout">
+                
+                {/* 1. Barra Superior de Navegación */}
+                <div className="top-nav-bar">
+                    <button className="btn-back" onClick={DirigirseListarCategoria}>
+                        ← Volver al Listado
+                    </button>
                 </div>
 
-                <div className="DetalleDeCategoriaParent">
-                    <div className="DetalleDeCategoria">
-                        <h1>Detalle de categoría</h1>
-                        <div className="grid-container2-DDC">
-                            <h3>ID</h3>
-                            <h3>Nombre</h3>
-                            <h3>Descripción</h3>
-                            <h3>Logo</h3>
-                            <h3>Cantidad de Productos</h3>
+                {/* 2. Tarjeta Principal de Edición */}
+                <div className="edit-card">
+                    <div className="card-header">
+                        <h1>Editar Categoría <span className="id-badge">#{categoria.id}</span></h1>
+                        <p className="subtitle">Edita los detalles y guarda los cambios.</p>
+                    </div>
 
-                            <div>{categoria.id}</div>
-                            {/* Inputs de edición */}
-                            <textarea
-                                value={categoria.nombre || ''}
-                                onChange={(e) => setCategoria({ ...categoria, nombre: e.target.value })}
-                            />
-                            <textarea
-                                className="descripcion"
-                                value={categoria.descripcion || ''}
-                                onChange={(e) => setCategoria({ ...categoria, descripcion: e.target.value })}
-                            />
-
-                            <div>
-                                <img src={categoria.img || 'placeholder.jpg'} alt="Logo Categoría" />
+                    <div className="card-body-grid">
+                        
+                        {/* COLUMNA IZQUIERDA: IMAGEN */}
+                        <div className="column-visual">
+                            <label className="section-label">Imagen de Portada</label>
+                            <div className="img-preview-container">
+                                <img 
+                                    src={categoria.img || 'https://via.placeholder.com/150'} 
+                                    alt="Vista previa" 
+                                    onError={(e) => e.target.src = 'https://via.placeholder.com/150?text=Sin+Imagen'}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>URL de la imagen</label>
                                 <input
                                     type="text"
+                                    className="input-modern"
+                                    placeholder="https://ejemplo.com/imagen.jpg"
                                     value={categoria.img || ''}
                                     onChange={(e) => setCategoria({ ...categoria, img: e.target.value })}
                                 />
                             </div>
-
-                            <div>{productosFiltrados.length}</div>
                         </div>
+
+                        {/* COLUMNA DERECHA: INFORMACIÓN */}
+                        <div className="column-info">
+                            <div className="form-group">
+                                <label>Nombre de la Categoría</label>
+                                <input
+                                    type="text"
+                                    className="input-modern input-title"
+                                    placeholder="Ej: Aventura, RPG..."
+                                    value={categoria.nombre || ''}
+                                    onChange={(e) => setCategoria({ ...categoria, nombre: e.target.value })}
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label>Descripción</label>
+                                <textarea
+                                    className="input-modern textarea-modern"
+                                    rows="6"
+                                    placeholder="Describe de qué trata esta categoría..."
+                                    value={categoria.descripcion || ''}
+                                    onChange={(e) => setCategoria({ ...categoria, descripcion: e.target.value })}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* PIE DE TARJETA: ACCIONES */}
+                    <div className="card-footer">
+                        <button className="btn-action btn-delete" onClick={EliminarCategoria}>
+                            🗑️ Eliminar Categoría
+                        </button>
+                        <button className="btn-action btn-save" onClick={GuardarCambios}>
+                            💾 Guardar Cambios
+                        </button>
                     </div>
                 </div>
 
-                <div className="ContenedorProductos">
-                    <h2>Productos en "{categoria.nombre}" ({productosFiltrados.length})</h2>
-                    {productosFiltrados.length > 0 ? (
-                        productosFiltrados.map((p) => <GameCard key={p.id} {...p} />)
-                    ) : (
-                        <p>No hay productos asociados a esta categoría.</p>
-                    )}
+                {/* 3. Sección de Productos */}
+                <div className="products-section">
+                    <div className="products-header">
+                        <h2>Productos Asociados</h2>
+                        <span className="badge-count">{productosFiltrados.length}</span>
+                    </div>
+                    
+                    <div className="products-grid">
+                        {productosFiltrados.length > 0 ? (
+                            productosFiltrados.map((p) => <GameCard key={p.id} {...p} />)
+                        ) : (
+                            <div className="empty-state-products">
+                                <p>No hay productos vinculados a esta categoría.</p>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
-                <div className="grid-container-DDC">
-                    <button className="BotonExterno" onClick={EliminarCategoria}>Eliminar Categoría</button>
-                    <button className="BotonExterno" onClick={GuardarCambios}>Guardar Cambios</button>
-                </div>
-            </>
+            </div>
             <Footer />
-        </>
+        </div>
     );
 };
 

@@ -135,11 +135,15 @@ function ListadoProductos() {
       <div className="list-header">
         <h1>Listado de productos</h1>
         <div className="action-buttons-group">
+          <Link to="/ListarCategorias">
+            <button className="btn-filter btn-primary">Ver Categorías</button>
+          </Link>
           <Link to="/AgregarProducto">
             <button className="btn-filter btn-primary">Agregar Producto</button>
           </Link>
         </div>
       </div>
+      
 
       <div className="table-wrapper-products">
         <TableComponent

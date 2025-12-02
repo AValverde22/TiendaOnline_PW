@@ -1,84 +1,75 @@
-import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCart } from "../../../api/context/CartContext.jsx"; // 👈 Importamos el Contexto
-import CartItem from "../CartItem/CartItem.jsx";
-import Summary from "../Summary/Summary.jsx";
-import Header from "../../Header/Header.jsx";
+import { useCart } from "../../../api/context/CartContext.jsx"; 
+import CartItem from "../CartItem/CartItem";
+import Summary from "../Summary/Summary";
+import Header from "../../Header/Header";
 import "./Carrito.css";
 
 const Carrito = () => {
-  // 1. Usar el hook useCart para obtener el estado y las funciones asíncronas
   const {
-    items,
-    total,
-    loading,
-    cartError,
-    actualizarCantidad,
-    eliminarProducto,
-    vaciarCarrito, // Aunque es un placeholder, lo mantenemos
-    fetchCart // Necesario si queremos forzar una recarga inicial (aunque el useEffect del Context ya lo hace)
+    items,              // Array de items desde el Context
+    total,              // Calculado en el Context
+    count,              // Cantidad total de productos
+    loading,            // Estado de carga (true en fetch o updates)
+    cartError,          // Objeto error si falla la API
+    actualizarCantidad, // Función del Context -> API PUT
+    eliminarProducto,   // Función del Context -> API DELETE
+    vaciarCarritoCompleto
   } = useCart();
 
   const navigate = useNavigate();
 
-  // El useEffect inicial ya NO es necesario, el CartContext se encarga de cargar
-  // automáticamente el carrito al detectar la autenticación del usuario.
+  // --- Handlers (Controladores de Eventos) ---
 
-  // --- Funciones de Manejo ---
-
-  // Las funciones ahora son ASÍNCRONAS y usan el ID del ITEM (Backend PK)
   const handleAumentar = async (idItem) => {
-    // Buscar el item actual para obtener la cantidad antes de actualizar
+    if (loading) return; // Bloqueo anti-spam de clics
+    
     const item = items.find((p) => p.id === idItem);
     if (item) {
-      // Llamada asíncrona al Contexto (que llama al Backend)
+      // Llamamos a actualizarCantidad con el ID del ITEM (tabla intermedia)
       await actualizarCantidad(idItem, item.cantidad + 1);
     }
   };
 
   const handleDisminuir = async (idItem) => {
+    if (loading) return;
+    
     const item = items.find((p) => p.id === idItem);
     if (item && item.cantidad > 1) {
-      // Llamada asíncrona al Contexto
       await actualizarCantidad(idItem, item.cantidad - 1);
     }
   };
 
   const handleEliminar = async (idItem) => {
-    // Llamada asíncrona al Contexto
-    await eliminarProducto(idItem);
+    if (loading) return;
+    
+    // Confirmación nativa simple
+    if (window.confirm("¿Deseas eliminar este producto del carrito?")) {
+      await eliminarProducto(idItem);
+    }
   };
 
   const handleVaciar = () => {
-    // Llama a la función del Contexto
-    vaciarCarrito();
+    if (items.length === 0) return;
+    if (window.confirm("¿Estás seguro de vaciar el carrito?")) {
+        vaciarCarritoCompleto();
+    }
   };
 
   const handleContinuarCompra = () => {
-    navigate("/Checkout1");
+    navigate("/Checkout1"); // Ruta hacia tu CheckoutContext flow
   };
 
-  // Si está cargando, mostramos un loader
-  if (loading) {
-    return (
-      <div className="carrito-page">
-        <Header />
-        <p className="loading">Cargando carrito... 🔄</p>
-      </div>
-    );
-  }
+  // --- Renderizado Condicional ---
 
-  // Si hay error, lo mostramos
-  if (cartError) {
-    // Usar el error exportado del contexto
+  // CASO 1: Carga Inicial (Pantalla completa solo si está vacío y cargando)
+  if (loading && items.length === 0) {
     return (
       <div className="carrito-page">
         <Header />
-        <div className="error-container">
-          <p className={`error-message ${cartError.type}`}>
-            ❌ {cartError.message}
-          </p>
-          <p>Por favor, inténtalo de nuevo o revisa tu sesión.</p>
+        <div className="loading-container">
+            <div className="spinner"></div>
+            <p>Cargando tu carrito... 🔄</p>
         </div>
       </div>
     );
@@ -87,42 +78,71 @@ const Carrito = () => {
   return (
     <div className="carrito-page">
       <Header />
-      <div className="carrito-container">
+      
+      {/* Banner de Errores (Si falla el token o el servidor) */}
+      {cartError && (
+        <div className="error-banner">
+            ⚠️ {cartError.message || "Ocurrió un error. Intenta recargar."}
+        </div>
+      )}
+
+      {/* Clase 'is-updating': Baja la opacidad si se está actualizando 
+         para dar feedback visual sin borrar el contenido 
+      */}
+      <div className={`carrito-container ${loading ? 'is-updating' : ''}`}>
+        
+        {/* COLUMNA IZQUIERDA: ITEMS */}
         <div className="carrito-left">
-          <h2>Tu carrito</h2>
+          <h2>Tu Carrito ({count} productos)</h2>
 
           {items.length === 0 ? (
-            <p className="vacio">Tu carrito está vacío 🛍️</p>
+            <div className="empty-cart-state">
+                <p>Tu carrito está vacío 🛍️</p>
+                <button className="btn-primary" onClick={() => navigate('/')}>
+                    Ir a la Tienda
+                </button>
+            </div>
           ) : (
-            <>
-              {items.map((item) => ( // 👈 Iteramos sobre 'items'
+            <div className="cart-list">
+              {items.map((item) => (
                 <CartItem
-                  key={item.id} // 👈 Usamos el ID del ITEM (no del producto)
-                  // 👈 Pasamos el ITEM completo, que contiene el producto anidado
-                  item={item}
+                  key={item.id} // Key es el ID único de la tabla intermedia
+                  item={item}   // Pasamos todo el objeto item
                   onAumentar={() => handleAumentar(item.id)}
                   onDisminuir={() => handleDisminuir(item.id)}
                   onEliminar={() => handleEliminar(item.id)}
+                  disabled={loading} // Deshabilitamos botones individuales
                 />
               ))}
-              <button className="vaciar-btn" onClick={handleVaciar}>
+              
+              <button 
+                className="vaciar-btn" 
+                onClick={handleVaciar}
+                disabled={loading}
+              >
                 Vaciar carrito
               </button>
-            </>
+            </div>
           )}
         </div>
 
-        <div className="carrito-right">
-          {/* El total y el count vienen calculados del Context */}
-          <Summary total={total} count={items.length} />
-          <button
-            className="continuar-btn"
-            onClick={handleContinuarCompra}
-            disabled={items.length === 0} // Deshabilitar si está vacío
-          >
-            Continuar Compra
-          </button>
-        </div>
+        {/* COLUMNA DERECHA: RESUMEN */}
+        {items.length > 0 && (
+            <div className="carrito-right">
+              {/* Indicador sutil de carga */}
+              {loading && <p className="mini-loader">Actualizando precios...</p>}
+              
+              <Summary total={total} count={count} />
+              
+              <button
+                className="continuar-btn"
+                onClick={handleContinuarCompra}
+                disabled={loading}
+              >
+                {loading ? 'Procesando...' : 'Continuar Compra'}
+              </button>
+            </div>
+        )}
       </div>
     </div>
   );

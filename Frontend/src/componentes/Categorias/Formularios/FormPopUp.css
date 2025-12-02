@@ -1,108 +1,96 @@
-body{background-color: rgba(125, 124, 124, 0.87);}
-
-.PopUpParent{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
-
+/* El contenedor interno del PopUp (El overlay lo maneja el padre) */
 .PopUp {
+    width: 100%;
+    background: white;
+    text-align: center;
+    /* Quitamos padding excesivo porque el contenedor padre ya tiene */
+}
+
+.popup-header h2 {
+    color: #333;
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+}
+
+.popup-body {
+    text-align: left;
+    color: #444;
+}
+
+.popup-body p {
+    margin-bottom: 15px;
+}
+
+/* Tarjeta de Resumen de datos */
+.popup-summary {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.summary-item {
+    margin-bottom: 12px;
     display: flex;
-    flex-wrap: wrap;
     flex-direction: column;
-    
-    width: 80vw;
-    margin-top: 50px;
-    margin-bottom: 50px;
-
-    border-radius: 7.5px;
-    background-color: white;
 }
 
-.PopUp h1{
-    margin-left: 25px;
-    margin-bottom: 25px;
-    font-size: 25px;
+.summary-item strong {
+    color: #333;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
 }
 
-.PopUp table {
+.summary-item span {
+    color: #555;
+    font-size: 1rem;
+}
+
+.desc-text {
+    font-style: italic;
+    color: #666;
+    font-size: 0.9rem !important;
+}
+
+.summary-img {
+    margin-top: 10px;
     text-align: center;
-    border-collapse: collapse;
-    border: 1px solid #ccc;
-    
-    width: 70vw;
-    margin-left: 5vw;
-}
-
-.PopUp input[type="text"]{
-    width: 70vw;
-    margin-left: 5vw;
-
-    padding: 10px;
-    margin-bottom: 10px;
-}
-
-.PopUp table th {
-    padding-top: 25px;
-    padding-bottom: 25px;
-    text-align: center;
-}
-
-.PopUp table tr {
-    border-bottom: 1px solid #ccc;
-}
-
-.PopUp table tr td {
-    padding-left: 10px;
-    padding-right: 10px;
-    text-align: center;
-}
-
-.PPCheckbox {
-    width: 25px;
-    border-right: 1px solid #ccc;
-}
-
-.PPTitulo {
-    width: 150px;
-}
-
-.PPCat {
-    width: 150px;
-}
-
-.PPImg {
-    width: 5px;
+    border-top: 1px solid #eee;
     padding-top: 10px;
-    padding-bottom: 10px;
 }
 
-.PPImg img {
-    width: 154px;
-    height: 140px;
-    border-radius: 10px;
+.summary-img img {
+    max-height: 120px;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
+/* Alerta informativa azul */
+.alert-info {
+    background-color: #e3f2fd;
+    color: #0d47a1;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    border: 1px solid #bbdefb;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Botones del PopUp */
 .grid-container-PopUp {
-    display: grid;
-    grid-template-columns: 200px 200px;
-    justify-content: space-evenly;
-
-    margin-top: 50px;
-    margin-bottom: 50px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 25px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
 }
 
-.grid-container-PopUp button {
-    background-color: green;
-    color: white;
-    border-radius: 5px;
-    border: 0px solid;  
-
-    padding-top: 10px;
-    padding-bottom: 10px;
-
-    font-size: 12px;
-    font-weight: bold;
-    cursor: pointer;
+/* Reutilizamos estilos si quieres, o definimos específicos */
+.grid-container-PopUp button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }

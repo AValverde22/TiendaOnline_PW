@@ -3,6 +3,7 @@ import base from './base.js';
 const endpoint = 'categorias';
 
 const categoriasApi = {
+  // findAll suele ser público, pero si es privado, agrégale token también
   findAll: async () => await base.get(endpoint),
 
   create: async (payload, token) =>
@@ -14,11 +15,11 @@ const categoriasApi = {
   remove: async (id, token) =>
     await base.remove(`${endpoint}/${id}`, token),
 
-  findOne: async (id) =>
-    await base.get(`${endpoint}/${id}`),
+  findOne: async (id, token) =>
+    await base.get(`${endpoint}/${id}`, token), // 👈 Pasamos el token a base.get
 
-  findByName: async (name) =>
-    await base.get(`${endpoint}/buscar/${encodeURIComponent(name)}`)
+  findByName: async (name, token) =>
+    await base.get(`${endpoint}/buscar/${encodeURIComponent(name)}`, token)
 };
 
 export default categoriasApi;

@@ -107,12 +107,46 @@ const updateCantidad = async (req, res) => {
     }
 };
 
-// Exportamos las funciones específicas
+// ... importaciones existentes
+
+// 5. Vaciar el carrito completo de un usuario
+const vaciarCarrito = async (req, res) => {
+    try {
+        const { idUsuario } = req.params;
+
+        if (!idUsuario) {
+            return res.status(400).json({ message: "Falta el ID del usuario." });
+        }
+
+        // 1. Buscamos el carrito del usuario para obtener su ID real de carrito
+        const carrito = await carritoRepository.findByUserId(idUsuario);
+        
+        if (!carrito) {
+            return res.status(404).json({ message: "Carrito no encontrado." });
+        }
+
+        // 2. Usamos el método que YA tienes en tu repositorio
+        const resultado = await carritoRepository.clearCarrito(carrito.id);
+
+        if (resultado) {
+            return res.status(200).json({ message: "Carrito vaciado con éxito." });
+        } else {
+            return res.status(200).json({ message: "El carrito ya estaba vacío." });
+        }
+
+    } catch (error) {
+        console.error("Error en vaciarCarrito:", error);
+        return res.status(500).json({ message: "Error al vaciar el carrito." });
+    }
+};
+
+// Actualiza el export
 const controller = { 
     verCarrito, 
     agregarItem, 
     eliminarItem,
-    updateCantidad
+    updateCantidad,
+    vaciarCarrito // <--- AGREGADO
 };
 
 export default controller;
