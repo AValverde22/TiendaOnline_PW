@@ -18,6 +18,6 @@ router.get('/:id', authMiddleware, usuarioController.findById);
 // -------------------------------------
 
 // Solo admins pueden actualizar usuarios
-router.put('/:id', authMiddleware, verifyAdmin, usuarioController.update);
+router.put('/:id', authMiddleware, usuarioController.update);
 
 export default router;

@@ -8,7 +8,6 @@ ESTILO DETALLE DE PRODUCTO
   gap: 40px;
   padding: 40px;
   background-color: #f5f6fa;
-  font-family: "Segoe UI", Arial, sans-serif;
 }
 
 .detalle-imagen {
@@ -66,7 +65,7 @@ INFORMACIÓN DEL PRODUCTO
 .detalle-precio {
   font-weight: bold;
   font-size: 1.3rem;
-  color: #007bff;
+  color: #2ea32b;
   margin-bottom: 20px;
 }
 
@@ -75,16 +74,16 @@ INFORMACIÓN DEL PRODUCTO
 */
 
 .btn-volver {
-  border: 1px solid #007bff;
+  border: 1px solid #2ea32b;
   background-color: transparent;
-  color: #007bff;
+  color: #2ea32b;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .btn-volver:hover {
-  background-color: #007bff;
+  background-color: #2ea32b;
   color: white;
 }
 
@@ -139,7 +138,7 @@ SECCIÓN DE PRODUCTOS RELACIONADOS
 
 .precio-relacionado {
   font-weight: bold;
-  color: #007bff;
+  color: #2ea32b;
   font-size: 1rem;
 }
 

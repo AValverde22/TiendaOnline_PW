@@ -3,7 +3,6 @@
   gap: 25px;
   padding: 30px 40px;
   background-color: #f5f6fa;
-  font-family: "Segoe UI", Arial, sans-serif;
 }
 
 /*
@@ -73,13 +72,16 @@ BARRA LATERAL DE CATEGORÍAS
   text-align: left;
 }
 
-/*
-AGRUPACIÓN DE PRODUCTOS
-*/
+/* ===== AGRUPACIÓN DE PRODUCTOS (Reemplaza desde aquí) ===== */
+
 .Producto-grupos {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  /* CORRECCIÓN CLAVE: Usamos 'auto-fill' en lugar de 'auto-fit'.
+     Esto crea "espacios vacíos" en la grilla si no hay suficientes productos, 
+     evitando que una sola tarjeta se estire. */
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
   gap: 25px;
+  width: 100%; /* Aseguramos que la grilla ocupe el ancho disponible */
 }
 
 .Producto-tarjeta {
@@ -89,9 +91,16 @@ AGRUPACIÓN DE PRODUCTOS
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   cursor: pointer;
-
+  
   display: flex;
   flex-direction: column;
+  height: 100%; 
+  
+  /* --- CORRECCIÓN CLAVE PARA ANCHO FIJO --- */
+  width: 250px; /* ¡DEFINE AQUÍ EL ANCHO FIJO DESEADO! */
+  max-width: 250px; /* Lo mantenemos como seguridad */
+  
+  justify-self: center; 
 }
 
 .Producto-tarjeta:hover {
@@ -117,48 +126,30 @@ AGRUPACIÓN DE PRODUCTOS
   margin: 8px 0 4px;
   color: #222;
   font-weight: 600;
+  text-align: center;
 }
 
 .Producto-tarjeta .categoria {
   font-size: 0.9rem;
   color: #6c757d;
   margin-bottom: 5px;
+  text-align: center;
+  /* Truco: Esto hace que se estire para empujar los siguientes elementos hacia abajo */
+  flex-grow: 1; 
 }
 
 .Producto-tarjeta .precio {
   font-weight: bold;
   color: #2ea32b;
   font-size: 1rem;
+  text-align: center;
+  /* Eliminamos align-content: center; ya que no aplica bien en flex column */
 }
 
 .Producto-tarjeta button {
-    margin-top: auto;
-    margin-left: 17px;
+  /* Arregla la alineación del botón al pie de la tarjeta */
+  margin-top: auto;
+  align-self: center; /* Centra el botón horizontalmente */
 }
 
-
-/*
-MENSAJE DE “SIN RESULTADOS”
-*/
-.sin-resultados {
-  text-align: center;
-  padding: 80px 20px;
-  background: white;
-  border-radius: 16px;
-  color: #555;
-  font-size: 1.2rem;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-  animation: fadeIn 0.4s ease-in-out;
-}
-
-/*ANIMACIONES Y TRANSICIONES*/
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+/* FIN DE LOS CAMBIOS */

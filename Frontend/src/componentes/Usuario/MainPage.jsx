@@ -159,6 +159,7 @@ const MainPage = () => {
             {/* Datos Personales */}
             <div className="Datos-usuario">
               <h2>Tu Información</h2>
+              <p><strong>Nombre: </strong>{userToDisplay?.nombre + " " + userToDisplay?.apellido}</p>
               <p><strong>Email:</strong> {userToDisplay?.email || userToDisplay?.correo}</p>
               <p><strong>Usuario:</strong> @{userToDisplay?.username}</p>
               <p><strong>Teléfono:</strong> {userToDisplay?.telefono || 'No registrado'}</p>
@@ -167,8 +168,8 @@ const MainPage = () => {
             {/* Dirección */}
             <div className="Direccion-de-envio">
               <h2>Datos de Envío</h2>
-              <p>{userToDisplay?.direccion || 'Dirección no especificada'}</p>
-              <p>{userToDisplay?.distrito || ''}</p>
+              <p><strong>Dirección:</strong> {userToDisplay?.direccion || 'Dirección no especificada'}</p>
+              <p><strong>Distrito:</strong> {userToDisplay?.distrito || 'Distrito no especificado'}</p>
             </div>
           </div>
 

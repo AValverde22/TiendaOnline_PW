@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from 'react';
-import base from '../base.js';
+import base from '../base.js'; // Ajusta la ruta si es necesario
 
 const UserContext = createContext();
 
@@ -25,32 +25,24 @@ export const UserProvider = ({ children }) => {
                 logout();
             }
         }
-
         setLoading(false);
     }, []);
 
     // 2. Login centralizado
     const login = async (credenciales) => {
+        // ... (tu código de login se queda igual) ...
         try {
             const data = await base.post('usuarios/login', credenciales);
-
             if (data.success) {
                 const usuarioData = data.usuario;
-
-                // Actualiza estados globales
                 setUser(usuarioData);
                 setToken(data.token);
                 setIsAuthenticated(true);
-
-                // Guarda en localStorage
                 localStorage.setItem('usuario', JSON.stringify(usuarioData));
                 localStorage.setItem('token', data.token);
-
                 return { success: true, usuario: usuarioData };
             }
-
             return { success: false, message: data.message || "Credenciales incorrectas" };
-
         } catch (err) {
             console.error("Error crítico en login:", err);
             return { success: false, message: "Error de conexión" };
@@ -62,7 +54,6 @@ export const UserProvider = ({ children }) => {
         setUser(null);
         setToken(null);
         setIsAuthenticated(false);
-
         localStorage.removeItem('usuario');
         localStorage.removeItem('token');
     };
@@ -70,6 +61,7 @@ export const UserProvider = ({ children }) => {
     return (
         <UserContext.Provider value={{
             user,
+            setUser, // <--- ¡AQUÍ ESTÁ LA CLAVE! Agregamos esto.
             token,
             isAuthenticated,
             loading,

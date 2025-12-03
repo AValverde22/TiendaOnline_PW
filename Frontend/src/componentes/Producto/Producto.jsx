@@ -4,7 +4,7 @@ import productosApi from "../../api/productosApi.js";
 import categoriasApi from "../../api/categoriasApi.js";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer.jsx";
-import CarritoApi from "../../api/CarritoApi.js";
+import CarritoApi from "../../api/carritoApi.js";
 import "./Producto.css";
 import "../Carrito/AgregarCarritoBoton/BotondeCarrito.css";
 

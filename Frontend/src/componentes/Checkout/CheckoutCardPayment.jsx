@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 
 // Importamos Contextos y APIs
 import { useCart } from "../../api/context/CartContext.jsx";
 import { useUser } from "../../api/context/UserContext.jsx";
-import OrdenesApi from "../../api/OrdenesApi.js"; // 👈 Asumimos esta API
+import { useCheckout } from "../../api/context/CheckoutContext.jsx"; // 👈 Importante para la dirección
+import OrdenesApi from "../../api/OrdenesApi.js"; 
 
 import Summary from "../Carrito/Summary/Summary";
 import Header from "../Header/Header"
@@ -13,15 +14,16 @@ import "./Checkout.css";
 const CheckoutCardPayment = () => {
   const navigate = useNavigate();
 
-  // Obtener datos del carrito y usuario
-  const { items, total, count, vaciarCarrito } = useCart();
+  // 1. Obtener datos globales
+  // Nota: corregí 'vaciarCarrito' por 'vaciarCarritoCompleto' según tu Context
+  const { items, total, count, vaciarCarritoCompleto } = useCart();
   const { user, token, isAuthenticated } = useUser();
+  const { shippingAddress } = useCheckout(); // Recuperamos la dirección del paso 1
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // ⚠️ Estado local para simular la recolección de datos de la tarjeta.
-  // En una aplicación real, estos datos irían a un servicio de pago seguro (Stripe, PayPal, etc.).
+  // 2. Estado local del formulario de tarjeta
   const [cardDetails, setCardDetails] = useState({
     cardHolder: '',
     cardNumber: '',
@@ -29,7 +31,16 @@ const CheckoutCardPayment = () => {
     cvv: ''
   });
 
+  // Validación de seguridad: Si no hay dirección, volver al inicio
+  useEffect(() => {
+    if (!shippingAddress) {
+        alert("Falta la dirección de envío.");
+        navigate("/Checkout1");
+    }
+  }, [shippingAddress, navigate]);
+
   const handleInputChange = (e) => {
+    // Validación simple para números (opcional)
     setCardDetails({ ...cardDetails, [e.target.name]: e.target.value });
   };
 
@@ -38,120 +49,130 @@ const CheckoutCardPayment = () => {
     setError(null);
 
     if (!isAuthenticated || !token) {
-      setError("No estás autenticado. Por favor, inicia sesión.");
-      return;
-    }
-
-    if (items.length === 0) {
-      setError("El carrito está vacío. Agrega productos para completar la compra.");
+      setError("Sesión expirada. Inicia sesión nuevamente.");
       return;
     }
 
     setLoading(true);
 
     try {
-      // 1. Preparar el Payload para el Backend
-      // Los ítems del carrito ya contienen la estructura necesaria (ID de producto y cantidad)
+      // 3. Preparar el Payload Completo
       const orderPayload = {
         usuarioId: user.id,
         total: total,
         metodoPago: 'Tarjeta',
-        // Enviamos solo los datos esenciales para la orden
         items: items.map(item => ({
-          productoId: item.producto.id,
+          productoId: item.id, // O item.producto.id dependiendo de tu estructura
           cantidad: item.cantidad,
-          precioUnitario: Number(item.producto.precio)
+          precioUnitario: Number(item.precio || item.producto?.precio),
+          nombre: item.nombre || item.producto?.nombre // Opcional, para logs en backend
         })),
-        // Aquí se añadirían la dirección de envío (obtenida de Checkout1)
-        // y los datos de pago simulados (cardDetails)
+        direccionEnvio: shippingAddress, // 👈 Enviamos la dirección guardada
+        datosPago: { // NUNCA guardar CVV en BD real, esto es solo didáctico
+            mascaraTarjeta: cardDetails.cardNumber.slice(-4),
+            titular: cardDetails.cardHolder
+        }
       };
 
-      // 2. Llamada Asíncrona para CREAR la Orden
-      // ⚠️ Necesitas crear la función crearOrden en tu OrdenesApi.js
-      const nuevaOrden = await OrdenesApi.crearOrden(orderPayload, token);
+      // 4. Llamada al Backend
+      const respuesta = await OrdenesApi.crearOrden(orderPayload, token);
+      
+      // Asumiendo que tu backend devuelve la orden creada en 'respuesta' o 'respuesta.orden'
+      const ordenId = respuesta.id || respuesta.orden?.id || Date.now(); 
 
-      // 3. Éxito: Vaciar el carrito y Navegar
-      vaciarCarrito(); // Limpiamos el estado local (y la DB si tu API de órdenes lo hace)
-
-      // 4. Navegar a la página de detalle de la orden recién creada
-      navigate(`/DetalleDeOrden/${nuevaOrden.id}`);
+      // 5. Limpieza y Redirección
+      await vaciarCarritoCompleto(); // Limpia BD y Contexto
+      
+      navigate(`/DetalleDeOrden/${ordenId}`); // Redirigir a éxito
 
     } catch (err) {
-      console.error("Error al procesar el pago y crear la orden:", err);
-      setError(err.message || "Fallo en el pago. Inténtalo de nuevo.");
+      console.error(err);
+      setError(err.message || "Error al procesar el pago.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div>
+    <div className="checkout-page">
       <Header />
       <div className="container">
+        <h1 className="checkout-title">Pago con Tarjeta</h1>
+        
         <div className="checkout-layout">
           <main className="checkout-left">
-            <h2>Pago con tarjeta</h2>
-            {error && <div className="error-message">{error}</div>}
+            <div className="checkout-card">
+                <h3>Ingresa los datos de tu tarjeta</h3>
+                
+                {error && <div className="error-banner" style={{marginBottom: 15}}>{error}</div>}
 
-            <form onSubmit={handlePay} className="address-form">
-              <div className="row">
-                <input
-                  placeholder="Nombre del titular"
-                  required
-                  name="cardHolder"
-                  value={cardDetails.cardHolder}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="row">
-                <input
-                  placeholder="Número de tarjeta"
-                  required
-                  name="cardNumber"
-                  value={cardDetails.cardNumber}
-                  onChange={handleInputChange}
-                  maxLength="16"
-                />
-              </div>
-              <div className="row">
-                <input
-                  placeholder="MM/AA"
-                  required
-                  name="expiry"
-                  value={cardDetails.expiry}
-                  onChange={handleInputChange}
-                  maxLength="5"
-                />
-                <input
-                  placeholder="CVV"
-                  required
-                  name="cvv"
-                  value={cardDetails.cvv}
-                  onChange={handleInputChange}
-                  maxLength="4"
-                />
-              </div>
-              <button
-                type="submit"
-                className="btn-primary"
-                disabled={loading || items.length === 0}
-              >
-                {loading ? 'Procesando Pago...' : 'Pagar ahora'}
-              </button>
-              <button
-                type="button"
-                className="btn-secondary"
-                onClick={() => navigate("/Checkout2")}
-                disabled={loading}
-              >
-                Volver
-              </button>
-            </form>
+                <form onSubmit={handlePay} className="address-form">
+                <div className="form-row">
+                    <input
+                    placeholder="Nombre del titular"
+                    required
+                    name="cardHolder"
+                    value={cardDetails.cardHolder}
+                    onChange={handleInputChange}
+                    />
+                </div>
+                <div className="form-row">
+                    <input
+                    placeholder="Número de tarjeta (16 dígitos)"
+                    required
+                    name="cardNumber"
+                    value={cardDetails.cardNumber}
+                    onChange={handleInputChange}
+                    maxLength="16"
+                    />
+                </div>
+                <div className="form-row">
+                    <input
+                    placeholder="MM/AA"
+                    required
+                    name="expiry"
+                    value={cardDetails.expiry}
+                    onChange={handleInputChange}
+                    maxLength="5"
+                    />
+                    <input
+                    placeholder="CVV"
+                    required
+                    name="cvv"
+                    type="password"
+                    value={cardDetails.cvv}
+                    onChange={handleInputChange}
+                    maxLength="3"
+                    />
+                </div>
+                
+                <div className="form-actions">
+                    <button
+                        type="button"
+                        className="btn-primary"
+                        onClick={() => navigate("/Checkout2")}
+                        disabled={loading}
+                    >
+                        Atrás
+                    </button>
+                    <button
+                        type="submit"
+                        className="btn-primary"
+                        onClick={() => navigate("/ConfirmarOrden")}
+                        disabled={loading || items.length === 0}
+                    >
+                        {loading ? 'Procesando...' : `Pagar S/ ${total.toFixed(2)}`}
+                    </button>
+                </div>
+                </form>
+            </div>
           </main>
 
           <aside className="checkout-right">
-            {/* Summary recibe props del Context */}
-            <Summary total={total} count={count} />
+             <div className="summary-card">
+                <h3>Resumen</h3>
+                <Summary total={total} count={count} />
+             </div>
           </aside>
         </div>
       </div>

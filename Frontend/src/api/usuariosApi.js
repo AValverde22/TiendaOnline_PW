@@ -21,6 +21,9 @@ const usuariosApi = {
   put: async (id, datos, token) =>
     await base.put(`${endpoint}/${id}`, datos, token),
 
+  update: async (id, datos, token) =>
+    await base.put(`${endpoint}/${id}`, datos, token),
+
   // --- Helpers / Utilidades ---
   getTotalSpent: (usuario) => {
     if (!usuario || !usuario.ordenes || !Array.isArray(usuario.ordenes)) {

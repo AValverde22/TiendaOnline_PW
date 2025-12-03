@@ -1,38 +1,85 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import Header from "../Header/Header";
 import Summary from "../Carrito/Summary/Summary";
+
+// Importamos Contextos (Solo para leer datos y validar)
+import { useCart } from "../../api/context/CartContext";
+import { useCheckout } from "../../api/context/CheckoutContext";
 import "./Checkout.css";
-import Header from "../Header/Header"
-import CarritoApi from "../../api/CarritoApi";
 
 const CheckoutQR = () => {
   const navigate = useNavigate();
-  const [productos, setProductos] = useState([]);
 
+  // 1. Datos del Contexto
+  const { total, count } = useCart();
+  const { shippingAddress } = useCheckout();
+
+  // Validación de seguridad: Si no hay dirección, volver al paso 1
   useEffect(() => {
-    setProductos(CarritoApi.obtenerCarrito());
-  }, []);
+    if (!shippingAddress) {
+        navigate("/Checkout1");
+    }
+  }, [shippingAddress, navigate]);
 
-  const total = productos.reduce((acc, p) => acc + p.precio * p.cantidad, 0);
-  const count = productos.length;
+  // Función simple de navegación
+  const handleContinuar = () => {
+    // No guardamos nada en BD todavía.
+    // Lo enviamos a la pantalla de REVISIÓN FINAL.
+    navigate("/DetalleDeOrden"); 
+  };
 
   return (
-    <div>      
+    <div className="checkout-page">      
     <Header />
     <div className="container">
+      <h1 className="checkout-title">Pago con QR</h1>
+      
       <div className="checkout-layout">
-        <main className="checkout-left" style={{textAlign:"center"}}>
-          <h2>Pago con QR</h2>
-          <img src="https://qrcg-free-editor.qr-code-generator.com/latest/assets/images/websiteQRCode_noFrame.png" alt="QR" style={{width:220,height:220}}/>
-          <p>Escanea con Yape o Plin para pagar.</p>
-          <div style={{display:"flex",gap:8,justifyContent:"center",marginTop:12}}>
-            <button className="btn-primary" onClick={() => navigate("/DetalleDeOrden")}>Ya realicé el pago</button>
-            <button className="btn-secondary" onClick={() => navigate("/Checkout2")}>Volver</button>
+        <main className="checkout-left">
+          <div className="checkout-card" style={{textAlign:"center"}}>
+             <h3>Escanea para pagar</h3>
+             
+             <div style={{margin: "30px 0"}}>
+                {/* QR de Ejemplo */}
+                <img 
+                    src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=YAPE-999999999" 
+                    alt="QR Yape" 
+                    style={{border: "1px solid #ddd", padding: 10, borderRadius: 8}}
+                />
+                <p style={{marginTop: 15, fontSize: "1.1rem"}}>
+                    Total a pagar: <strong>S/ {total.toFixed(2)}</strong>
+                </p>
+                <p style={{color: "#666", fontSize: "0.9rem"}}>
+                    Abre tu app de Yape o Plin y escanea el código.
+                </p>
+             </div>
+
+             <div className="form-actions" style={{justifyContent: "center", gap: 20}}>
+                {/* Botón Volver (Estilo gris btn-back) */}
+                <button 
+                    className="btn-primary" 
+                    onClick={() => navigate("/Checkout2")}
+                >
+                    Volver
+                </button>
+                
+                {/* Botón Continuar (Lleva a ConfirmarOrden) */}
+                <button 
+                    className="btn-primary" 
+                    onClick={handleContinuar}
+                >
+                    Ya realicé el pago ➝
+                </button>
+             </div>
           </div>
         </main>
 
         <aside className="checkout-right">
-          <Summary total ={total} count={count}/>
+           <div className="summary-card">
+              <h3>Resumen</h3>
+              <Summary total={total} count={count}/>
+           </div>
         </aside>
       </div>
     </div>

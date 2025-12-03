@@ -101,11 +101,19 @@ function App() {
 
                 {/* Banner */}
                 <div className="banner">
-                    <button className="banner-arrow left" onClick={handlePrev}>❮</button>
+                    <button className="banner-arrow left" onClick={handlePrev}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
                     <div className="banner-content">
                         <img src={banners[currentIndex]} alt="Banner de Publicidad" className="banner-img" />
                     </div>
-                    <button className="banner-arrow right" onClick={handleNext}>❯</button>
+                    <button className="banner-arrow right" onClick={handleNext}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
                 </div>
 
                 {/* Categorías */}

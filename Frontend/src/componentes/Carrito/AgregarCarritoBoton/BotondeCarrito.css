@@ -1,5 +1,5 @@
 .boton-agregar {
-  background-color: #2ecc71;
+  background-color: #2ea32b;
   color: white;
   border: none;
   border-radius: 8px;
@@ -11,6 +11,7 @@
   width: 100%;
   max-width: 200px;
   margin-top: 10px;
+  font-family: 'Orbitron';
 }
 
 .boton-agregar:hover {

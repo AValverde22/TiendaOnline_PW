@@ -1,27 +1,23 @@
 // src/api/OrdenesApi.js
-
 import base from './base.js';
 
-const endpoint = 'ordenes'; // 👈 Ruta del Backend para la gestión de órdenes
+const endpoint = 'ordenes';
 
 const OrdenesApi = {
 
-    /**
-     * Crea una nueva orden de compra en el Backend. Esta es la función CLAVE para el Checkout.
-     *
-     * @param {object} payload - El cuerpo de la orden (usuarioId, items, total, métodoPago, etc.).
-     * @param {string} token - Token de autenticación del usuario.
-     * @returns {Promise<object>} La orden creada.
-     */
+    // ... (tu función crearOrden que ya tienes) ...
     crearOrden: async (payload, token) => {
-        // Esto se mapea a POST /api/ordenes
         return await base.post(endpoint, payload, token);
     },
 
-    // (Puedes añadir más funciones si las necesitas en otras vistas)
-
-    // findById: async (id, token) => { ... },
-    // findAll: async (token) => { ... },
+    /**
+     * Obtiene los detalles de una orden específica por su ID.
+     * Vital para la pantalla de "CheckoutSuccess".
+     */
+    findById: async (id, token) => {
+        // GET /api/ordenes/:id
+        return await base.get(`${endpoint}/${id}`, token);
+    }
 };
 
 export default OrdenesApi;

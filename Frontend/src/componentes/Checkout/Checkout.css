@@ -1,33 +1,310 @@
+/* =========================================
+   1. LAYOUT GENERAL
+   ========================================= */
+.checkout-page {
+  background-color: #f9f9f9; /* Fondo gris claro para diferenciar del header */
+  min-height: 100vh;
+  padding-bottom: 60px;
+}
+
 .container {
-  width: 100vw;
-  margin: 0;
-  padding-left: 0;
-  padding-right: 0;
-  box-sizing: border-box; 
+  width: 100%;
+  max-width: 1200px; /* Limita el ancho en pantallas muy grandes */
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
-
-.checkout-layout
-{display:flex;
-
-gap:20px;
-width:90vw;
-margin-left: auto;
-margin-right: auto;
-margin-top: 75px
+.checkout-title {
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 2rem;
 }
 
-.checkout-left{flex:2;background:var(--card);padding:16px;border-radius:8px;border:1px solid #eee;}
-.checkout-right{flex:1;min-width:260px;align-content: center;}
-.address-form .row{display:flex;gap:8px}
+.checkout-layout {
+  display: flex;
+  flex-wrap: wrap; /* Importante para que sea responsive en móviles */
+  gap: 30px;       /* Espacio entre columnas */
+  width: 90%;
+  margin: 0 auto;
+}
 
-.row input{flex:1;padding:8px;border:1px solid #ddd;border-radius:6px;margin-bottom:8px}
+/* =========================================
+   2. COLUMNAS (IZQUIERDA Y DERECHA)
+   ========================================= */
+.checkout-left {
+  flex: 2; /* Ocupa 2/3 del espacio */
+  min-width: 300px; /* Evita que se aplaste demasiado */
+}
 
-.address-form input{display:block;width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;margin-bottom:8px}
+.checkout-right {
+  flex: 1; /* Ocupa 1/3 del espacio */
+  min-width: 280px;
+}
 
-.btn-primary{color:white; border:none; padding:10px 14px; border-radius:6px; cursor:pointer}
+/* Estilo unificado para las tarjetas blancas (Formulario y Resumen) */
+.checkout-card,
+.summary-card {
+  background: var(--card, #ffffff); /* Usa tu variable o blanco por defecto */
+  padding: 25px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* Sombra suave moderna */
+}
 
-.btn-secondary{background:#6c757d;color:white;border:none;padding:10px 14px;border-radius:6px;cursor:pointer; margin-left: 10px;}
-.option{padding:12px;border:1px solid #ddd;border-radius:8px;margin-bottom:8px;cursor:pointer}
-.option.sel{border-color:var(--accent);background:#eaf2ff}
+.checkout-card h3,
+.summary-card h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #444;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
 
+/* =========================================
+   3. FORMULARIO Y INPUTS
+   ========================================= */
+.address-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Espacio vertical entre filas */
+}
+
+/* Reemplazo de tu antiguo .row */
+.form-row {
+  display: flex;
+  gap: 15px; /* Espacio horizontal entre inputs */
+}
+
+/* Inputs generales */
+.address-form input {
+  width: 100%; /* Asegura que llenen su contenedor */
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box; /* CRÍTICO: Para que el padding no rompa el ancho */
+  transition: border-color 0.2s;
+  font-family: 'Orbitron';
+}
+
+.address-form input:focus {
+  border-color: #2ea32b;
+  outline: none;
+}
+
+/* Inputs dentro de una fila (nombre/apellido, etc) */
+.form-row input {
+  flex: 1; /* Se reparten el espacio equitativamente */
+}
+
+/* =========================================
+   4. BOTONES
+   ========================================= */
+.form-actions {
+  display: flex;
+  justify-content: space-between; /* Separa los botones a los extremos */
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.btn-volver {
+  border: 1px solid #2ea32b;
+  background-color: transparent;
+  color: #2ea32b;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #2ea32b;
+  color: white
+}
+
+/* =========================================
+   5. MINI LISTA DE ITEMS (RESUMEN)
+   ========================================= */
+.mini-items-list {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+  max-height: 300px;
+  overflow-y: auto; /* Scroll si hay muchos productos */
+}
+
+.mini-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.mini-item span:first-child {
+  font-weight: 500;
+  color: #333;
+}
+
+.mini-item span:last-child {
+  font-weight: 600;
+  color: #2ea32b;
+}
+
+/* =========================================
+   6. RESPONSIVE (MÓVILES)
+   ========================================= */
+@media (max-width: 768px) {
+  .checkout-layout {
+    flex-direction: column; /* Apila columnas */
+    width: 95%;
+  }
+
+  .checkout-left, .checkout-right {
+    width: 100%;
+  }
+
+  /* En móvil, queremos el resumen arriba o abajo? 
+     Normalmente abajo, que es el orden por defecto */
+  
+  .form-row {
+    flex-direction: column; /* Inputs uno debajo del otro en pantallas muy pequeñas */
+    gap: 10px;
+  }
+}
+
+/* =========================================
+   ESTILOS PRO: TARJETAS DE PAGO
+   ========================================= */
+
+.payment-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* Una columna para que se vean grandes y detalladas */
+  gap: 15px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+/* Base de la tarjeta */
+.payment-card {
+  background-color: #fff;
+  border: 2px solid #eef2f6; /* Borde gris muy suave inicial */
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hover: Feedback sutil */
+.payment-card:hover {
+  border-color: #cbd5e1;
+  background-color: #f8fafc;
+}
+
+/* ESTADO SELECCIONADO (ACTIVE) */
+.payment-card.active {
+  border-color: #2ea32b; /* Tu color primario */
+  background-color: #f0f7ff; /* Fondo azul muy tenue */
+  box-shadow: 0 4px 12px rgba(46, 163, 43, 0.15); /* Sombra verdeada */
+}
+
+/* =========================================
+   ELEMENTOS INTERNOS
+   ========================================= */
+
+.radio-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+/* Círculo de Radio Personalizado */
+.custom-radio {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #cbd5e1;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  transition: border-color 0.2s;
+}
+
+.custom-radio.checked {
+  border-color: #2ea32b;
+  background-color: #2ea32b; /* Se llena de verde */
+}
+
+.radio-dot {
+  width: 8px;
+  height: 8px;
+  background-color: white; /* Punto blanco en el centro */
+  border-radius: 50%;
+}
+
+/* Etiqueta "Más rápido" */
+.badge-promo {
+  background-color: #dcfce7;
+  color: #166534;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+
+.card-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.payment-icon {
+  font-size: 2rem; /* Icono grande */
+  background-color: #fff;
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  border: 1px solid #f1f1f1;
+}
+
+.text-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 1.1rem;
+}
+
+.card-desc {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+/* Responsive: En tablets/pc grandes, podemos ponerlas lado a lado */
+@media (min-width: 768px) {
+  .payment-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .payment-card {
+    min-height: 140px; /* Altura uniforme */
+    justify-content: space-between;
+  }
+}

@@ -1,53 +1,250 @@
+/* =========================================
+   LAYOUT GENERAL
+   ========================================= */
 .checkout-success-page {
-  background-color: #f8f9fa;
+  background-color: #f8f9fa; /* Fondo gris claro suave */
   min-height: 100vh;
+  padding-bottom: 60px;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.success-layout {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr; /* Izquierda más ancha que derecha */
+  gap: 30px;
+  margin-top: 40px;
+  padding: 0 20px;
+}
+
+/* =========================================
+   TARJETA IZQUIERDA (CONFIRMACIÓN)
+   ========================================= */
+.success-left {
+  /* No necesita estilos específicos, es el contenedor */
+}
+
+.success-card {
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  border-top: 5px solid #28a745; /* Tu verde de éxito */
+}
+
+.center-content {
   display: flex;
   flex-direction: column;
-  width: 100vw;
+  align-items: center;
 }
 
-.checkout-success-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 40px 20px;
-  gap: 40px;
+.success-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.checkout-success-left {
-  flex: 2;
-  background-color: #fff;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.checkout-success-left h2 {
+.success-card h1 {
   color: #28a745;
+  margin-bottom: 10px;
+  font-size: 2rem;
+}
+
+.order-id {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #555;
+  margin-bottom: 20px;
+  background: #f1f1f1;
+  padding: 5px 15px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.success-message {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 30px;
+  line-height: 1.6;
+  max-width: 80%;
+}
+
+/* CAJA DE DETALLES (Dirección, método, etc) */
+.order-details-box {
+  width: 100%;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: left;
+  border: 1px solid #eee;
+  margin-bottom: 20px;
+}
+
+.order-details-box h3 {
+  margin-top: 0;
+  font-size: 1.1rem;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
   margin-bottom: 15px;
 }
 
-.checkout-success-left p {
-  font-size: 1rem;
+.order-details-box p {
+  margin: 10px 0;
   color: #555;
-  margin-bottom: 25px;
+  font-size: 0.95rem;
 }
 
-.btn-volver {
-  background-color: #007bff;
-  color: #fff;
+.status-badge {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-left: 5px;
+}
+
+/* BOTÓN VOLVER (Basado en tu diseño original) */
+.btn-primary {
+  background-color: #2ea32b; /* Tu verde original */
+  color: white;
   border: none;
-  padding: 12px 25px;
   border-radius: 8px;
-  cursor: pointer;
+  padding: 12px 24px;
   font-size: 1rem;
-  transition: background-color 0.3s;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Orbitron', sans-serif;
+  box-shadow: 0 4px 6px rgba(46, 163, 43, 0.2);
 }
 
-.btn-volver:hover {
-  background-color: #0056b3;
+.btn-primary:hover {
+  background-color: #238c23;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(46, 163, 43, 0.3);
 }
 
-.checkout-success-right {
-  flex: 1;
+/* =========================================
+   TARJETA DERECHA (RECIBO)
+   ========================================= */
+.success-right {
+  /* Contenedor lateral */
+}
+
+.receipt-card {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  position: relative;
+  /* Efecto visual opcional: Borde superior azul */
+  border-top: 5px solid #007bff; 
+}
+
+.receipt-card h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  color: #adb5bd;
+  text-align: center;
+}
+
+.receipt-items {
+  max-height: 400px;
+  overflow-y: auto;
+  border-bottom: 2px dashed #eee; /* Línea punteada típica de recibos */
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+
+.receipt-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+}
+
+.item-info {
+  display: flex;
+  gap: 10px;
+}
+
+.qty {
+  font-weight: 700;
+  color: #333;
+  min-width: 25px;
+}
+
+.price {
+  font-weight: 600;
+  color: #555;
+}
+
+.receipt-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #2c3e50;
+}
+
+.total-amount {
+  color: #007bff;
+}
+
+/* =========================================
+   LOADER & ERROR
+   ========================================= */
+.loading-container, .error-container {
+  text-align: center;
+  padding: 100px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border-left-color: #28a745;
+  animation: spin 1s ease infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes popIn { 0% { transform: scale(0); opacity: 0; } 80% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); } }
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+@media (max-width: 768px) {
+  .success-layout {
+    grid-template-columns: 1fr; /* Una columna en móvil */
+  }
+  
+  .success-card, .receipt-card {
+    padding: 20px;
+  }
+  
+  .success-icon {
+    font-size: 3rem;
+  }
+  
+  .success-card h1 {
+    font-size: 1.5rem;
+  }
 }

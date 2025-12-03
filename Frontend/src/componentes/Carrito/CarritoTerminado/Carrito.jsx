@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../../api/context/CartContext.jsx"; 
+import { useUser } from "../../../api/context/UserContext.jsx"; // Importamos UserContext
 import CartItem from "../CartItem/CartItem";
 import Summary from "../Summary/Summary";
 import Header from "../../Header/Header";
@@ -7,33 +8,32 @@ import "./Carrito.css";
 
 const Carrito = () => {
   const {
-    items,              // Array de items desde el Context
-    total,              // Calculado en el Context
-    count,              // Cantidad total de productos
-    loading,            // Estado de carga (true en fetch o updates)
-    cartError,          // Objeto error si falla la API
-    actualizarCantidad, // Función del Context -> API PUT
-    eliminarProducto,   // Función del Context -> API DELETE
+    items,
+    total,
+    count,
+    loading,
+    cartError,
+    actualizarCantidad,
+    eliminarProducto,
     vaciarCarritoCompleto
   } = useCart();
 
+  const { isAuthenticated } = useUser(); // Para validar login
   const navigate = useNavigate();
 
-  // --- Handlers (Controladores de Eventos) ---
+  // --- Handlers ---
 
   const handleAumentar = async (idItem) => {
-    if (loading) return; // Bloqueo anti-spam de clics
-    
+    if (loading) return;
     const item = items.find((p) => p.id === idItem);
     if (item) {
-      // Llamamos a actualizarCantidad con el ID del ITEM (tabla intermedia)
+      // OJO: Asegúrate si tu API espera el ID del producto o el ID de la línea del carrito
       await actualizarCantidad(idItem, item.cantidad + 1);
     }
   };
 
   const handleDisminuir = async (idItem) => {
     if (loading) return;
-    
     const item = items.find((p) => p.id === idItem);
     if (item && item.cantidad > 1) {
       await actualizarCantidad(idItem, item.cantidad - 1);
@@ -42,34 +42,45 @@ const Carrito = () => {
 
   const handleEliminar = async (idItem) => {
     if (loading) return;
-    
-    // Confirmación nativa simple
-    if (window.confirm("¿Deseas eliminar este producto del carrito?")) {
+    if (window.confirm("¿Deseas eliminar este producto?")) {
       await eliminarProducto(idItem);
     }
   };
 
   const handleVaciar = () => {
     if (items.length === 0) return;
-    if (window.confirm("¿Estás seguro de vaciar el carrito?")) {
+    if (window.confirm("¿Estás seguro de vaciar todo el carrito?")) {
         vaciarCarritoCompleto();
     }
   };
 
   const handleContinuarCompra = () => {
-    navigate("/Checkout1"); // Ruta hacia tu CheckoutContext flow
+    // Validación de seguridad antes de ir al Checkout
+    if (!isAuthenticated) {
+        alert("Por favor inicia sesión para continuar con la compra.");
+        navigate("/login"); // O abre tu modal de login
+        return;
+    }
+    
+    if (items.length === 0) {
+        alert("Tu carrito está vacío.");
+        return;
+    }
+
+    // Navegamos al primer paso del Checkout (Dirección)
+    navigate("/Checkout1"); 
   };
 
-  // --- Renderizado Condicional ---
+  // --- Renderizado ---
 
-  // CASO 1: Carga Inicial (Pantalla completa solo si está vacío y cargando)
+  // Spinner de carga inicial
   if (loading && items.length === 0) {
     return (
       <div className="carrito-page">
         <Header />
         <div className="loading-container">
             <div className="spinner"></div>
-            <p>Cargando tu carrito... 🔄</p>
+            <p>Cargando tu carrito...</p>
         </div>
       </div>
     );
@@ -79,26 +90,25 @@ const Carrito = () => {
     <div className="carrito-page">
       <Header />
       
-      {/* Banner de Errores (Si falla el token o el servidor) */}
       {cartError && (
         <div className="error-banner">
-            ⚠️ {cartError.message || "Ocurrió un error. Intenta recargar."}
+            ⚠️ {cartError.message || "Ocurrió un error."}
         </div>
       )}
 
-      {/* Clase 'is-updating': Baja la opacidad si se está actualizando 
-         para dar feedback visual sin borrar el contenido 
-      */}
       <div className={`carrito-container ${loading ? 'is-updating' : ''}`}>
         
-        {/* COLUMNA IZQUIERDA: ITEMS */}
+        {/* COLUMNA IZQUIERDA: LISTA DE PRODUCTOS */}
         <div className="carrito-left">
-          <h2>Tu Carrito ({count} productos)</h2>
+          <div className="cart-header">
+             <h2>Tu Carrito</h2>
+             <span className="cart-count">{count} items</span>
+          </div>
 
           {items.length === 0 ? (
             <div className="empty-cart-state">
                 <p>Tu carrito está vacío 🛍️</p>
-                <button className="btn-primary" onClick={() => navigate('/')}>
+                <button className="btn-secondary" onClick={() => navigate('/')}>
                     Ir a la Tienda
                 </button>
             </div>
@@ -106,12 +116,12 @@ const Carrito = () => {
             <div className="cart-list">
               {items.map((item) => (
                 <CartItem
-                  key={item.id} // Key es el ID único de la tabla intermedia
-                  item={item}   // Pasamos todo el objeto item
+                  key={item.id} // ID único (ej: cart_item_id)
+                  item={item}
                   onAumentar={() => handleAumentar(item.id)}
                   onDisminuir={() => handleDisminuir(item.id)}
                   onEliminar={() => handleEliminar(item.id)}
-                  disabled={loading} // Deshabilitamos botones individuales
+                  disabled={loading}
                 />
               ))}
               
@@ -126,12 +136,12 @@ const Carrito = () => {
           )}
         </div>
 
-        {/* COLUMNA DERECHA: RESUMEN */}
+        {/* COLUMNA DERECHA: RESUMEN (Sticky) */}
         {items.length > 0 && (
             <div className="carrito-right">
-              {/* Indicador sutil de carga */}
-              {loading && <p className="mini-loader">Actualizando precios...</p>}
+              {loading && <p className="mini-loader">Actualizando...</p>}
               
+              {/* Usamos tu componente Summary */}
               <Summary total={total} count={count} />
               
               <button
@@ -139,7 +149,7 @@ const Carrito = () => {
                 onClick={handleContinuarCompra}
                 disabled={loading}
               >
-                {loading ? 'Procesando...' : 'Continuar Compra'}
+                {loading ? 'Procesando...' : 'Ir a Pagar'}
               </button>
             </div>
         )}

@@ -131,7 +131,7 @@ const router = createBrowserRouter([
         element: <CheckoutCardPaymentPage />
     },
     {
-        path: "/Checkout5",
+        path: "/Checkout5/:id",
         element: <CheckoutSuccessPage />
     },
     {

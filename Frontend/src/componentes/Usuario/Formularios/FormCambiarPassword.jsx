@@ -1,64 +1,90 @@
-import { useState, useEffect } from 'react'
-import './FormCambiarPassword.css'
+import { useState } from 'react';
+import './FormCambiarPassword.css';
 
-const FormCambiarPassword = ({ onSubmit, user, onCancel }) => {
-    const [ usuario, setUsuario ] = useState(user);
+const FormCambiarPassword = ({ onSubmit, onCancel }) => {
+    // Eliminamos el estado 'usuario' completo. El formulario solo gestiona los inputs.
     const [ contra1, setContra1 ] = useState("");
     const [ contra2, setContra2 ] = useState("");
     const [ verificacion, setVerificacion ] = useState("");
-    useEffect(() => {setUsuario(user);}, [user]);
 
-    const verificarDesdeContra1 = (e) => {
-        const password = e.target.value;
-        setContra1(password);
+    const handleContra1Change = (e) => {
+        const val = e.target.value;
+        setContra1(val);
+        // Validación en tiempo real
+        if (contra2 !== "" && val !== contra2) {
+            setVerificacion("¡Las contraseñas no coinciden!");
+        } else {
+            setVerificacion("");
+        }
+    };
 
-        if(password === contra2) {setVerificacion(""); setUsuario({...usuario, password: contra2})}
-        else setVerificacion("¡Las contraseñas no coinciden!");
-    }
+    const handleContra2Change = (e) => {
+        const val = e.target.value;
+        setContra2(val);
+        // Validación en tiempo real
+        if (val !== contra1) {
+            setVerificacion("¡Las contraseñas no coinciden!");
+        } else {
+            setVerificacion("");
+        }
+    };
 
-    const verificarDesdeContra2 = (e) => {
-        const password = e.target.value;
-        setContra2(password);
+    const handleCancel = (e) => {
+        e.preventDefault(); 
+        onCancel();
+    };
 
-        if(contra1 === password) {setVerificacion(""); setUsuario({...usuario, password: contra1})}
-        else setVerificacion("¡Las contraseñas no coinciden!");
-    }
-
-    const handleCancel = (e) => {e.preventDefault(); onCancel();}
     const handleSubmit = (e) => {
         e.preventDefault(); 
 
-        if(verificacion === "" && contra1 !== "") onSubmit(usuario);
-        else alert("¡Las contraseñas tienen que coincidir!");
-    }
+        if (contra1 === "" || contra2 === "") {
+            setVerificacion("Los campos no pueden estar vacíos");
+            return;
+        }
+
+        if (contra1 === contra2) {
+            // Enviamos solo la nueva contraseña al componente padre
+            onSubmit(contra1); 
+        } else {
+            setVerificacion("¡Las contraseñas tienen que coincidir!");
+        }
+    };
 
     return (
-        <div class="CambiarPasswordParent">
-            <div class="CambiarPassword">
+        <div className="CambiarPasswordParent">
+            <div className="CambiarPassword">
                 <h1>Cambiar contraseña</h1>
 
-                    <form class="grid-container-CP">
-                        <div>
-                            <label>Nueva contraseña</label><br></br>
-                            <input type="text" placeholder = "Nueva Contraseña"
-                                onChange = {(e) => verificarDesdeContra1(e)}/>
-                        </div>
-                        <div>
-                            <label>Confirmar contraseña</label><br></br>
-                            <input type="text" placeholder = "Confirmar Contraseña"
-                                onChange = {(e) => verificarDesdeContra2(e)}/>
-                        </div>
-                    </form>                       
-                    
-                    <div class="grid-container-CP2">
-                        <button onClick = {(e) => handleCancel(e)}>Cancelar</button>
-                        <button onClick = {(e) => handleSubmit(e)}>Confirmar</button>
+                <form className="grid-container-CP">
+                    <div>
+                        <label>Nueva contraseña</label><br/>
+                        <input 
+                            type="password" // CAMBIO IMPORTANTE: Ocultar caracteres
+                            placeholder="Nueva Contraseña"
+                            value={contra1}
+                            onChange={handleContra1Change}
+                        />
                     </div>
+                    <div>
+                        <label>Confirmar contraseña</label><br/>
+                        <input 
+                            type="password" // CAMBIO IMPORTANTE: Ocultar caracteres
+                            placeholder="Confirmar Contraseña"
+                            value={contra2}
+                            onChange={handleContra2Change}
+                        />
+                    </div>
+                </form>                       
+                
+                <div className="grid-container-CP2">
+                    <button onClick={handleCancel}>Cancelar</button>
+                    <button onClick={handleSubmit}>Confirmar</button>
+                </div>
 
-                <div class="alerta">{verificacion}</div>
+                {/* Renderizado condicional para que la alerta solo ocupe espacio si existe */}
+                {verificacion && <div className="alerta">{verificacion}</div>}
             </div>        
         </div>
-        
     );
 };
 
