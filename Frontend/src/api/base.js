@@ -1,4 +1,5 @@
-const URI = 'http://localhost:3005/api/';
+// En producción (Vercel) usamos ruta relativa. En local, el proxy de Vite lo maneja.
+const URI = '/api/';
 
 // Genera headers en un solo lugar
 const buildHeaders = (token, isJSON = true) => {

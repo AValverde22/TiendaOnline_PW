@@ -24,34 +24,37 @@ const Header = () => {
   // --- Lógica de Búsqueda (Se mantiene igual) ---
   const manejarBusqueda = (e) => setBusqueda(e.target.value);
 
-  const ejecutarBusqueda = () => {
+  const ejecutarBusqueda = async () => {
     const texto = busqueda.trim().toLowerCase();
     if (!texto) return;
 
-    // Nota: Asegúrate de que estos .get() sean síncronos o manejen promesas correctamente.
-    // Si son asíncronos en el futuro, agrega async/await aquí.
-    const productos = productosApi.get() || [];
-    const series = seriesApi.get() || [];
+    try {
+      // Usamos findAll que es la función correcta y es asíncrona
+      const productos = await productosApi.findAll() || [];
+      const series = await seriesApi.findAll() || [];
 
-    const productoEncontrado = productos.find(
-      (p) => p.titulo && p.titulo.toLowerCase() === texto
-    );
+      const productoEncontrado = productos.find(
+        (p) => p.titulo && p.titulo.toLowerCase() === texto
+      );
 
-    if (productoEncontrado) {
-      navigate(`/Producto/${productoEncontrado.id}`);
-      return;
+      if (productoEncontrado) {
+        navigate(`/Producto/${productoEncontrado.id}`);
+        return;
+      }
+
+      const serieEncontrada = series.find(
+        (s) => s.nombre && s.nombre.toLowerCase() === texto
+      );
+
+      if (serieEncontrada) {
+        navigate(`/serie/${serieEncontrada.id}`);
+        return;
+      }
+
+      navigate(`/Producto?query=${encodeURIComponent(texto)}`);
+    } catch (error) {
+      console.error("Error en búsqueda:", error);
     }
-
-    const serieEncontrada = series.find(
-      (s) => s.nombre && s.nombre.toLowerCase() === texto
-    );
-
-    if (serieEncontrada) {
-      navigate(`/serie/${serieEncontrada.id}`);
-      return;
-    }
-
-    navigate(`/Producto?query=${encodeURIComponent(texto)}`);
   };
   // ---------------------------------------------
 

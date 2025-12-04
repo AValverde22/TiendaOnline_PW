@@ -8,6 +8,13 @@ export default defineConfig({
     host: true, // permite conexiones externas
     allowedHosts: [
       'sheathy-arely-zesty.ngrok-free.dev' // 👈 dominio que te dio ngrok
-    ]
+    ],
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3005',
+        changeOrigin: true,
+        secure: false
+      }
+    }
   }
 })

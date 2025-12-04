@@ -10,19 +10,22 @@ const Register = () => {
     const [usuarios, setUsuarios] = useState([]);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const todosUsuarios = usuariosApi.get();
-        setUsuarios(todosUsuarios);
-    }, []);
+    // No necesitamos traer todos los usuarios para registrar uno nuevo.
+    // Eso era de la versión anterior (mock).
 
-    const handleSubmit = (usuario) => {
+    const handleSubmit = async (usuario) => {
         try {
+            const respuesta = await usuariosApi.registrar(usuario);
 
-            const nuevo = usuariosApi.add(usuario);
-            alert(`Registro completado: ${nuevo.username}`);
-            navigate('/Login');
+            if (respuesta.success) {
+                alert(`Registro completado: ${respuesta.usuario.username}`);
+                navigate('/Login');
+            } else {
+                alert(respuesta.message || 'Error al registrar usuario');
+            }
         } catch (err) {
-            alert(err.message || 'Error al registrar usuario');
+            console.error(err);
+            alert('Error al registrar usuario');
         }
     };
 
