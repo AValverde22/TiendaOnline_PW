@@ -1,5 +1,5 @@
 // Importamos los modelos
-import { Carrito, ItemCarrito, Producto } from '../models/asociaciones.js';
+import { Carrito, ItemCarrito, Producto } from '#models/asociaciones.js';
 import RepositoryBase from './RepositoryBase.js';
 
 // Creamos la instancia del repositorio base para Carrito

@@ -1,4 +1,4 @@
-import sequelize from '../config/database.js';
+import sequelize from '#config/database.js';
 import { DataTypes } from 'sequelize';
 
 // Nota: No importamos Categoria ni Serie aquí. (Modelo Puro)

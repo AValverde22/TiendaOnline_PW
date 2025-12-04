@@ -1,4 +1,4 @@
-import repository from '../repositories/series.js';
+import repository from '#repositories/series.js';
 
 const findAll = async (req, res) => {
     try {

@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import repository from '../repositories/usuario.js';
+import repository from '#repositories/usuario.js';
 
 // RECOMENDACIÓN: Mueve esto a un archivo .env en producción
 const SECRET_KEY = "SUPER_CLAVE_123";

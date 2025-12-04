@@ -1,4 +1,4 @@
-import repository from '../repositories/producto.js'
+import repository from '#repositories/producto.js'
 
 const findAll = async (req, res) => {
     try {

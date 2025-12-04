@@ -1,6 +1,6 @@
-import { Orden, ItemDeLaOrden, Producto } from '../models/asociaciones.js';
+import { Orden, ItemDeLaOrden, Producto } from '#models/asociaciones.js';
 import RepositoryBase from './RepositoryBase.js';
-import sequelize from '../config/database.js';
+import sequelize from '#config/database.js';
 
 const repository = new RepositoryBase(Orden);
 

@@ -1,7 +1,7 @@
 import express from 'express';
-import controller from '../controllers/categoria.js';
+import controller from '#controllers/categoria.js';
 // Importamos ambos middlewares para asegurar que solo el ADMIN toque esto
-import { authMiddleware, verifyAdmin } from '../middleware/auth.js';
+import { authMiddleware, verifyAdmin } from '#middleware/auth.js';
 
 const router = express.Router();
 

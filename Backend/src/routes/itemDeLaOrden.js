@@ -1,6 +1,6 @@
 import express from 'express';
-import controller from '../controllers/itemDeLaOrden.js';
-import { authMiddleware, verifyAdmin } from '../middleware/auth.js';
+import controller from '#controllers/itemDeLaOrden.js';
+import { authMiddleware, verifyAdmin } from '#middleware/auth.js';
 
 const router = express.Router();
 

@@ -1,5 +1,5 @@
 // 1. IMPORTAMOS DESDE LA CENTRAL DE ASOCIACIONES (CRÍTICO)
-import { Producto, Categoria, Serie } from '../models/asociaciones.js';
+import { Producto, Categoria, Serie } from '#models/asociaciones.js';
 import RepositoryBase from './RepositoryBase.js';
 
 const repository = new RepositoryBase(Producto);

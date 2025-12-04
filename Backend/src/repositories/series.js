@@ -1,5 +1,5 @@
 // 1. IMPORTANTE: Importamos desde asociaciones.js para tener las relaciones vinculadas
-import { Serie, Producto } from '../models/asociaciones.js';
+import { Serie, Producto } from '#models/asociaciones.js';
 import RepositoryBase from './RepositoryBase.js';
 
 // Usamos el modelo real 'Serie' en lugar de 'model'

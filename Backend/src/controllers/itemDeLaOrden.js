@@ -1,5 +1,5 @@
-import { ItemDeLaOrden, Producto } from '../models/asociaciones.js';
-import RepositoryBase from '../repositories/RepositoryBase.js';
+import { ItemDeLaOrden, Producto } from '#models/asociaciones.js';
+import RepositoryBase from '#repositories/RepositoryBase.js';
 
 const repository = new RepositoryBase(ItemDeLaOrden);
 

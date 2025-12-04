@@ -1,5 +1,5 @@
 // 1. Importamos desde la central de asociaciones para mantener la consistencia
-import { Categoria } from '../models/asociaciones.js';
+import { Categoria } from '#models/asociaciones.js';
 import RepositoryBase from './RepositoryBase.js';
 
 const repository = new RepositoryBase(Categoria);

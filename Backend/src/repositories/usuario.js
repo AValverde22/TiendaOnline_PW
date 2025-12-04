@@ -4,7 +4,7 @@ import {
     ItemDeLaOrden,
     Producto,
     Categoria
-} from '../models/asociaciones.js';
+} from '#models/asociaciones.js';
 import RepositoryBase from './RepositoryBase.js';
 
 const repository = new RepositoryBase(Usuario);

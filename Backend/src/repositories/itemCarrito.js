@@ -1,5 +1,5 @@
 // 1. IMPORTACIÓN CENTRALIZADA (Importante: ItemCarrito con mayúscula)
-import { ItemCarrito } from '../models/asociaciones.js';
+import { ItemCarrito } from '#models/asociaciones.js';
 import RepositoryBase from './RepositoryBase.js';
 
 // 2. Instanciamos la base

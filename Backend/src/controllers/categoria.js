@@ -1,4 +1,4 @@
-import repository from '../repositories/categoria.js';
+import repository from '#repositories/categoria.js';
 
 const findAll = async (req, res) => {
     try {

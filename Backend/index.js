@@ -1,9 +1,9 @@
 import app from './app.js';
-import sequelize from './src/config/database.js';
-import { sembrarBaseDeDatos } from './src/sql/plantar.js';
+import sequelize from '#config/database.js';
+import { sembrarBaseDeDatos } from '#sql/plantar.js';
 
 // 🔥 Cargar relaciones antes del sync
-import './src/models/asociaciones.js';
+import '#models/asociaciones.js';
 
 async function main() {
   try {

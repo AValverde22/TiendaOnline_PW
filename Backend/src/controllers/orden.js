@@ -1,4 +1,4 @@
-import ordenRepository from '../repositories/orden.js';
+import ordenRepository from '#repositories/orden.js';
 
 // Crear una nueva orden (POST /api/ordenes)
 const crearOrden = async (req, res) => {

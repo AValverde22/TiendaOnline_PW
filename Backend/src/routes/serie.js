@@ -1,7 +1,7 @@
 import express from 'express';
-import controller from '../controllers/series.js';
+import controller from '#controllers/series.js';
 // 1. Importamos los middlewares de seguridad
-import { authMiddleware, verifyAdmin } from '../middleware/auth.js';
+import { authMiddleware, verifyAdmin } from '#middleware/auth.js';
 
 const router = express.Router();
 

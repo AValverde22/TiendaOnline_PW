@@ -1,6 +1,6 @@
 import express from 'express';
-import controller from '../controllers/orden.js';
-import authMiddleware from '../middleware/auth.js';
+import controller from '#controllers/orden.js';
+import authMiddleware from '#middleware/auth.js';
 
 const router = express.Router();
 

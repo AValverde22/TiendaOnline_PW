@@ -4,6 +4,16 @@
   "description": "",
   "main": "index.js",
   "type": "module",
+  "imports": {
+    "#config/*": "./src/config/*",
+    "#controllers/*": "./src/controllers/*",
+    "#middleware/*": "./src/middleware/*",
+    "#models/*": "./src/models/*",
+    "#repositories/*": "./src/repositories/*",
+    "#routes/*": "./src/routes/*",
+    "#services/*": "./src/services/*",
+    "#sql/*": "./src/sql/*"
+  },
   "scripts": {
     "dev": "nodemon index.js"
   },

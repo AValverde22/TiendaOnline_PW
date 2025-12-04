@@ -1,5 +1,5 @@
-import repository from '../repositories/usuario.js';
-import usuarioService from '../services/usuario.js';
+import repository from '#repositories/usuario.js';
+import usuarioService from '#services/usuario.js';
 
 const registrar = async (req, res) => {
     try {

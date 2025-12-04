@@ -1,4 +1,4 @@
-import { ItemDeLaOrden } from '../models/asociaciones.js';
+import { ItemDeLaOrden } from '#models/asociaciones.js';
 import RepositoryBase from './RepositoryBase.js';
 
 const repository = new RepositoryBase(ItemDeLaOrden);

@@ -3,16 +3,16 @@ import cors from 'cors';
 import 'dotenv/config';
 
 // ✅ Cargamos asociaciones primero
-import './src/models/asociaciones.js';
+import '#models/asociaciones.js';
 
 // Importamos las rutas
-import categoriaRouter from './src/routes/categoria.js';
-import usuarioRouter from './src/routes/usuario.js';
-import productoRouter from './src/routes/producto.js';
-import serieRouter from './src/routes/serie.js'; // corregido: debe ser 'series.js'
-import carritoRouter from './src/routes/carrito.js';
-import ordenRouter from './src/routes/orden.js';
-import itemDeLaOrdenRouter from './src/routes/itemDeLaOrden.js'; // nuevo
+import categoriaRouter from '#routes/categoria.js';
+import usuarioRouter from '#routes/usuario.js';
+import productoRouter from '#routes/producto.js';
+import serieRouter from '#routes/serie.js';
+import carritoRouter from '#routes/carrito.js';
+import ordenRouter from '#routes/orden.js';
+import itemDeLaOrdenRouter from '#routes/itemDeLaOrden.js';
 
 const app = express();
 
