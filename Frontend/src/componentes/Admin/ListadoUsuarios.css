@@ -1,0 +1,217 @@
+/* --- LAYOUT GENERAL --- */
+.AllUsersPage {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f4f6f9;
+    /* Fondo gris claro suave */
+}
+
+.AllUsersPage .main-content {
+    padding: 30px;
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* --- HEADER DE LA PÁGINA --- */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.page-header h1 {
+    margin: 0;
+    color: #333;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* --- BARRA DE BÚSQUEDA --- */
+.search-bar input {
+    width: 300px;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: border-color 0.3s;
+    background-color: #fafafa;
+}
+
+.search-bar input:focus {
+    outline: none;
+    border-color: #2ea32b;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(46, 163, 43, 0.1);
+}
+
+/* --- CONTENEDOR DE LA TABLA --- */
+.table-wrapper {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    padding: 20px;
+}
+
+/* --- ESTILOS DE LA TABLA (Heredados de TableComponent) --- */
+.AllUsersPage .user-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.AllUsersPage .user-table th {
+    background-color: #f8f9fa;
+    color: #666;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 2px solid #eee;
+}
+
+.AllUsersPage .user-table td {
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+    color: #444;
+}
+
+.AllUsersPage .user-table tr:hover td {
+    background-color: #f9fbfd;
+}
+
+.AllUsersPage .user-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* --- COLUMNA: USUARIO (Avatar + Texto) --- */
+.user-col {
+    width: 40%;
+}
+
+.user-cell-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-avatar-small {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.user-info-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.user-email {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+/* --- COLUMNA: ESTADO --- */
+.status-col {
+    width: 120px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.actions-col {
+    width: 200px;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.status-badge {
+    padding: 6px 0;
+    width: 90px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    display: inline-block;
+    text-align: center;
+}
+
+.status-badge.active {
+    background-color: #e6f8e7;
+    color: #2ea32b;
+    border: 1px solid #2ea32b;
+}
+
+.status-badge.inactive {
+    background-color: #fff5f5;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+/* --- COLUMNA: ACCIONES --- */
+.action-buttons-wrapper {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.AllUsersPage button {
+    font-family: 'Orbitron', sans-serif;
+    cursor: pointer;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.btn-status-toggle {
+    min-width: 110px;
+    color: white;
+}
+
+.btn-deactivate {
+    background-color: #dc3545;
+}
+
+.btn-deactivate:hover {
+    background-color: #c82333;
+}
+
+.btn-activate {
+    background-color: #28a745;
+}
+
+.btn-activate:hover {
+    background-color: #218838;
+}
+
+.btn-view-profile {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-view-profile:hover {
+    background-color: #0069d9;
+}

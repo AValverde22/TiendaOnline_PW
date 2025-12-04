@@ -1,0 +1,48 @@
+.nosotros-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  background-color: #f5f6fa;
+  font-family: "Orbitron", sans-serif;
+  gap: 40px;
+  text-align: justify;
+}
+
+.nosotros-info {
+  flex: 1 1 500px;
+  max-width: 700px;
+}
+
+.nosotros-titulo {
+  color: #2ecc71;
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.nosotros-descripcion {
+  font-size: 1.1rem;
+  color: #333;
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+.nosotros-imagen {
+  flex: 1 1 300px;
+  display: flex;
+  justify-content: center;
+}
+
+.nosotros-imagen img {
+  width: 280px;
+  height: auto;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.nosotros-imagen img:hover {
+  transform: scale(1.05);
+}

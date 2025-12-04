@@ -1,0 +1,184 @@
+/* ListadoProductos.css */
+
+/* --- 1. Layout Principal de la Página --- */
+.product-list-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Orbitron', sans-serif;
+}
+
+/* --- 2. Cabecera (Título y Botón Agregar) --- */
+.list-header {
+  padding: 20px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  border-bottom: 1px solid #e9ecef;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.list-header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.action-buttons-group {
+  display: flex;
+  gap: 10px;
+}
+
+/* Botón "Agregar Producto" */
+.btn-primary {
+  background-color: #2ea32b;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: 'Orbitron', sans-serif;
+  transition: background-color 0.2s, transform 0.1s;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  text-decoration: none; /* Por si usas Link alrededor */
+}
+
+.btn-primary:hover {
+  background-color: #258e26;
+  transform: translateY(-1px);
+}
+
+/* --- 3. Contenedor para la Tabla --- */
+.table-wrapper-products {
+  padding: 30px;
+  flex: 1; /* Hace que ocupe el resto de la altura */
+}
+
+/* --- 4. Estilos Específicos de las Celdas (Renderers) --- */
+
+/* Columna Imagen */
+.product-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.product-img-first {
+  width: 50px;
+  height: 50px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid #dee2e6;
+  background-color: #fff;
+  display: block;
+}
+
+/* Columna ID */
+.id-badge {
+  color: #868e96;
+  font-family: 'Orbitron', monospace;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+/* Columna Nombre */
+.product-name {
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* Columna Stock (Badges) */
+.stock-badge {
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: inline-block;
+  min-width: 45px;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+.ok-stock {
+  background-color: #d3f9d8;
+  color: #2b8a3e;
+  border: 1px solid #b2f2bb;
+}
+
+.low-stock {
+  background-color: #ffe3e3;
+  color: #c92a2a;
+  border: 1px solid #ffc9c9;
+}
+
+/* --- 5. Botones de Acción (Editar / Borrar) --- */
+.product-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.bton-editar,
+.bton-borrar {
+  border: 1px solid transparent;
+  background: white;
+  font-size: 1.1rem; /* Tamaño del emoji/icono */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  text-decoration: none;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+/* Editar (Azul) */
+.bton-editar {
+  border-color: #d0ebff;
+  background-color: #f8f9fa;
+}
+
+.bton-editar:hover {
+  background-color: #e7f5ff;
+  border-color: #74c0fc;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(34, 139, 230, 0.15);
+}
+
+/* Borrar (Rojo) */
+.bton-borrar {
+  border-color: #ffc9c9;
+  background-color: #f8f9fa;
+}
+
+.bton-borrar:hover {
+  background-color: #ffe3e3;
+  border-color: #ffa8a8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(250, 82, 82, 0.15);
+}
+
+/* Responsivo básico */
+@media (max-width: 768px) {
+  .list-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+  
+  .table-wrapper-products {
+    padding: 15px;
+  }
+}

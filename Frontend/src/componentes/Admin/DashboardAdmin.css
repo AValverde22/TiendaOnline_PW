@@ -1,0 +1,191 @@
+/* DashboardAdmin.css */
+
+.DashboardAdmin {
+  width: 100%;
+  min-height: 100vh;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Cards de Resumen (KPIs) --- */
+.cards ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  list-style-type: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.cards li {
+  background: #2ea32b;
+  color: white;
+  border-radius: 8px;
+  padding: 20px 30px;
+  gap: 1em;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Layout Principal del Dashboard --- */
+.dashboard-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  padding: 20px;
+}
+
+/* --- Filas y Columnas --- */
+
+/* Fila Superior: Layout de 2 columnas */
+.top-row {
+  display: flex;
+  gap: 2em;
+  align-items: flex-start;
+}
+
+/* Fila Inferior: Layout de 1 columna */
+.bottom-row {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Columnas Flexibles */
+.column-left,
+.column-right {
+  flex: 1; /* 50% cada una */
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  min-width: 0; /* CRÍTICO para que las tablas no rompan el layout */
+}
+
+.column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.column-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+.separation {
+  display: flex;
+  gap: 20px;
+}
+
+/* Wrapper intermedio en JSX para asegurar anchos correctos */
+.user-table-wrapper {
+  width: 100%;
+}
+
+/* --- Botones Específicos del Dashboard --- */
+/* Estos se usan en el header o acciones específicas, no genéricos de tabla */
+
+.btn-ver-todos {
+  font-family: 'Orbitron', sans-serif;
+  text-align: center;
+  font-size: 13px;
+  background-color: #2ea32b;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-ver-todos:hover {
+  background-color: #218838;
+}
+
+/* Estilos para botones pasados via 'render' en las columnas */
+.btn-action { color: white; }
+.btn-deactivate, .btn-activate { background-color: #2ea32b; }
+.btn-ver-detalle { background-color: #007bff; color: white; }
+
+/* --- Detalle del usuario (UserDetail) --- */
+.user-detail-card {
+  background: #ffffff;
+  padding: 1.5em;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #eee;
+  height: fit-content;
+}
+
+.user-info {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.user-text { flex: 1; }
+.user-text h2 { margin: 0 0 10px 0; color: #333; font-size: 1.5em; }
+.user-text p { margin: 8px 0; color: #666; font-size: 0.95em; }
+.user-text strong { color: #2ea32b; margin-right: 5px; }
+
+.user-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.order-history h3 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 1.2em;
+}
+
+.user-detail-placeholder {
+  text-align: center;
+  color: #999;
+  padding: 40px;
+  font-size: 1.1em;
+}
+
+/* --- Badges de Estado --- */
+.estado-activo { color: #28a745; font-weight: 600; }
+.estado-inactivo { color: #dc3545; font-weight: 600; }
+
+.status-entregado {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.status-p-entregar,
+.status-pendiente {
+  background-color: #fff9db;
+  color: #f59f00;
+  border: 1px solid #f59f00;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  display: inline-block;
+  text-align: center;
+  min-width: 80px;
+}
+
+/* Pantalla de carga */
+.loading-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 1.2em;
+  color: #666;
+}

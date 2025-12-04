@@ -1,0 +1,234 @@
+/* --- LAYOUT GENERAL --- */
+.AllOrdersPage {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f4f6f9;
+}
+
+.AllOrdersPage .main-content {
+    padding: 30px;
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* --- HEADER DE LA PÁGINA --- */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.page-header h1 {
+    margin: 0;
+    color: #333;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.search-bar input {
+    width: 300px;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: border-color 0.3s;
+    background-color: #fafafa;
+}
+
+.search-bar input:focus {
+    outline: none;
+    border-color: #2ea32b;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(46, 163, 43, 0.1);
+}
+
+/* --- CONTENEDOR DE LA TABLA --- */
+.table-wrapper {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    padding: 20px;
+}
+
+/* --- TABLA --- */
+.AllOrdersPage .user-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.AllOrdersPage .user-table th {
+    background-color: #f8f9fa;
+    color: #666;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 2px solid #eee;
+}
+
+.AllOrdersPage .user-table td {
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+    color: #444;
+}
+
+.AllOrdersPage .user-table tr:hover td {
+    background-color: #f9fbfd;
+}
+
+.AllOrdersPage .user-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* --- COLUMNA USUARIO --- */
+.user-col {
+    width: 30%;
+}
+
+.user-cell-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-avatar-small {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.user-info-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+/* --- COLUMNA ESTADO --- */
+.status-col {
+    width: 120px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.status-badge {
+    display: inline-flex;
+    /* Mejor control del contenido */
+    align-items: center;
+    /* Centrado vertical */
+    justify-content: center;
+    /* Centrado horizontal */
+    width: 90px;
+    /* Ancho fijo consistente */
+    height: 28px;
+    /* Altura uniforme */
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    box-sizing: border-box;
+}
+
+.status-badge.active {
+    background-color: #e6f8e7;
+    color: #2ea32b;
+    border: 1px solid #2ea32b;
+}
+
+.status-badge.inactive {
+    background-color: #fff5f5;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+.status-badge.pending {
+    background-color: #fff8e6;
+    color: #ffc107;
+    border: 1px solid #ffc107;
+}
+
+/* --- COLUMNA ACCIONES --- */
+.actions-col {
+    width: 150px;
+    text-align: center;
+}
+
+.action-buttons-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    align-items: center;
+}
+
+.btn-view-profile {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+}
+
+.btn-view-profile:hover {
+    background-color: #0069d9;
+}
+
+/* --- PAGINACIÓN --- */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.pagination button {
+    border: 1px solid #ddd;
+    background-color: white;
+    color: #333;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.pagination button.active,
+.pagination button:hover {
+    background-color: #2ea32b;
+    color: white;
+    border-color: #2ea32b;
+}
+
+.loading-screen {
+    text-align: center;
+    color: #666;
+    font-size: 1rem;
+    padding: 50px 0;
+}
+
+.no-results {
+    text-align: center;
+    color: #666;
+    font-size: 0.95rem;
+    padding: 20px 0;
+}

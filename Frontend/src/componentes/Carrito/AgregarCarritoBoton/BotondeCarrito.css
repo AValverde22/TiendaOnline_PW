@@ -1,0 +1,25 @@
+.boton-agregar {
+  background-color: #2ea32b;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 200px;
+  margin-top: 10px;
+  font-family: 'Orbitron';
+}
+
+.boton-agregar:hover {
+  background-color: #27ae60;
+  transform: scale(1.05);
+}
+
+.boton-agregar:active {
+  transform: scale(0.98);
+  background-color: #219150;
+}

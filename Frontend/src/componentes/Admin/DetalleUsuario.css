@@ -1,0 +1,215 @@
+/* --- LAYOUT GENERAL --- */
+.UserProfilePage {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f4f6f9;
+}
+
+.UserProfilePage .main-content {
+    padding: 30px;
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* --- HEADER DE LA PÁGINA --- */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.page-header h1 {
+    margin: 0;
+    color: #333;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.back-link {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* --- LAYOUT DEL PERFIL --- */
+.profile-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+@media(min-width: 992px) {
+    .profile-layout {
+        flex-direction: row;
+        gap: 30px;
+    }
+}
+
+/* --- TARJETA DE PERFIL --- */
+.profile-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    flex: 1;
+}
+
+.profile-card-header {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.profile-name h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.profile-name p {
+    margin: 2px 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.estado-activo,
+.estado-inactivo {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    margin-top: 6px;
+}
+
+.estado-activo {
+    background-color: #e6f8e7;
+    color: #2ea32b;
+    border: 1px solid #2ea32b;
+}
+
+.estado-inactivo {
+    background-color: #fff5f5;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+.profile-card-body h3 {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 1rem;
+}
+
+.profile-card-body p {
+    margin: 3px 0;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* --- HISTORIAL DE ÓRDENES --- */
+.order-history-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    flex: 2;
+}
+
+.order-history-container h3 {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+/* --- TABLA DE ÓRDENES (Reutiliza clases de TableComponent) --- */
+.UserProfilePage .user-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.UserProfilePage .user-table th {
+    background-color: #f8f9fa;
+    color: #666;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    padding: 15px 20px;
+    text-align: center;
+    border-bottom: 2px solid #eee;
+}
+
+.UserProfilePage .user-table td {
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+    color: #444;
+}
+
+.UserProfilePage .user-table tr:hover td {
+    background-color: #f9fbfd;
+}
+
+.UserProfilePage .user-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* --- ESTADOS DE ÓRDENES --- */
+.status-entregado {
+    background-color: #e6f8e7;
+    color: #2ea32b;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    display: inline-block;
+}
+
+.status-por-entregar {
+    background-color: #fff5f5;
+    color: #dc3545;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    display: inline-block;
+}
+
+/* --- BOTONES (Reutilizados de ListadoUsuarios) --- */
+.UserProfilePage button {
+    font-family: 'Orbitron', sans-serif;
+    cursor: pointer;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+    font-weight: 500;
+}

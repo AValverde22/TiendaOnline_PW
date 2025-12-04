@@ -1,0 +1,73 @@
+.Formulario {
+    margin: 30px auto; 
+    max-width: 650px;
+    padding: 30px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    background-color: #fff;
+    display: grid;
+    grid-template-columns: min-content 1fr min-content 1fr;
+    gap: 15px 20px; 
+    align-items: center; 
+}
+
+
+.Formulario br {
+    display: none;
+}
+
+
+.Formulario h2 {
+    grid-column: 1 / -1; 
+    text-align: center;
+    color: #4CAF50; 
+    margin-bottom: 10px;
+    border-bottom: 2px solid #4CAF50; 
+    padding-bottom: 15px;
+    font-size: 24px;
+}
+
+
+.Formulario label {
+    font-weight: bold;
+    color: #555;
+    justify-self: end;
+    white-space: nowrap; 
+}
+
+.Formulario input {
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box; 
+    margin: 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+
+.Formulario input:focus {
+    border-color: #4CAF50;
+    outline: none; 
+}
+
+
+.Formulario button[type="submit"] {
+    grid-column: 1 / -1; 
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    background-color: #4CAF50; 
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.Formulario button[type="submit"]:hover {
+    background-color: #45a049; 
+}

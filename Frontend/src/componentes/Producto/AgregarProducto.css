@@ -1,0 +1,129 @@
+.form-page-container {
+    background-color: #f4f6f9;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-content-wrapper {
+    max-width: 1000px;
+    margin: 40px auto;
+    width: 90%;
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.form-title {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.product-form .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+}
+
+@media (max-width: 768px) {
+    .product-form .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.product-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.product-form input,
+.product-form select,
+.product-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border 0.3s;
+    box-sizing: border-box; /* Importante para que no se salga */
+}
+
+.product-form input:focus,
+.product-form select:focus,
+.product-form textarea:focus {
+    border-color: #2ea32b;
+    outline: none;
+}
+
+/* Vista previa imagen */
+.image-preview-box {
+    width: 100%;
+    height: 250px;
+    background-color: #f8f9fa;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.image-preview-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.image-preview-box .placeholder-text {
+    color: #aaa;
+}
+
+.img-input {
+    margin-bottom: 20px;
+}
+
+/* Fila dividida (Stock y Precio) */
+.form-row-split {
+    display: flex;
+    gap: 20px;
+}
+
+.form-row-split .form-group {
+    flex: 1;
+}
+
+/* Botón Submit */
+.btn-submit {
+    width: 100%;
+    background-color: #2ea32b;
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 20px;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.btn-submit:hover {
+    background-color: #218838;
+}
+
+.btn-submit:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
