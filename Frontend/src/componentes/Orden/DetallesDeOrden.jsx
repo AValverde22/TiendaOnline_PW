@@ -37,7 +37,7 @@ const DetallesDeOrden = () => {
                 usuarioId: user.id,
                 total: total,
                 metodoPago: paymentMethod, 
-                direccion_envio: shippingAddress, 
+                direccion_envio: JSON.stringify(shippingAddress), 
                 
                 // --- CORRECCIÓN CRÍTICA 1: Mapeo de IDs ---
                 items: items.map(i => ({

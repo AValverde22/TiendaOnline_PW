@@ -170,6 +170,11 @@ const router = createBrowserRouter([
         path: "/RecuperarContraseña",
         element: <RecuperarContraseña />
     },
+    {
+        path: "/ConfirmarOrden",
+        element: <DetallesDeOrdenPage/>
+
+    }
 
 ]);
 

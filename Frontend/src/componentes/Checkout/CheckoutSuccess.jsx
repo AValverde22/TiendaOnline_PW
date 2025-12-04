@@ -49,11 +49,13 @@ const CheckoutSuccess = () => {
       try {
           // CORRECCIÓN: Accedemos a orden.direccion_envio
           const dirData = orden.direccion_envio; 
+          console.log(dirData)
+          console.log(JSON.parse(dirData))
 
           if (!dirData) return "Dirección no registrada";
           
           // Caso 1: Viene como string JSON (común en PostgreSQL text)
-          if (typeof dirData === 'string') {
+          if (typeof dirData == 'string') {
               const dir = JSON.parse(dirData);
               return `${dir.direccion}, ${dir.ciudad}`;
           }
