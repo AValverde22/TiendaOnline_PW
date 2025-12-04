@@ -1,0 +1,12 @@
+{
+    "name": "tienda-online-root",
+    "version": "1.0.0",
+    "description": "Root script to run Backend and Frontend concurrently",
+    "scripts": {
+        "install-all": "npm install && cd Backend && npm install && cd ../Frontend && npm install",
+        "dev": "concurrently \"cd Backend && npm run dev\" \"cd Frontend && npm run dev\""
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.2"
+    }
+}

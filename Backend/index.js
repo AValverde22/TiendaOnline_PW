@@ -25,8 +25,13 @@ async function main() {
       console.log('🌱 Base de datos sembrada.');
     } else {
       console.log('🔄 Modo normal: Sincronizando sin borrar datos...');
-      await sequelize.sync({ alter: true }); // solo ajusta columnas
-      console.log('✅ Base de datos lista.');
+      try {
+        await sequelize.sync({ alter: true }); // solo ajusta columnas
+        console.log('✅ Base de datos lista.');
+      } catch (dbError) {
+        console.error('❌ Error al sincronizar base de datos (posiblemente credenciales o red):', dbError.message);
+        console.log('⚠️ El servidor iniciará, pero las consultas a la BD fallarán.');
+      }
     }
 
     const port = 3005;
