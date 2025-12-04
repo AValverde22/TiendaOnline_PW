@@ -15,13 +15,17 @@ const Register = () => {
         setUsuarios(todosUsuarios);
     }, []);
 
-    const handleSubmit = (usuario) => {
+    const handleSubmit = async (usuario) => {
         try {
-
-            const nuevo = usuariosApi.add(usuario);
-            alert(`Registro completado: ${nuevo.username}`);
-            navigate('/Login');
+            const response = await usuariosApi.registrar(usuario);
+            if (response.success) {
+                alert(`Registro completado: ${response.usuario.username}`);
+                navigate('/Login');
+            } else {
+                alert(response.message || 'Error al registrar usuario');
+            }
         } catch (err) {
+            console.error("Error en registro:", err);
             alert(err.message || 'Error al registrar usuario');
         }
     };

@@ -1,4 +1,4 @@
-const URI = 'http://localhost:3005/api/';
+const URI = import.meta.env.VITE_API_URL || 'http://localhost:3005/api/';
 
 // Genera headers en un solo lugar
 const buildHeaders = (token, isJSON = true) => {
